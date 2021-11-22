@@ -9,8 +9,6 @@ class Login extends Component
     componentDidMount() {
       if(this.props.customer_login) {
         this.props.history.push('/landing-page')
-      } else if(this.props.admin_login) {
-        this.props.history.push('/dashboard')
       }
     }
     render() {
