@@ -1,0 +1,29 @@
+.user-register-product .title p{
+    color: #003D79;
+    font-weight: 600;
+    font-size: 25px;
+}
+
+.user-register-product label {
+    color: #003D79;
+    font-size: 19px;
+}
+
+.user-register-product .btn-submit {
+    font-size: 21px;
+}
+
+@media (max-width: 768px) {
+    .user-register-product .title p {
+        font-size: 17px;
+    }
+
+    .user-register-product label {
+        color: #003D79;
+        font-size: 15px;
+    }
+
+    .user-register-product .btn-submit {
+        font-size: 17px;
+    }
+}

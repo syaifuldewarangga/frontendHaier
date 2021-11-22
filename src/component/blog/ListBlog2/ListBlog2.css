@@ -1,0 +1,42 @@
+.blog-list-2 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.blog-list-2 .image {
+    height: 250px;
+    overflow: hidden;
+    background: black;
+    border-radius: 10px;
+}
+
+.blog-list-2 .image img{
+    height: 250px;
+    vertical-align: middle;
+}
+
+.blog-list-2 .title {
+    padding-top: 10px;
+    font-size: 21px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.blog-list-2 .category {
+    padding-top: 10px;
+    font-weight: 600;
+    font-size: 17px;
+    margin: 0;
+}
+
+.blog-list-2 .description {
+    padding-top: 5px;
+    font-size: 14px;
+    color:#707070;
+}
+
+.blog-list-2 .read-more {
+    color: #003D79;
+    font-weight: 600;
+    text-decoration: underline;
+}

@@ -1,0 +1,53 @@
+#scanner-container {
+    position: relative;
+    /* border: 5px solid #000; */
+}
+ 
+.drawingBuffer {
+    position: absolute;
+    left: 18%;
+    top: 18%;
+    width: 65%;
+    height: 65%;
+    background:
+        linear-gradient(to right, white 4px, transparent 4px) 0 0,
+        linear-gradient(to right, white 4px, transparent 4px) 0 100%,
+        linear-gradient(to left, white 4px, transparent 4px) 100% 0,
+        linear-gradient(to left, white 4px, transparent 4px) 100% 100%,
+        linear-gradient(to bottom, white 4px, transparent 4px) 0 0,
+        linear-gradient(to bottom, white 4px, transparent 4px) 100% 0,
+        linear-gradient(to top, white 4px, transparent 4px) 0 100%,
+        linear-gradient(to top, white 4px, transparent 4px) 100% 100%;
+
+    background-repeat: no-repeat;
+    background-size: 20px 20px;
+}
+
+.background-line-scan {
+    position: absolute;
+    left: 18%;
+    top: 18%;
+    width: 65%;
+    height: 65%;
+}
+
+.line-scan {
+    background: red;
+    height: 1.5px;
+    border-radius: 50%;
+}
+.backgroundScan {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+video {
+    width: 100%;
+    height: auto;
+    border-radius: 15px;    
+}
+
+.camera-scan .btn-play {
+    font-weight: 600;
+}

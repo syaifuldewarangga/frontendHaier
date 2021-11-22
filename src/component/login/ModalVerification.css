@@ -1,0 +1,32 @@
+
+#otp .form-control {
+    -webkit-transition: none;
+    transition: none;
+    width: 41px;
+    height: 41px;
+    text-align: center
+  }
+  
+#otp  .form-control:focus {
+    color: #3F4254;
+    background-color: #ffffff;
+    border-color: #003D79;
+    outline: 0;
+  }
+  
+#otp  .form-control.form-control-solid {
+    background-color: #F3F6F9;
+    border-color: #003D79;
+    color: #3F4254;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  
+#otp  .form-control.form-control-solid:active,
+#otp  .form-control.form-control-solid.active,
+#otp  .form-control.form-control-solid:focus,
+#otp .form-control.form-control-solid.focus {
+    background-color: #EBEDF3;
+    border-color: #EBEDF3;
+    color: #3F4254;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}

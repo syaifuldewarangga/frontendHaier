@@ -1,0 +1,79 @@
+{
+  "navbar": {
+    "home": "Home",
+    "find_store": "Find Store",
+    "service_center": "Service Center",
+    "customer_voice": "Customer Voice",
+    "status_service": "Status Service",
+    "promo_news_article": "Promo, News, Artikel",
+    "about": "About",
+    "contact": "Contact",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "landingPage" : {
+    "scan_your_product_here": "Scan Your Product Here",
+    "your_product": "Your Product",
+    "new_blog": "New Blog"
+  },
+  "general" : {
+    "see_more": "See More",
+    "search_location": "Search Location",
+    "load_more": "Load More",
+    "address": "Address",
+    "about_us": "About Us"
+  },
+  "footer": {
+    "follow_us": "Follow Us",
+    "online_shop": "Online Shop",
+    "our_product": "Our Product"
+  },
+  "shop_list": {
+    "shop_list": "Shop List",
+    "open_day": "Open Day",
+    "close_day": "Close Day",
+    "service_center": "Service Center"
+  },
+  "question": {
+    "total_question": "Total Question",
+    "previews": "Previews",
+    "next": "Next",
+    "submit": "Submit"
+  },
+  "status_service": {
+    "status_service": "Status Service",
+    "search_id_service": "Search ID Service"
+  },
+  "category": {
+    "category": "Category",
+    "all_category": "All Category"
+  },
+  "contact": {
+    "title": "Send Us A Message",
+    "sub_title": "We can help answer about products, care, use, repair, and maintenance of your AQUA JAPAN products",
+    "information": "Information",
+    "our_location": "Our Location",
+    "send_message": "Send Message"
+  },
+  "profile": {
+    "update_picture": "Update Picture",
+    "personal_data": "Personal Data",
+    "change_password": "Change Password",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "ktp_sim": "KTP/SIM",
+    "gender": "Gender",
+    "date_of_birth": "Date of Birth",
+    "age": "Age",
+    "email": "Email",
+    "mobile_phone_number": "Mobile Phone Number",
+    "phone_number": "Phone Number",
+    "fax": "Fax",
+    "province": "Province",
+    "city": "City",
+    "district": "District",
+    "postal_code": "Postal Code",
+    "address": "Address",
+    "save": "Save"
+  }
+}

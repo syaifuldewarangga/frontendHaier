@@ -1,0 +1,14 @@
+.about .title {
+    font-size: 31px;
+    font-weight: 600;
+}
+
+.about .description {
+    color:#979797;
+}
+
+@media (max-width:768px) {
+    .about .title {
+        font-size: 21px;
+    }
+}

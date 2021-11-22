@@ -1,0 +1,79 @@
+{
+  "navbar": {
+    "home": "Beranda",
+    "find_store": "Cari Toko",
+    "service_center": "Pusat Servis",
+    "customer_voice": "Suara Pelanggan",
+    "status_service": "Status Servis",
+    "promo_news_article": "Promo, Berita & Artikel",
+    "about": "Tentang",
+    "contact": "Kontak",
+    "profile": "Profil",
+    "logout": "Keluar"
+  },
+  "landingPage": {
+    "scan_your_product_here": "Pindai Produk Anda Di Sini",
+    "your_product": "Produk Anda",
+    "new_blog": "Blog Baru"
+  },
+  "general" : {
+    "see_more": "Lihat Lebih Banyak",
+    "search_location": "Cari Lokasi",
+    "load_more": "Muat Lebih Banyak",
+    "address": "Alamat",
+    "about_us": "Tentang Kami"
+  },
+  "footer": {
+    "follow_us": "Ikuti Kami",
+    "online_shop": "Toko Online",
+    "our_product": "Product Lainnya"
+  },
+  "shop_list": {
+    "shop_list": "Daftar Toko",
+    "open_day": "Hari Buka",
+    "close_day": "Hari Tutup",
+    "service_center": "Pusat Service"
+  },
+  "question": {
+    "total_question": "Jumlah Pertanyaan",
+    "previews": "Sebelumnya",
+    "next": "Selanjutanya",
+    "submit": "Kirim"
+  },
+  "status_service": {
+    "status_service": "Status Servis",
+    "search_id_service": "Cari ID Servis"
+  },
+  "category": {
+    "category": "Kategori",
+    "all_category": "Semua Kategori"
+  },
+  "contact": {
+    "title": "Kirim Sebagai Pesan",
+    "sub_title": "Kami dapat membantu menjawab tentang produk, perawatan, penggunaan, perbaikan, dan perawatan produk AQUA JAPAN Anda",
+    "information": "Informasi",
+    "our_location": "Lokasi Kami",
+    "send_message": "Kirim Pesan"
+  },
+  "profile": {
+    "update_picture": "Perbarui Gambar",
+    "personal_data": "Data Pribadi",
+    "change_password": "Ubah Password",
+    "first_name": "Nama Pertaman",
+    "last_name": "Nama Terakhir",
+    "ktp_sim": "KTP/SIM",
+    "gender": "Jenis Kelamin",
+    "date_of_birth": "Tanggal Lahir",
+    "age": "Umur",
+    "email": "Email",
+    "mobile_phone_number": "Nomor HP",
+    "phone_number": "Nomor Telephone",
+    "fax": "Fax",
+    "province": "Provinsi",
+    "city": "Kota",
+    "district": "Kecamatan",
+    "postal_code": "Kode Pos",
+    "address": "Alamat",
+    "save": "Simpan"
+  }
+}

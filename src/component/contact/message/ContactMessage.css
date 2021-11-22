@@ -1,0 +1,34 @@
+.contact-message {
+    background: #F1F8FF;
+    border: none;
+    padding: 0 15px;
+}
+
+.contact-message .form-label {
+    font-size: 21px !important;
+}
+
+.contact-message .submit {
+    font-size: 17px !important;
+    padding: 7px 45px;
+}
+
+@media (max-width:768px) {
+    .contact-message {
+        padding: 0 9px;
+    }
+
+    .contact-message .submit {
+        font-size: 15px !important;
+        padding: 5px 35px;
+    }
+
+    .contact-message .form-label {
+        font-size: 17px !important;
+    }
+
+    .contact-message .form-control-lg {
+        min-height: 0;
+        font-size: 15px;
+    }
+}

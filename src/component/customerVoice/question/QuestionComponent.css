@@ -1,0 +1,14 @@
+.question-component .sub-title p{
+    margin: 0;
+    font-size: 13px;
+    font-style: italic;
+    color: #8F8F8F;
+}
+
+/* .radio-top-lable {
+    padding: 0 1em;
+}
+
+.center-label-top-radio {
+    margin-left: 9px;
+} */

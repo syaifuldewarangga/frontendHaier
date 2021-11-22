@@ -1,0 +1,25 @@
+.head-product{
+    font-size: 40px;
+    font-weight: 600;
+    color: #003D79;
+    margin-top: 100px;
+    margin-bottom: 50px;
+}
+
+.head-product a {
+    font-size: 21px;
+    color: #003D79;
+    font-weight: 400;
+}
+
+@media (max-width: 768px) {
+    .head-product {
+        font-size: 21px;
+        margin-top: 20px;
+        margin-bottom: 15px;
+    }
+
+    .head-product a {
+        font-size: 15px;
+    }
+}

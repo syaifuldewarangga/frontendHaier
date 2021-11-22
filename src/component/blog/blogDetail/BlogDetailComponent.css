@@ -1,0 +1,26 @@
+.blog-detail .title {
+    font-size: 50px;
+    font-weight: 700;
+    color: #555555;
+}
+
+.blog-detail .sub-title {
+    font-size: 17px;
+    font-weight: 300;
+    color: #555555;
+    margin: 0;
+}
+
+.blog-detail .content {
+    font-size: 17px;
+}
+
+@media (max-width:768px) {
+    .blog-detail .title {
+        font-size: 35px;
+    }
+
+    .blog-detail .sub-title {
+        font-size: 15px;
+    }
+}

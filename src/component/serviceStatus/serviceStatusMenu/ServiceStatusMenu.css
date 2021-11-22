@@ -1,0 +1,35 @@
+.service-menu .service-menu-header {
+    font-size: 31px;
+    font-weight: 600;
+} 
+
+.service-menu .service-menu-content .cover{
+    border:1px solid #003D79;
+    padding: 20px 0;
+    color: #003D79;
+}
+
+.service-menu .service-menu-content .active{
+    background: #003D79;
+    color: white;
+}
+
+.service-menu .service-menu-content .search-addon {
+    position: absolute;
+    padding: 11px 25px;
+    color: #8f8f8f;
+    outline: none;
+}
+
+.service-menu .service-menu-content .search-input {
+    border-radius: 100px;
+    padding: 12px 0px 12px 70px;
+    background: #f1f1f1;
+    border: none;
+}
+
+@media (max-width:768px) {
+    .service-menu .service-menu-header {
+        font-size: 21px;
+    } 
+}

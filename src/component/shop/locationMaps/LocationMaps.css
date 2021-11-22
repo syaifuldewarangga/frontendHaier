@@ -1,0 +1,10 @@
+.shop-location {
+    background:#003D79;
+    color: white;
+    padding: 25px 10px;
+}
+
+.shop-location .location-header span{
+    font-size: 25px;
+    font-weight: 600;
+}

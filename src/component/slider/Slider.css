@@ -1,0 +1,56 @@
+.slick-prev, .slick-next {
+    z-index: 99;
+}
+
+.slick-prev {
+    left: 25px;
+}
+
+.slick-next {
+    right: 50px;
+}
+
+.slick-prev::before, .slick-next::before {
+    font-size: 40px;
+}
+
+.slick-slide {
+    height: 100%;
+}
+
+.slick-slide img {
+    height: 100%;
+    width: 100%;
+}
+
+.slick-dots {
+    bottom: 20px;
+}
+
+.slick-dots li button::before {
+    font-size: 15px;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .slick-prev::before, .slick-next::before {
+        font-size: 25px;
+    }
+
+    .slick-prev {
+        left: 10px;
+    }
+    
+    .slick-next {
+        right: 15px;
+    }
+
+    .slick-dots {
+        bottom: 10px;
+    }
+    
+    .slick-dots li button::before {
+        font-size: 7px;
+        color: white;
+    }
+}

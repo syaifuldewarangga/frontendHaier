@@ -1,0 +1,32 @@
+.blog-list .blog-content .category .title {
+    font-size: 31px;
+    font-weight: 600;
+}
+
+.blog-list .blog-content .category-list {
+    font-size: 19px;
+    font-weight: 600;
+    background: #DBD9D9;
+    color: #003D79;
+    border-radius: 10px;
+}
+
+.blog-list .blog-content .category-list:hover {
+    background: #003D79;
+    color: white;
+}
+
+.category-list.active {
+    background: #003D79 !important;
+    color: white !important;
+}
+
+@media (max-width:768px) {
+    .blog-list .blog-content .category .title {
+        font-size: 21px;
+    }
+
+    .blog-list .blog-content .category-list {
+        font-size: 12px;
+    }
+}

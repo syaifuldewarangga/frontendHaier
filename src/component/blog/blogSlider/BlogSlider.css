@@ -1,0 +1,37 @@
+.head-blog{
+    font-size: 40px;
+    font-weight: 600;
+    color: #003D79;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.head-blog a {
+    font-size: 21px;
+    color: #003D79;
+    font-weight: 400;
+}
+
+.card-blog {
+    padding: 50px 0;
+    border: 1px solid #aaaaaa;
+    box-shadow: 1px 1px 10px #aaaaaa;
+}
+.card-blog .slick-slide {
+    float: right;
+}
+@media (max-width: 768px) {
+    .head-blog {
+        font-size: 21px;
+        margin-top: 7px;
+        margin-bottom: 10px;
+    }
+
+    .head-blog a {
+        font-size: 15px;
+    }
+
+    .card-blog {
+        padding: 10px 0;
+    }
+}

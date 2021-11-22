@@ -1,0 +1,9 @@
+.logo-quina-login img {
+    width: 155px;
+}
+
+@media (max-width:768px) {
+    .logo-quina-login img {
+        width: 115px;
+    }
+}

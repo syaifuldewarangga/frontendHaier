@@ -1,0 +1,45 @@
+/* .service-record .table-color-primary {
+    background: #003D79;
+    color: white;
+}
+
+.service-record .image img{
+    width: 80px;
+    padding: 20px 0;
+}
+
+.service-record .table-body-color {
+    background: #F7F2F2;
+}
+
+.service-record tbody {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.service-record .status {
+    color: white;
+    padding: 7px 0;
+    white-space: nowrap
+}
+
+.status-success {
+    background: #02BC4D;
+}
+
+.status-process {
+    background: #0F52BA;
+} */
+
+.service-record .image img{
+    width: 100%;
+}
+
+.product-title .title {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.detail-status td {
+    font-size: 12px;
+}

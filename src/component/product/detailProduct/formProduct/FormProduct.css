@@ -1,0 +1,15 @@
+
+.detail-product .title{
+    font-size: 40px;
+    color: #003D79;
+    font-weight: 600;
+}
+
+.detail-product label {
+    font-size: 19px;
+    font-weight: 400;
+}
+
+.detail-product .btn-submit {
+    font-size: 21px;
+}

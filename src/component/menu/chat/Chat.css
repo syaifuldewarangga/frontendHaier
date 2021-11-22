@@ -1,0 +1,42 @@
+.chat-button{
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    border-radius: 50%;
+    color: white;
+    box-shadow: 0 4px 6px -3px #222;
+    cursor: pointer;
+}
+
+.logo-quina {
+    position: fixed;
+    right: 120px;
+    bottom: 25px;
+    cursor: pointer;
+}
+
+.logo-quina img {
+    width: 100px;
+}
+
+.chat-button img {
+    width: 100px;
+}
+
+.chat-button p {
+    margin: 0;
+}
+
+@media (max-width:768px) {
+    .chat-button img {
+        width: 75px;
+    }
+
+    .logo-quina {
+        right: 100px;
+    }
+
+    .logo-quina img {
+        width: 70px !important;
+    }
+}

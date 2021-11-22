@@ -1,0 +1,36 @@
+.profile-form ul {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+.profile-form ul li .nav-link{
+    cursor: pointer;
+    color: #C4C4C4;
+    font-weight: 600;
+    font-size: 21px;
+    padding-top: 15px;
+}
+
+.profile-form ul li .nav-link.active{
+     color: #003D79;
+     background: none;
+     border-bottom: 3px solid #003D79;
+}
+
+.profile-form .tab-content .form .form-label{
+    font-size: 15px;
+    color: #003D79;
+    font-weight: 500;
+}
+.profile-form .profile-button{
+    font-size: 21px;
+}
+
+@media (max-width:768px) {
+    .profile-form ul li .nav-link{
+        font-size: 15px;
+    }
+
+    .profile-form .profile-button{
+        font-size: 17px;
+    }
+    
+}

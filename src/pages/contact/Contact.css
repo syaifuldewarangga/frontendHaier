@@ -1,0 +1,18 @@
+.contact .contact-content .title p {
+    text-align: center;
+    color: #003D79;
+    margin: 0;
+}
+
+.contact .contact-content .title .main-title {
+    font-size: 51px !important;
+    font-weight: 600;
+}
+
+@media (max-width:768px) {
+    .contact .contact-content .title .main-title {
+        font-size: 31px !important;
+        font-weight: 600;
+    }
+}
+

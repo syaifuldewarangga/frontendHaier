@@ -1,0 +1,29 @@
+.all-product .head-product {
+    margin-top: 25px !important;
+}
+
+.all-product .search-addon {
+    position: absolute;
+    padding: 11px 25px;
+    color: #8f8f8f;
+    outline: none;
+}
+
+.all-product .search-input {
+    border-radius: 100px;
+    padding: 12px 0px 12px 70px;
+    background: #f1f1f1;
+    border: none;
+}
+
+@media (max-width:768px) {
+    .all-product .search-addon {
+        font-size: 25px;
+        padding: 8px 15px;
+    }
+    
+    .all-product .search-input {
+        padding: 5px 0px 5px 45px;
+        font-size: 15px;
+    }
+}

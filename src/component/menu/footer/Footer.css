@@ -1,0 +1,80 @@
+.footer {
+    /* height: 250px;    */
+    background: #003D79;
+    color: white;
+}
+
+.footer-sosmed img{
+   width: 40px !important;
+   margin-right: 20px;
+}
+
+.footer-sosmed .rm-margin{
+    margin-right: 0 !important;
+ }
+ 
+
+.footer-menu ul {
+    padding-left: 0;
+}
+
+.footer-menu ul li {
+    list-style: none;
+}
+.footer-menu ul li a{
+    color: white;
+    text-decoration: none;
+}
+
+.footer .inputSubscribe{
+    padding: 13px 20px;
+    background: transparent;
+    border-radius: 10px;
+    color: white;
+}
+
+.footer .inputSubscribe::placeholder{
+    color: white;
+    font-size: 15px;
+}
+
+.btn-subscribe {
+    background: white;
+    border: none;
+    padding: 13px 20px;
+    border-radius: 10px;
+    color: #003D79;
+}
+
+.btn-subscribe:hover {
+    background: rgb(224, 223, 223);
+}
+
+
+.contact p{
+    font-weight: 600;
+    font-size: 15px !important;
+}
+
+.shop-logo img{
+    width: 125px;
+    margin-bottom: 10px;
+}
+
+.footer .sosmed-icon {
+    display: flex;
+}
+@media (max-width:768px) {
+    .footer-logo {
+        width: 150px;
+    }
+
+    .shop-logo img{
+        width: 115px;
+        margin-bottom: 10px;
+    }
+
+    .footer-sosmed img{
+        width: 30px !important;
+     }
+}

@@ -1,0 +1,48 @@
+.question .title {
+    font-size: 29px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.question .progress{
+    height: 2px;
+    overflow: visible;
+}
+
+.question .progress-bar {
+    background: #003D79;
+    height: 3px;
+    margin-top: -2px;
+}
+
+.question .form-check-label{
+    font-weight: 700;
+    padding-top: 7px;
+}
+
+.question .form-check-input[type=checkbox] {
+    border-radius: 0;
+    border-color: black;
+    width: 30px;
+    height: 30px;
+}
+
+.question .form-check-input[type=radio] {
+    width: 27px;
+    height: 27px;
+}
+
+@media (max-width:768px) {
+    .question .title {
+        font-size: 21px;
+    }
+
+    .question .form-check-label{
+        font-size: 13px;
+    }
+
+    .question .form-check-input[type=radio] {
+        width: 19px;
+        height: 19px;
+    }
+}

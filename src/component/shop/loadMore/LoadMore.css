@@ -1,0 +1,13 @@
+.btn-load-more {
+    font-size: 25px;
+    font-weight: 600;
+    padding: 17px 85px;
+    background: #FF3D00;
+}
+
+@media (max-width:768px) {
+    .btn-load-more {
+        font-size: 17px;
+        padding: 10px 70px;
+    }
+}

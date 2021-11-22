@@ -1,0 +1,26 @@
+.contact-menu .header{
+    color: #003D79;
+    padding: 15px 0px;
+}
+
+.contact-menu .header.active{
+    color: white;
+    background: #003D79;
+    border-radius: 10px;
+}
+
+.contact-menu .header p {
+    font-size: 18px !important;
+    font-weight: 500;
+    margin: 0;
+}
+
+@media (max-width:768px) {
+    .contact-menu .header p {
+        font-size: 11px !important;
+    }
+
+    .contact-menu .md-36 {
+        font-size: 28px;
+    }
+}
