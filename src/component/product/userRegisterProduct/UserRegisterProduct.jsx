@@ -229,7 +229,7 @@ function UserRegisterProduct(props) {
               </div>
             </div>
 
-            <div className="col-lg-6">
+            <div className="col-lg-12">
               <div className="mb-lg-5 mb-4">
                 <label htmlFor="store-location" className="form-label">
                   Store Name
@@ -245,6 +245,43 @@ function UserRegisterProduct(props) {
                     })
                   }
                 />
+              </div>
+            </div>
+            
+            <div className="col-lg-6">
+              <div className="btn-upload-custom mb-4">
+                <div class="dropzone-wrapper">
+                  <div class="dropzone-desc">
+                    <span class="material-icons"> cloud_upload </span>
+                    <p>Attach Your Warranty Card Here</p>
+                  </div>
+                  <input
+                    type="file"
+                    name="warranty_card"
+                    class="dropzone"
+                    aria-label="file"
+                    // onChange={onChangeData}
+                  />
+                  {/* { errorData.file } */}
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-6">
+              <div className="btn-upload-custom mb-4">
+                <div class="dropzone-wrapper">
+                  <div class="dropzone-desc">
+                    <span class="material-icons"> cloud_upload </span>
+                    <p>Attach Your Invoice Here</p>
+                  </div>
+                  <input
+                    type="file"
+                    name="warranty_card"
+                    class="dropzone"
+                    aria-label="file"
+                    // onChange={onChangeData}
+                  />
+                  {/* { errorData.file } */}
+                </div>
               </div>
             </div>
           </div>

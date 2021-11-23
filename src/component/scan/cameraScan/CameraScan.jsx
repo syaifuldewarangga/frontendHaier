@@ -266,7 +266,6 @@ const CameraScan = (props) => {
                     type="text"
                     className="form-control"
                     id="barcode-number"
-                    value={barcode}
                     onChange={(e) =>
                       setState({ ...state, ['tempSearch']: e.target.value })
                     }
