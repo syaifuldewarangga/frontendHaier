@@ -8,7 +8,7 @@ import { connect, useDispatch } from 'react-redux';
 
 const CameraScan = (props) => {
   const firstUpdate = useRef(true);
-  const [data, setData] = React.useState('');
+  const [data, setData] = React.useState([]);
   const [barcode, setBarcode] = useState('');
   const [inputBarcodeNumber, setInputBarcodeNumber] = useState(false);
   const dispatch = useDispatch();
@@ -283,7 +283,7 @@ const CameraScan = (props) => {
                     className="form-control"
                     id="product_name"
                     placeholder="name@example.com"
-                    value={data === '' ? null : data[0].ProductName}
+                    value={data.length === 0 ? '' : data[0].ProductName}
                     disabled
                   />
                 </div>
@@ -297,7 +297,7 @@ const CameraScan = (props) => {
                     className="form-control"
                     id="brand"
                     placeholder="name@example.com"
-                    value={data === '' ? null : data[0].Brand}
+                    value={data.length === 0 ? '' : data[0].Brand}
                     disabled
                   />
                 </div>
