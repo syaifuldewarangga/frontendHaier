@@ -12,7 +12,7 @@ const initialCredential = {
     fullname: '',
     phone_number: '',
     username: '',
-    photo: ''
+    photo: '',
   },
   USER_PERMISSION: {},
   DATA_SEARCH_SERVICE_CENTER: '',
@@ -62,7 +62,10 @@ const credentialReducer = (state = initialCredential, action) => {
               fullname: localStorage.getItem('fullname'),
               phone_number: localStorage.getItem('phone'),
               username: localStorage.getItem('username'),
-              photo: localStorage.getItem('photo') !== null ? localStorage.getItem('photo') : '',
+              photo:
+                localStorage.getItem('photo') !== null
+                  ? localStorage.getItem('photo')
+                  : '',
             },
           };
         } else {
@@ -74,7 +77,10 @@ const credentialReducer = (state = initialCredential, action) => {
               fullname: localStorage.getItem('fullname'),
               phone_number: localStorage.getItem('phone'),
               username: localStorage.getItem('username'),
-              photo: localStorage.getItem('photo') !== null ? localStorage.getItem('photo') : '',
+              photo:
+                localStorage.getItem('photo') !== null
+                  ? localStorage.getItem('photo')
+                  : '',
             },
           };
         }

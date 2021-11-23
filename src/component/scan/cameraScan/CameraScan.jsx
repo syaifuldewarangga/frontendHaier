@@ -2,17 +2,70 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Quagga from 'quagga';
 import './CameraScan.css';
+import axios from 'axios';
+import { getToken } from '../../../action/action';
+import { connect, useDispatch } from 'react-redux';
 
 const CameraScan = (props) => {
   const firstUpdate = useRef(true);
+  const [data, setData] = React.useState('');
   const [barcode, setBarcode] = useState('');
   const [inputBarcodeNumber, setInputBarcodeNumber] = useState(false);
+  const dispatch = useDispatch();
+  const [state, setState] = useState({
+    tempSearch: '',
+    isSearch: false,
+  });
 
   useEffect(() => {
     return () => {
       if (props.cameraStatus) stopScanner();
     };
   }, []);
+
+  React.useEffect(() => {
+    async function fetchData() {
+      const request = await axios
+        .post(
+          props.gtm_url + 'pmtcommondata/GetProductListByCondition',
+          {
+            Barcode: barcode,
+            ProductID: '',
+            ProductName: '',
+          },
+          {
+            headers: {
+              Authorization: props.token,
+              'Content-Type': 'text/plain',
+            },
+          }
+        )
+        .then((res) => {
+          setData(res.data.data);
+          console.log(res.data.data);
+        })
+        .catch((e) => {
+          dispatch(getToken());
+
+          if (e.response) {
+            console.log(e.response);
+          } else if (e.request) {
+            console.log('request : ' + e.request);
+          } else {
+            console.log('message : ' + e.message);
+          }
+        });
+      return request;
+    }
+    if (barcode !== '') {
+      fetchData();
+    }
+  }, [props.token, barcode]);
+
+  useEffect(() => {
+    const timeOutId = setTimeout(() => setBarcode(state.tempSearch), 300);
+    return () => clearTimeout(timeOutId);
+  }, [state.tempSearch]);
 
   useEffect(() => {
     if (firstUpdate.current) {
@@ -146,6 +199,7 @@ const CameraScan = (props) => {
     setInputBarcodeNumber(true);
     props.onChangeCameraStatus(false);
   };
+
   return (
     <div
       className="modal fade"
@@ -213,7 +267,9 @@ const CameraScan = (props) => {
                     className="form-control"
                     id="barcode-number"
                     value={barcode}
-                    onChange={(e) => setBarcode(e.target.value)}
+                    onChange={(e) =>
+                      setState({ ...state, ['tempSearch']: e.target.value })
+                    }
                     placeholder="name@example.com"
                     disabled={inputBarcodeNumber ? '' : 'disabled'}
                   />
@@ -228,6 +284,7 @@ const CameraScan = (props) => {
                     className="form-control"
                     id="product_name"
                     placeholder="name@example.com"
+                    value={data === '' ? null : data[0].ProductName}
                     disabled
                   />
                 </div>
@@ -241,13 +298,14 @@ const CameraScan = (props) => {
                     className="form-control"
                     id="brand"
                     placeholder="name@example.com"
+                    value={data === '' ? null : data[0].Brand}
                     disabled
                   />
                 </div>
               </div>
 
               <div className="mb-3">
-                <Link to="/product/register-product">
+                <Link to={'/product/register-product/' + barcode}>
                   <div className="d-grid gap-2">
                     <button className="btn btn-color-primary btn-detail">
                       Detail
@@ -277,5 +335,15 @@ const CameraScan = (props) => {
     </div>
   );
 };
+const mapStateToProps = (state) => {
+  return {
+    gtm_url: state.GTM_URL,
+    token: state.GTM_TOKEN,
+  };
+};
 
-export default CameraScan;
+const mapPropsToState = (dispatch) => ({
+  createToken: () => dispatch({ type: 'GET_TOKEN' }),
+});
+
+export default connect(mapStateToProps, mapPropsToState)(CameraScan);
