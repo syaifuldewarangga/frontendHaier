@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 const initialCredential = {
   BASE_URL: 'https://e-warranty.click/api/',
   URL: 'https://images.e-warranty.click/',
-  GTM_URL: 'http://openplat-sg-aws-test.haier.net/api/',
+  GTM_URL: 'https://openplat-sg-aws-test.haier.net/api/',
   GTM_TOKEN: '',
   ADMIN_LOGIN: false,
   CUSTOMER_LOGIN: false,
