@@ -2,3 +2,29 @@
     font-size: 31px;
     font-weight: 600;
 } 
+
+.detail-status-service .title {
+    color: #676767;
+    /* font-size: 100px; */
+}
+
+.detail-status-service .header-title-status {
+    border-radius: 0;
+    background: #ECECEC;
+    border: none;
+    padding: 10px;
+}
+
+.header-title-status p {
+    color: #8D8D8D;
+    font-size: 17px;
+    margin-bottom: -5px;
+}
+
+.content p {
+    color: #BBBBBB
+}
+
+.table-white {
+    background: #ffffff;
+}
