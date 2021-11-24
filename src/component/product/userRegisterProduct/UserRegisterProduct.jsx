@@ -13,6 +13,8 @@ function UserRegisterProduct(props) {
     date: new Date(),
     store_location: '',
     store_name: '',
+    file1: '',
+    file2: '',
   });
 
   React.useEffect(() => {
@@ -55,17 +57,33 @@ function UserRegisterProduct(props) {
 
   async function fetchData() {
     var token = localStorage.getItem('access_token');
+    var id = localStorage.getItem('id');
+    var email = localStorage.getItem('email');
+    var phone = localStorage.getItem('phone');
+
+    var dateChange = userData.date.replaceAll('-', '/');
+
     const formdata = new FormData();
 
+    formdata.append('customer_id', id);
     formdata.append('barcode', data.Barcode);
     formdata.append('product_id', data.ProductID);
-    formdata.append('brand', data.Brand);
+    formdata.append('brand', 'TEST');
     formdata.append('product_name', data.ProductName);
-    formdata.append('product_name', data.ProductModel);
+    formdata.append('product_model', data.ProductModel);
     formdata.append('serial_number', data.SerialNumber);
-    formdata.append('date', userData.date);
+    formdata.append('date', dateChange);
     formdata.append('store_location', userData.store_location);
     formdata.append('store_name', userData.store_name);
+    formdata.append('email', email);
+    formdata.append('phone', phone);
+    formdata.append(
+      'warranty_card',
+      userData.file1 === '' ? '' : userData.file1
+    );
+    formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
+
+    console.log(Object.fromEntries(formdata));
 
     await axios
       .post(props.base_url + 'register-product', formdata, {
@@ -74,7 +92,7 @@ function UserRegisterProduct(props) {
         },
       })
       .then((res) => {
-        console.log('Berhasil');
+        alert('Berhasil');
       })
       .catch((e) => {
         if (e.response) {
@@ -87,6 +105,7 @@ function UserRegisterProduct(props) {
       });
   }
 
+  console.log(userData);
   return (
     <div className="user-register-product mb-5">
       <div className="container-fluid">
@@ -247,20 +266,25 @@ function UserRegisterProduct(props) {
                 />
               </div>
             </div>
-            
+
             <div className="col-lg-6">
               <div className="btn-upload-custom mb-4">
                 <div class="dropzone-wrapper">
                   <div class="dropzone-desc">
                     <span class="material-icons"> cloud_upload </span>
-                    <p>Attach Your Warranty Card Here</p>
+                    <p>Attach Your Warranty Card Hereee</p>
                   </div>
                   <input
                     type="file"
                     name="warranty_card"
                     class="dropzone"
                     aria-label="file"
-                    // onChange={onChangeData}
+                    onChange={(e) =>
+                      setUserData({
+                        ...userData,
+                        ['file1']: e.target.value,
+                      })
+                    }
                   />
                   {/* { errorData.file } */}
                 </div>
@@ -278,7 +302,12 @@ function UserRegisterProduct(props) {
                     name="warranty_card"
                     class="dropzone"
                     aria-label="file"
-                    // onChange={onChangeData}
+                    onChange={(e) =>
+                      setUserData({
+                        ...userData,
+                        ['file2']: e.target.value,
+                      })
+                    }
                   />
                   {/* { errorData.file } */}
                 </div>
