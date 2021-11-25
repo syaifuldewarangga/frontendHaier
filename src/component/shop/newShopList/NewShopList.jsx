@@ -6,9 +6,9 @@ import './../shopList/ShopList.css';
 
 const NewShopList = (props) => {
   const { t } = useTranslation('common');
-  const latitude = encode('latitude');
-  const longitude = encode('longitude');
-  console.log(props.data);
+  const latitude = encode(props.data.Latitude);
+  const longitude = encode(props.data.Longitude);
+
   return (
     <div className="card shop-list">
       <Link to={`/shop-location/${latitude}/${longitude}`}>
