@@ -6,16 +6,19 @@ import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 const ShopHeader = (props) => {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('common');
   const [state, setState] = React.useState({
     tempSearch: '',
   });
 
   React.useEffect(() => {
-    const timeOutId = setTimeout(
-      () => props.handleDataSearch(state.tempSearch),
-      300
-    );
+    const timeOutId = setTimeout(() => {
+      if (props.page === 'Shop') {
+        props.handleDataSearchShop(state.tempSearch);
+      } else {
+        props.handleDataSearch(state.tempSearch);
+      }
+    }, 300);
     return () => clearTimeout(timeOutId);
   }, [state.tempSearch]);
   return (
@@ -28,7 +31,10 @@ const ShopHeader = (props) => {
           <p className="title">{props.headerTitle}</p>
           <div>
             <div className="mb-lg-5 mb-4 mt-4">
-              <span className="material-icons-outlined md-36 search-addon"> search </span>
+              <span className="material-icons-outlined md-36 search-addon">
+                {' '}
+                search{' '}
+              </span>
               <input
                 type="text"
                 className="form-control form-control-lg search-input"
@@ -54,6 +60,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     handleDataSearch: (data) =>
       dispatch({ type: 'SET_DATA_SEARCH_SERVICE_CENTER', value: data }),
+    handleDataSearchShop: (data) =>
+      dispatch({ type: 'SET_DATA_SEARCH_SHOP_LIST', value: data }),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ShopHeader);

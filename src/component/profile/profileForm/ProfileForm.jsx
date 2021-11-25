@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 function ProfileForm(props) {
   const history = useHistory();
   const [data, setData] = useState({});
+  const [dataPonsel, setDataPonsel] = React.useState('');
   const [city, setCity] = useState([]);
   const [prov, setProv] = useState([]);
 
@@ -78,10 +79,16 @@ function ProfileForm(props) {
 
   useEffect(() => {
     setData(props.data);
+    console.log(props.data);
+    console.log('disini');
+    if (props.data !== '') {
+      let newPhone = props.data.phone.toString();
+      setDataPonsel(newPhone.slice(2));
+    }
     fetchData();
     getCityFromAPI(props.data.province);
   }, [props.base_url, props.data]);
- 
+
   const getCityFromAPI = async (province) => {
     var token = localStorage.getItem('access_token');
     await axios
@@ -102,10 +109,14 @@ function ProfileForm(props) {
     if (e.target.ariaLabel === 'province') {
       getCityFromAPI(e.target.value);
     }
-    setData({
-      ...data,
-      [e.target.ariaLabel]: e.target.value,
-    });
+    if (e.target.ariaLabel === 'phone') {
+      setDataPonsel(e.target.value);
+    } else {
+      setData({
+        ...data,
+        [e.target.ariaLabel]: e.target.value,
+      });
+    }
   };
 
   const fetchAPI = () => {
@@ -115,7 +126,7 @@ function ProfileForm(props) {
     formData.append('first_name', data.first_name);
     formData.append('last_name', data.last_name);
     formData.append('username', data.username);
-    formData.append('phone', "62" + data.phone);
+    formData.append('phone', '62' + dataPonsel);
     formData.append('nik', data.nik);
     formData.append('status', data.status);
     formData.append('gender', data.gender);
@@ -143,7 +154,7 @@ function ProfileForm(props) {
         },
       })
       .then((res) => {
-        localStorage.setItem('phone', data.phone);
+        localStorage.setItem('phone', dataPonsel);
         alertModal();
         setMessageAlert({
           status: 'success',
@@ -260,7 +271,7 @@ function ProfileForm(props) {
       });
   };
 
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('common');
   return (
     <div className="profile-form mb-5">
       <div className="card">
@@ -303,7 +314,8 @@ function ProfileForm(props) {
                   <div className="px-lg-5">
                     <div class="mb-4">
                       <label class="form-label">
-                        {t('profile.first_name')}<span className="text-danger">*</span>
+                        {t('profile.first_name')}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -323,7 +335,8 @@ function ProfileForm(props) {
                   <div className="px-lg-5">
                     <div class="mb-4">
                       <label class="form-label">
-                        {t('profile.last_name')}<span className="text-danger">*</span>
+                        {t('profile.last_name')}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -343,7 +356,8 @@ function ProfileForm(props) {
                   <div className="px-lg-5">
                     <div class="mb-4">
                       <label class="form-label">
-                        {t('profile.ktp_sim')}<span className="text-danger">*</span>
+                        {t('profile.ktp_sim')}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -363,7 +377,8 @@ function ProfileForm(props) {
                   <div className="px-lg-5">
                     <div class="mb-4">
                       <label class="form-label">
-                        {t('profile.gender')}<span className="text-danger">*</span>
+                        {t('profile.gender')}
+                        <span className="text-danger">*</span>
                       </label>
                       <select
                         class={`form-select ${
@@ -392,7 +407,8 @@ function ProfileForm(props) {
                   <div className="px-lg-5">
                     <div class="mb-4">
                       <label class="form-label">
-                        {t('profile.date_of_birth')}<span className="text-danger">*</span>
+                        {t('profile.date_of_birth')}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="date"
@@ -411,7 +427,8 @@ function ProfileForm(props) {
                   <div className="px-lg-5">
                     <div class="mb-4">
                       <label class="form-label">
-                        {t('profile.age')}<span className="text-danger">*</span>
+                        {t('profile.age')}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -450,13 +467,15 @@ function ProfileForm(props) {
                         <span className="text-danger">*</span>
                       </label>
                       <div className="input-group">
-                        <span class="input-group-text" id="basic-addon1">+62</span>
+                        <span class="input-group-text" id="basic-addon1">
+                          +62
+                        </span>
                         <input
                           type="number"
                           class={`form-control ${
                             errorData.phone !== '' ? 'is-invalid' : null
                           }`}
-                          value={data.phone}
+                          value={dataPonsel}
                           aria-label="phone"
                           onChange={onChangeData}
                         />
@@ -469,7 +488,9 @@ function ProfileForm(props) {
                 <div className="col-lg-6">
                   <div className="px-lg-5">
                     <div class="mb-4">
-                      <label class="form-label">{t('profile.phone_number')}</label>
+                      <label class="form-label">
+                        {t('profile.phone_number')}
+                      </label>
                       <input
                         type="text"
                         class="form-control"
@@ -500,7 +521,8 @@ function ProfileForm(props) {
                   <div className="px-lg-5">
                     <div class="mb-4">
                       <label class="form-label">
-                        {t('profile.province')}<span className="text-danger">*</span>
+                        {t('profile.province')}
+                        <span className="text-danger">*</span>
                       </label>
                       <select
                         class={`form-select ${
@@ -533,7 +555,8 @@ function ProfileForm(props) {
                   <div className="px-lg-5">
                     <div class="mb-4">
                       <label class="form-label">
-                        {t('profile.city')}<span className="text-danger">*</span>
+                        {t('profile.city')}
+                        <span className="text-danger">*</span>
                       </label>
                       <select
                         class={`form-select ${
@@ -566,7 +589,8 @@ function ProfileForm(props) {
                   <div className="px-lg-5">
                     <div class="mb-4">
                       <label class="form-label">
-                        {t('profile.district')}<span className="text-danger">*</span>
+                        {t('profile.district')}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -584,7 +608,9 @@ function ProfileForm(props) {
                 <div className="col-lg-6">
                   <div className="px-lg-5">
                     <div class="mb-4">
-                      <label class="form-label">{t('profile.postal_code')}</label>
+                      <label class="form-label">
+                        {t('profile.postal_code')}
+                      </label>
                       <input
                         type="number"
                         class="form-control"
@@ -600,7 +626,8 @@ function ProfileForm(props) {
                   <div className="px-lg-5">
                     <div class="mb-4">
                       <label class="form-label">
-                        {t('profile.address')}<span className="text-danger">*</span>
+                        {t('profile.address')}
+                        <span className="text-danger">*</span>
                       </label>
                       <textarea
                         class={`form-control ${
