@@ -4,6 +4,8 @@ import { connect, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getToken } from '../../../action/action';
+import SelectSearch, { fuzzySearch } from 'react-select-search';
+import './SelectSearch.css'
 
 function UserRegisterProduct(props) {
   const { barcode } = useParams();
@@ -105,6 +107,35 @@ function UserRegisterProduct(props) {
       });
   }
 
+  const options = [
+    {
+      name: "Annie Cruz",
+      value: "annie.cruz",
+      photo: "https://randomuser.me/api/portraits/women/60.jpg"
+    },
+    {
+      name: "Eli Shelton",
+      disabled: true,
+      value: "eli.shelton",
+      photo: "https://randomuser.me/api/portraits/men/7.jpg"
+    },
+    {
+      name: "Loretta Rogers",
+      value: "loretta.rogers",
+      photo: "https://randomuser.me/api/portraits/women/51.jpg"
+    },
+    {
+      name: "Lloyd Fisher",
+      value: "lloyd.fisher",
+      photo: "https://randomuser.me/api/portraits/men/34.jpg"
+    },
+    {
+      name: "Tiffany Gonzales",
+      value: "tiffany.gonzales",
+      photo: "https://randomuser.me/api/portraits/women/71.jpg"
+    }
+  ];
+
   console.log(userData);
   return (
     <div className="user-register-product mb-5">
@@ -127,7 +158,7 @@ function UserRegisterProduct(props) {
                 </label>
                 <input
                   type="text"
-                  className="form-control form-control-lg"
+                  className="form-control"
                   id="barcode"
                   value={data.Barcode}
                   disabled="disabled"
@@ -142,7 +173,7 @@ function UserRegisterProduct(props) {
                 </label>
                 <input
                   type="text"
-                  className="form-control form-control-lg"
+                  className="form-control"
                   id="product-id"
                   value={data.ProductID}
                   disabled="disabled"
@@ -157,7 +188,7 @@ function UserRegisterProduct(props) {
                 </label>
                 <input
                   type="text"
-                  className="form-control form-control-lg"
+                  className="form-control"
                   id="brand"
                   value={data.Brand}
                   disabled="disabled"
@@ -172,7 +203,7 @@ function UserRegisterProduct(props) {
                 </label>
                 <input
                   type="text"
-                  className="form-control form-control-lg"
+                  className="form-control"
                   id="product"
                   value={data.ProductName}
                   disabled="disabled"
@@ -187,7 +218,7 @@ function UserRegisterProduct(props) {
                 </label>
                 <input
                   type="text"
-                  className="form-control form-control-lg"
+                  className="form-control"
                   id="product-model"
                   value={data.ProductModel}
                   disabled="disabled"
@@ -202,7 +233,7 @@ function UserRegisterProduct(props) {
                 </label>
                 <input
                   type="text"
-                  className="form-control form-control-lg"
+                  className="form-control"
                   id="serial-number"
                   value={data.SerialNumber}
                   disabled="disabled"
@@ -217,7 +248,7 @@ function UserRegisterProduct(props) {
                 </label>
                 <input
                   type="date"
-                  className="form-control form-control-lg"
+                  className="form-control"
                   id="date-purchase"
                   onChange={(e) =>
                     setUserData({
@@ -236,7 +267,7 @@ function UserRegisterProduct(props) {
                 </label>
                 <input
                   type="text"
-                  className="form-control form-control-lg"
+                  className="form-control"
                   id="store-location"
                   onChange={(e) =>
                     setUserData({
@@ -253,9 +284,17 @@ function UserRegisterProduct(props) {
                 <label htmlFor="store-location" className="form-label">
                   Store Name
                 </label>
-                <input
+                <SelectSearch
+                  options={options}
+                  // value={value}
+                  // onChange={setValue}
+                  search
+                  filterOptions={fuzzySearch}
+                  placeholder="Search something"
+                />
+                {/* <input
                   type="text"
-                  className="form-control form-control-lg"
+                  className="form-control"
                   id="store-location"
                   onChange={(e) =>
                     setUserData({
@@ -263,7 +302,7 @@ function UserRegisterProduct(props) {
                       ['store_name']: e.target.value,
                     })
                   }
-                />
+                /> */}
               </div>
             </div>
 
