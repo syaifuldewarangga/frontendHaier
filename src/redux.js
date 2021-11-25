@@ -16,6 +16,7 @@ const initialCredential = {
   },
   USER_PERMISSION: {},
   DATA_SEARCH_SERVICE_CENTER: '',
+  DATA_SEARCH_SHOP_LIST: '',
 };
 
 const credentialReducer = (state = initialCredential, action) => {
@@ -44,6 +45,11 @@ const credentialReducer = (state = initialCredential, action) => {
       return {
         ...state,
         DATA_SEARCH_SERVICE_CENTER: action.value,
+      };
+    case 'SET_DATA_SEARCH_SHOP_LIST':
+      return {
+        ...state,
+        DATA_SEARCH_SHOP_LIST: action.value,
       };
     default:
       if (

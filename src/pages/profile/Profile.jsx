@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 
 function Profile(props) {
   const [data, setData] = React.useState('');
-  
 
   React.useEffect(() => {
     async function fetchData() {
@@ -24,20 +23,15 @@ function Profile(props) {
         })
         .then((res) => {
           setData(res.data);
-          let newPhone = res.data.phone.toString();
-          setData({
-            ...data,
-            phone: newPhone.slice(2)
-          })
         })
         .catch((e) => {
-          console.log(e.response)
+          console.log(e.response);
         });
     }
 
     fetchData();
   }, [props.base_url]);
-  
+
   return (
     <div className="profile">
       <div className="container-fluid">
