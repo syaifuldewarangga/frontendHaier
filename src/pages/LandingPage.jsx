@@ -3,7 +3,7 @@ import BlogSlider from '../component/blog/blogSlider/BlogSlider';
 import Product from '../component/product/product/Product';
 import ButtonScannerSection from '../component/scan/buttonScannerSection/ButtonScannerSection';
 import CameraScan from '../component/scan/cameraScan/CameraScan';
-import ManualScan from '../component/scan/manualScan/ManualScan';
+// import ManualScan from '../component/scan/manualScan/ManualScan';
 import ImageSlider from '../component/slider/ImageSlider';
 
 class LandingPage extends Component {

@@ -7,10 +7,6 @@ const Location = () => {
   const { latitude } = useParams();
   const { longitude } = useParams();
 
-  console.log(decode(latitude));
-  console.log(decode(longitude));
-  console.log('diatas');
-
   return (
     <div>
       <LocationMaps
