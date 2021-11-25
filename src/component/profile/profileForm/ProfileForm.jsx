@@ -165,50 +165,48 @@ function ProfileForm(props) {
       })
       .catch((e) => {
         if (e.response.data) {
-          let responError = e.response.data;
-          console.log(responError);
+          let responError = e.response.data.errors;
+          if (responError.location === 'first_name') {
+            setErrorData({
+              ...errorData,
+              first_name: responError.reason,
+            });
+          }
 
-          // if (responError.location === 'first_name') {
-          //   setErrorData({
-          //     ...errorData,
-          //     first_name: responError.reason,
-          //   });
-          // }
+          if (responError.location === 'last_name') {
+            setErrorData({
+              ...errorData,
+              last_name: responError.reason,
+            });
+          }
 
-          // if (responError.location === 'last_name') {
-          //   setErrorData({
-          //     ...errorData,
-          //     last_name: responError.reason,
-          //   });
-          // }
+          if (responError.location === 'nik') {
+            setErrorData({
+              ...errorData,
+              nik: responError.reason,
+            });
+          }
 
-          // if (responError.location === 'nik') {
-          //   setErrorData({
-          //     ...errorData,
-          //     nik: responError.reason,
-          //   });
-          // }
+          if (responError.location === 'age') {
+            setErrorData({
+              ...errorData,
+              age: responError.reason,
+            });
+          }
 
-          // if (responError.location === 'age') {
-          //   setErrorData({
-          //     ...errorData,
-          //     age: responError.reason,
-          //   });
-          // }
+          if (responError.location === 'phone') {
+            setErrorData({
+              ...errorData,
+              phone: responError.reason,
+            });
+          }
 
-          // if (responError.location === 'phone') {
-          //   setErrorData({
-          //     ...errorData,
-          //     phone: responError.reason,
-          //   });
-          // }
-
-          // if (responError.location === 'address') {
-          //   setErrorData({
-          //     ...errorData,
-          //     street: responError.reason,
-          //   });
-          // }
+          if (responError.location === 'address') {
+            setErrorData({
+              ...errorData,
+              street: responError.reason,
+            });
+          }
         } else {
           console.log(e.response);
         }
@@ -459,7 +457,7 @@ function ProfileForm(props) {
                   </div>
                 </div>
 
-                <div className="col-lg-6">
+                {/* <div className="col-lg-6">
                   <div className="px-lg-5">
                     <div class="mb-4">
                       <label class="form-label">
@@ -483,7 +481,7 @@ function ProfileForm(props) {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                 <div className="col-lg-6">
                   <div className="px-lg-5">
@@ -605,7 +603,7 @@ function ProfileForm(props) {
                   </div>
                 </div>
 
-                <div className="col-lg-6">
+                <div className="col-lg-12">
                   <div className="px-lg-5">
                     <div class="mb-4">
                       <label class="form-label">
