@@ -263,25 +263,6 @@ function UserRegisterProduct(props) {
             <div className="col-lg-6">
               <div className="mb-lg-5 mb-4">
                 <label htmlFor="store-location" className="form-label">
-                  Store Location
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="store-location"
-                  onChange={(e) =>
-                    setUserData({
-                      ...userData,
-                      ['store_location']: e.target.value,
-                    })
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="col-lg-12">
-              <div className="mb-lg-5 mb-4">
-                <label htmlFor="store-location" className="form-label">
                   Store Name
                 </label>
                 <SelectSearch
@@ -305,6 +286,27 @@ function UserRegisterProduct(props) {
                 /> */}
               </div>
             </div>
+
+            <div className="col-lg-12">
+              <div className="mb-lg-5 mb-4">
+                <label htmlFor="store-location" className="form-label">
+                  Store Location
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="store-location"
+                  onChange={(e) =>
+                    setUserData({
+                      ...userData,
+                      ['store_location']: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </div>
+
+           
 
             <div className="col-lg-6">
               <div className="btn-upload-custom mb-4">
