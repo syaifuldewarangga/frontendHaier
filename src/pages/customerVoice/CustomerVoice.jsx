@@ -7,7 +7,6 @@ const CustomerVoice = () => {
 
     const handleTotalQuestion = (total_question) => {
         setTotalQuestion(total_question)
-        console.log(total_question)
     }
 
     return (

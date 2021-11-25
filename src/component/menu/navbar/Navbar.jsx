@@ -36,7 +36,7 @@ function Navbar(props) {
   return (
     <div className="sidebar">
       <div className="navbar-bottom">
-        <nav className="navbar navbar-expand-xxl navbar-light navbar-custom fixed-top">
+        <nav className="navbar navbar-expand-xl navbar-light navbar-custom fixed-top">
           <div className="container-fluid">
             <button
               className="navbar-toggler"
@@ -49,7 +49,7 @@ function Navbar(props) {
             </button>
             <a
               href="https://aquajapanid.com/"
-              className="navbar-brand d-block d-xxl-none"
+              className="navbar-brand d-block d-xl-none"
               target="_blank"
             >
               <img src="/assets/images/logo.png" alt="" height="24" />
@@ -80,7 +80,7 @@ function Navbar(props) {
                 ></button>
               </div>
               <div className="offcanvas-body">
-                <ul className="navbar-nav me-auto mb-lg-0 ps-xxl-5 d-flex align-items-xxl-center">
+                <ul className="navbar-nav me-auto mb-lg-0 ps-xl-5 d-flex align-items-xl-center">
                   <li className="nav-item">
                     <Link className="nav-link" to="/landing-page">
                       {(t('navbar.home'))}
@@ -112,7 +112,7 @@ function Navbar(props) {
                   </li>
                 </ul>
                 <a href="https://aquajapanid.com/" target="_blank">
-                  <div className="d-none d-xxl-block navbar-logo">
+                  <div className="d-none d-xl-block navbar-logo">
                     <img
                       src="/assets/images/logo.png"
                       className="img-responsive logo-menu"
@@ -120,7 +120,7 @@ function Navbar(props) {
                     />
                   </div>
                 </a>
-                <ul className="navbar-nav mb-2 mb-lg-0 ms-auto pe-lg-5 d-flex align-items-xxl-center">
+                <ul className="navbar-nav mb-2 mb-lg-0 ms-auto pe-lg-5 d-flex align-items-xl-center">
                   <li className="nav-item">
                     <Link className="nav-link" to="/blog/list">
                       {(t('navbar.promo_news_article'))}
@@ -138,18 +138,18 @@ function Navbar(props) {
                     </Link>
                   </li>
 
-                  <li className="nav-item d-xl-block d-xxl-none">
+                  <li className="nav-item d-xl-block d-xl-none">
                     <Link className="nav-link" to="/profile">
                       {(t('navbar.profile'))}
                     </Link>
                   </li>
 
-                  <li className="nav-item d-xl-blog d-xxl-none">
+                  <li className="nav-item d-xl-blog d-xl-none">
                     <span className="nav-link" onClick={handleLogout} style={{ cursor: "pointer" }}>
                       {(t('navbar.logout'))}
                     </span>
                   </li>
-                  <li className="nav-item dropdown language-select d-none d-xxl-block">
+                  <li className="nav-item dropdown language-select">
                     <Dropdown>
                       <Dropdown.Toggle
                         as={CustomToggle}
@@ -183,7 +183,7 @@ function Navbar(props) {
                       </Dropdown.Menu>
                     </Dropdown>
                   </li>
-                  <ul className="nav-item dropdown d-flex align-items-center user-menu d-none d-xxl-block">
+                  <ul className="nav-item dropdown d-flex align-items-center user-menu d-none d-xl-block">
                     <Dropdown>
                       <Dropdown.Toggle
                         as={CustomToggle}

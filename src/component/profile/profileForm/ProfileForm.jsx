@@ -484,7 +484,7 @@ function ProfileForm(props) {
                 <div className="col-lg-6">
                   <div className="px-lg-5">
                     <div class="mb-4">
-                      <label class="form-label">{t('profile.fac')}</label>
+                      <label class="form-label">{t('profile.fax')}</label>
                       <input
                         type="text"
                         class="form-control"
