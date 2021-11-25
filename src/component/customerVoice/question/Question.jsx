@@ -7,6 +7,7 @@ import QuestionComponent from "./QuestionComponent";
 import { Modal } from 'bootstrap'
 import { withRouter } from "react-router-dom";
 import {withTranslation } from "react-i18next";
+import AlertModal from "../../alertModal/AlertModal";
 
  
 class Question extends Component {
@@ -14,6 +15,12 @@ class Question extends Component {
         currentTab: 0,
         questions: [],
         answer: [],
+        alert: {
+            status: "",
+            title: "",
+            subTitle: "",
+        }
+        
     }
 
     getQuestionFromAPI = async () => {
@@ -177,16 +184,35 @@ class Question extends Component {
     }
 
     handleSubmit = () => {
-        const formData = new FormData()
+        let question_anwered = 0;
         this.state.answer.map((question) => {
-            formData.append('user_id', question.user_id)
-            formData.append('question', question.question)
-            formData.append('question_type_id', question.question_type_id)
-            question.answer.map((answer) => {
-                formData.append('answer', answer)
-            })
-            this.insertQuestionToAPI(formData)
+            question_anwered = question.answer.length !== 0 ? question_anwered + 1 : question_anwered;
         })
+
+        if(this.state.questions.length === question_anwered) {
+            const formData = new FormData()
+            this.state.answer.map((question) => {
+                formData.append('user_id', question.user_id)
+                formData.append('question', question.question)
+                formData.append('question_type_id', question.question_type_id)
+                question_anwered = question.answer.length !== 0 ? question_anwered + 1 : question_anwered;
+                question.answer.map((answer) => {
+                    formData.append('answer', answer)
+                })
+                this.insertQuestionToAPI(formData)
+            })
+        } else {
+            this.setState({
+                alert: {
+                    status: "error",
+                    title: "Error",
+                    subTitle: "Pastikan data sudah terisi semuanya",
+                }
+            })
+            let alertModal = new Modal(document.getElementById('alertModal'));
+            alertModal.show();
+        }
+        console.log(question_anwered)
     }
 
     componentDidMount() {
@@ -230,6 +256,9 @@ class Question extends Component {
                     </div>
                 </div>
                 <ModalSuccess />
+                <AlertModal 
+                    data = {this.state.alert}
+                />
             </div>
         );
     }
