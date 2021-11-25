@@ -34,7 +34,7 @@ const DetailStatusService = (props) => {
                                             <div className="col-lg-6">
                                                 <div className="card header-title-status">
                                                     <p className="text-uppercase">
-                                                        Informasi Product
+                                                        Product Information
                                                     </p>
                                                 </div>
                                                 <div className="content mt-4">

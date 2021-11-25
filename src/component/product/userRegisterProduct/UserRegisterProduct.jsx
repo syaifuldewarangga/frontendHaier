@@ -272,7 +272,7 @@ function UserRegisterProduct(props) {
                 <div class="dropzone-wrapper">
                   <div class="dropzone-desc">
                     <span class="material-icons"> cloud_upload </span>
-                    <p>Attach Your Warranty Card Hereee</p>
+                    <p>Attach Your Warranty Card Here</p>
                   </div>
                   <input
                     type="file"
@@ -282,7 +282,7 @@ function UserRegisterProduct(props) {
                     onChange={(e) =>
                       setUserData({
                         ...userData,
-                        ['file1']: e.target.value,
+                        ['file1']: e.target.files[0],
                       })
                     }
                   />
@@ -305,7 +305,7 @@ function UserRegisterProduct(props) {
                     onChange={(e) =>
                       setUserData({
                         ...userData,
-                        ['file2']: e.target.value,
+                        ['file2']: e.target.files[0],
                       })
                     }
                   />
