@@ -10,7 +10,7 @@ const NewShopList = (props) => {
   const longitude = encode(props.data.Longitude);
 
   return (
-    <div className="card shop-list">
+    <div className="card shop-list h-100">
       <Link to={`/shop-location/${latitude}/${longitude}`}>
         <div className="card-body">
           <div className="">

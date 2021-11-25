@@ -54,9 +54,11 @@ const Shop = (props) => {
 
   const List = () => {
     dataShowing = data.slice(0, border);
-    return dataShowing.map((item, i) => {
-      return <NewShopList data={item} key={i} />;
-    });
+    return dataShowing.map((item, i) => (
+      <div className="col-lg-6 mb-lg-5 mb-4">
+        <NewShopList data={item} key={i} />
+      </div>
+    ));
   };
 
   return (
@@ -64,18 +66,15 @@ const Shop = (props) => {
       <ShopHeader headerTitle={t('shop_list.shop_list')} page="Shop" />
       <div className="container-fluid px-lg-5 shop">
         <div className="row px-lg-3">
-          <div className="col-lg-6 mb-lg-5 mb-4">
             <List />
-          </div>
-
-          <div className="text-center mb-5">
-            <button
-              className="btn btn-danger btn-load-more"
-              onClick={() => setBorder(border + 10)}
-            >
-              {t('general.load_more')}
-            </button>
-          </div>
+        </div>
+        <div className="text-center mb-5">
+          <button
+            className="btn btn-danger btn-load-more"
+            onClick={() => setBorder(border + 10)}
+          >
+            {t('general.load_more')}
+          </button>
         </div>
       </div>
     </div>
