@@ -5,13 +5,15 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getToken } from '../../../action/action';
 import SelectSearch, { fuzzySearch } from 'react-select-search';
-import './SelectSearch.css'
+import './SelectSearch.css';
 
 function UserRegisterProduct(props) {
   const { barcode } = useParams();
   const dispatch = useDispatch();
   const [data, setData] = useState('');
   const [storeValue, setStoreValue] = useState('');
+  const [storeStreet, setStoreStreet] = useState('');
+  const [dataStore, setDataStore] = useState([]);
   const [userData, setUserData] = useState({
     date: new Date(),
     store_location: '',
@@ -21,7 +23,14 @@ function UserRegisterProduct(props) {
   });
 
   useEffect(() => {
-    async function fetchData() {
+    let isi = dataStore.filter((word) => word.StoreName === storeValue);
+    if (storeValue !== '') {
+      setStoreStreet(isi[0].Street);
+    }
+  }, [storeValue]);
+
+  useEffect(() => {
+    async function fetchDataProduct() {
       const request = await axios
         .post(
           props.gtm_url + 'pmtcommondata/GetProductListByCondition',
@@ -53,8 +62,41 @@ function UserRegisterProduct(props) {
         });
       return request;
     }
+    async function fetchDataStore() {
+      const request = await axios
+        .post(
+          props.gtm_url + 'pmtcommondata/GetStoreListByCondition',
+          {
+            StoreID: '',
+            StoreName: '',
+            StoreCode: '',
+          },
+          {
+            headers: {
+              Authorization: props.token,
+              'Content-Type': 'text/plain',
+            },
+          }
+        )
+        .then((res) => {
+          setDataStore(res.data.data);
+        })
+        .catch((e) => {
+          dispatch(getToken());
+
+          if (e.response) {
+            console.log(e.response);
+          } else if (e.request) {
+            console.log('request : ' + e.request);
+          } else {
+            console.log('message : ' + e.message);
+          }
+        });
+      return request;
+    }
     if (barcode !== '') {
-      fetchData();
+      fetchDataProduct();
+      fetchDataStore();
     }
   }, [props.token, barcode]);
 
@@ -86,8 +128,6 @@ function UserRegisterProduct(props) {
     );
     formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
 
-    console.log(Object.fromEntries(formdata));
-
     await axios
       .post(props.base_url + 'register-product', formdata, {
         headers: {
@@ -108,36 +148,11 @@ function UserRegisterProduct(props) {
       });
   }
 
-  const options = [
-    {
-      name: "Annie Cruz",
-      value: "annie.cruz",
-      photo: "https://randomuser.me/api/portraits/women/60.jpg"
-    },
-    {
-      name: "Eli Shelton",
-      disabled: true,
-      value: "eli.shelton",
-      photo: "https://randomuser.me/api/portraits/men/7.jpg"
-    },
-    {
-      name: "Loretta Rogers",
-      value: "loretta.rogers",
-      photo: "https://randomuser.me/api/portraits/women/51.jpg"
-    },
-    {
-      name: "Lloyd Fisher",
-      value: "lloyd.fisher",
-      photo: "https://randomuser.me/api/portraits/men/34.jpg"
-    },
-    {
-      name: "Tiffany Gonzales",
-      value: "tiffany.gonzales",
-      photo: "https://randomuser.me/api/portraits/women/71.jpg"
-    }
-  ];
+  let newDataStore = dataStore.map(({ StoreName }) => ({
+    value: StoreName,
+    name: StoreName,
+  }));
 
-  console.log(userData);
   return (
     <div className="user-register-product mb-5">
       <div className="container-fluid">
@@ -267,7 +282,7 @@ function UserRegisterProduct(props) {
                   Store Name
                 </label>
                 <SelectSearch
-                  options={options}
+                  options={newDataStore}
                   value={storeValue}
                   onChange={setStoreValue}
                   search
@@ -303,11 +318,11 @@ function UserRegisterProduct(props) {
                       ['store_location']: e.target.value,
                     })
                   }
+                  value={storeStreet}
+                  disabled
                 />
               </div>
             </div>
-
-           
 
             <div className="col-lg-6">
               <div className="btn-upload-custom mb-4">

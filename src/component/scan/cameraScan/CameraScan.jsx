@@ -314,7 +314,7 @@ const CameraScan = (props) => {
                     </button>
                   </div>
                 ) : (
-                  <Link to={'/product/register-product/' + barcode}>
+                  <Link to={'/product/register-product/' + data[0].Barcode}>
                     <div className="d-grid gap-2">
                       <button className="btn btn-color-primary btn-detail">
                         Detail
