@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './UserRegisterProduct.css';
 import { connect, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -10,8 +10,9 @@ import './SelectSearch.css'
 function UserRegisterProduct(props) {
   const { barcode } = useParams();
   const dispatch = useDispatch();
-  const [data, setData] = React.useState('');
-  const [userData, setUserData] = React.useState({
+  const [data, setData] = useState('');
+  const [storeValue, setStoreValue] = useState('');
+  const [userData, setUserData] = useState({
     date: new Date(),
     store_location: '',
     store_name: '',
@@ -19,7 +20,7 @@ function UserRegisterProduct(props) {
     file2: '',
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function fetchData() {
       const request = await axios
         .post(
@@ -267,8 +268,8 @@ function UserRegisterProduct(props) {
                 </label>
                 <SelectSearch
                   options={options}
-                  // value={value}
-                  // onChange={setValue}
+                  value={storeValue}
+                  onChange={setStoreValue}
                   search
                   filterOptions={fuzzySearch}
                   placeholder="Search something"
