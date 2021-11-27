@@ -358,7 +358,8 @@ function ProfileForm(props) {
                         <span className="text-danger">*</span>
                       </label>
                       <input
-                        type="text"
+                        type="number"
+                        min="0"
                         class={`form-control ${
                           errorData.nik !== '' ? 'is-invalid' : null
                         }`}
@@ -382,13 +383,14 @@ function ProfileForm(props) {
                         class={`form-select ${
                           errorData.gender !== '' ? 'is-invalid' : null
                         }`}
-                        aria-label="Default select example"
+                        aria-label="gender"
+                        onChange={onChangeData}
                       >
                         <option
                           value="Pria"
                           selected={data.gender === 'Pria' ? 'selected' : ''}
                         >
-                          Pria
+                          Pria 
                         </option>
                         <option
                           value="Wanita"
@@ -429,7 +431,8 @@ function ProfileForm(props) {
                         <span className="text-danger">*</span>
                       </label>
                       <input
-                        type="text"
+                        type="number"
+                        min="0"
                         class={`form-control ${
                           errorData.age !== '' ? 'is-invalid' : null
                         }`}
@@ -490,7 +493,8 @@ function ProfileForm(props) {
                         {t('profile.phone_number')}
                       </label>
                       <input
-                        type="text"
+                        type="number"
+                        min="0"
                         class="form-control"
                         value={data.phone_office}
                         aria-label="phone_office"
@@ -611,6 +615,7 @@ function ProfileForm(props) {
                       </label>
                       <input
                         type="number"
+                        min="0"
                         class="form-control"
                         value={data.postal_code}
                         aria-label="postal_code"
