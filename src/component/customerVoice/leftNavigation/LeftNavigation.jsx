@@ -11,7 +11,7 @@ const LeftNavigation = (props) => {
                     <div>
                         <div className="title col-lg-12 mb-5 text-center">
                             <p className="main-title">{t('question.total_question')}</p>
-                            <p className="text-left sub-title">{props.totalQuestion}</p>
+                            <p className="text-left sub-title">{props.questionTo} / {props.totalQuestion}</p>
                         </div>
                         {/* <div className="title mb-5 col-lg-12">
                             <p>Completion Rate</p>

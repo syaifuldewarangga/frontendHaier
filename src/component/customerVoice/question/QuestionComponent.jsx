@@ -10,7 +10,7 @@ const QuestionComponent = (props) => {
         } else if (props.data.question_type_id === 2) {
             subTitleMessage = 'you can only choose one answer'
         } else if(props.data.question_type_id === 3) {
-            subTitleMessage = 'You can file more than one answer'
+            subTitleMessage = 'you can only choose one answer'
         } else if(props.data.question_type_id === 4) {
             subTitleMessage = 'You file more than one answer'
         }

@@ -13,8 +13,8 @@ class ListProduct extends Component {
                         </div>
                         <div className="card-body">
                             <div className="title-product mb-2">{this.props.data.product_name}</div>
-                            <div className="d-lg-flex justify-content-between">
-                                <p className="m-0" style={{ color: "#003D79" }}>AQUA JAPAN</p>
+                            <div className="d-xxl-flex justify-content-between">
+                                <p className="m-0" style={{ color: "#003D79" }}>{ this.props.data.brand } </p>
                                 <p className="m-0">{this.props.data.barcode}</p>
                             </div>
                         </div>
@@ -23,9 +23,9 @@ class ListProduct extends Component {
                             <div className="d-flex justify-content-between align-items-center"> 
                                 <div className="d-flex align-items-center">
                                     <span className="material-icons me-2"> date_range </span>
-                                    <span>22/07/2021</span> 
+                                    <span>{this.props.data.date}</span> 
                                 </div> 
-                                <span> 1 year </span>
+                                {/* <span> 1 year </span> */}
                             </div>
                         </div>
                     </Link>

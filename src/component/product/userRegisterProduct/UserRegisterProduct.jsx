@@ -14,6 +14,8 @@ function UserRegisterProduct(props) {
   const [storeValue, setStoreValue] = useState('');
   const [storeStreet, setStoreStreet] = useState('');
   const [dataStore, setDataStore] = useState([]);
+  const [showFile1, setShowFile1] = useState('');
+  const [showFile2, setShowFile2] = useState('');
   const [userData, setUserData] = useState({
     date: new Date(),
     store_location: '',
@@ -325,6 +327,13 @@ function UserRegisterProduct(props) {
             </div>
 
             <div className="col-lg-6">
+              {
+                showFile1 !== '' ?
+                <div className="col-lg-12 d-flex justify-content-center mb-3">
+                  <img src={showFile1} alt="file" className="img-fluid"/>
+                </div> : null
+
+              }
               <div className="btn-upload-custom mb-4">
                 <div class="dropzone-wrapper">
                   <div class="dropzone-desc">
@@ -336,11 +345,12 @@ function UserRegisterProduct(props) {
                     name="warranty_card"
                     class="dropzone"
                     aria-label="file"
-                    onChange={(e) =>
+                    onChange={(e) =>  {
+                      setShowFile1(URL.createObjectURL(e.target.files[0]))
                       setUserData({
                         ...userData,
                         ['file1']: e.target.files[0],
-                      })
+                      })}
                     }
                   />
                   {/* { errorData.file } */}
@@ -348,6 +358,12 @@ function UserRegisterProduct(props) {
               </div>
             </div>
             <div className="col-lg-6">
+              {
+                showFile2 !== '' ?
+                <div className="col-lg-12 d-flex justify-content-center mb-3">
+                  <img src={showFile2} alt="file" className="img-fluid"/>
+                </div> : null
+              }
               <div className="btn-upload-custom mb-4">
                 <div class="dropzone-wrapper">
                   <div class="dropzone-desc">
@@ -359,11 +375,12 @@ function UserRegisterProduct(props) {
                     name="warranty_card"
                     class="dropzone"
                     aria-label="file"
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      setShowFile2(URL.createObjectURL(e.target.files[0]))
                       setUserData({
                         ...userData,
                         ['file2']: e.target.files[0],
-                      })
+                      })}
                     }
                   />
                   {/* { errorData.file } */}

@@ -321,6 +321,7 @@ const FormRegister = (props) => {
                           <input
                             type="number"
                             name="nik"
+                            min="0"
                             className={`form-control ${
                               errorData.nik !== '' ? 'is-invalid' : null
                             }`}
@@ -391,6 +392,7 @@ const FormRegister = (props) => {
                             <input
                               type="number"
                               name="phone"
+                              min="0"
                               className={`form-control ${
                                 errorData.phone !== '' ? 'is-invalid' : null
                               }`}
@@ -464,7 +466,7 @@ const FormRegister = (props) => {
                           </div>
                         </div>
 
-                        <div className="col-lg-12 mb-3">
+                        <div className="col-lg-6 mb-3">
                           <div className="form-label">Sub district</div>
                           <input
                             type="text"

@@ -33,6 +33,11 @@ const ProductCard = () => {
                                 <td>22-10-2021</td>
                             </tr>
                             <tr>
+                                <td>Service Number</td>
+                                <td> &nbsp; : &nbsp;</td>
+                                <td>APMY200623000626</td>
+                            </tr>
+                            <tr>
                                 <td colSpan="3">
                                     <Link to="/service-status/detail/1">
                                         <button className="btn btn-sm btn-outline-primary mt-3">Tracking Status Sertice</button>

@@ -51,6 +51,7 @@ class Question extends Component {
                 questions: data
             }, () => {
                 this.props.setTotalQuestion(this.state.questions.length)
+                this.props.setQuestionTo(1)
             })
             
         })
@@ -59,12 +60,16 @@ class Question extends Component {
     prevStep = (n) => {
         this.setState({
             currentTab: this.state.currentTab - 1
+        }, () => {
+            this.props.setQuestionTo(this.state.currentTab+1)
         })
     }
 
     nextStep = () => {
         this.setState({
             currentTab: this.state.currentTab + 1
+        }, () => {
+            this.props.setQuestionTo(this.state.currentTab+1)
         })
     }
 
