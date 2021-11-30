@@ -97,7 +97,7 @@ const LandingPageRouter = () => {
 
         <PrivateRoute
           exact
-          path="/blog/list"
+          path="/blog/list/:categoryNews?"
           component={BlogList}
         ></PrivateRoute>
         <Route exact path="/blog/detail/:slug" component={BlogDetail}></Route>

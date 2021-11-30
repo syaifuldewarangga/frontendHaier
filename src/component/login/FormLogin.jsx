@@ -12,12 +12,21 @@ const FormLogin = (props) => {
     password: '',
     salah: false,
   });
+
   const onChangeData = (e) => {
-    setData({
-      ...data,
-      [e.target.ariaLabel]: e.target.value,
-    });
+    if(e.target.ariaLabel === 'phone_number' && data.phone_number.toString().slice(0,1) === '0') {
+      setData({
+        ...data,
+        phone_number: '62' + e.target.value.toString().slice(1),
+      });  
+    } else {
+      setData({
+        ...data,
+        [e.target.ariaLabel]: e.target.value,
+      });
+    }
   };
+
   const getProfile = async (token, email) => {
     const getData = await axios
       .get(props.base_url + 'user/get', {
@@ -75,7 +84,7 @@ const FormLogin = (props) => {
 
   const fetchAPI = async () => {
     const formData = new FormData();
-    formData.append('email', "62"+data.phone_number);
+    formData.append('email', data.phone_number);
     formData.append('password', data.password);
     setData({
       ...data,
@@ -111,10 +120,10 @@ const FormLogin = (props) => {
             <div className="col-11 col-lg-7">
               <div className="md-3">
                 <div className="position-relative mb-4">
-                  <div className="addon px-2 py-2">
+                  {/* <div className="addon px-2 py-2">
                     <span className="username-addon">+62</span>
                     <div className="line-right"></div>
-                  </div>
+                  </div> */}
                   <label
                     htmlFor="exampleFormControlInput1"
                     className="form-label color-primary"
@@ -127,6 +136,8 @@ const FormLogin = (props) => {
                     placeholder="Phone Number"
                     aria-label="phone_number"
                     onChange={onChangeData}
+                    min="0"
+                    value={data.phone_number}
                     required
                   />
                 </div>
@@ -140,16 +151,15 @@ const FormLogin = (props) => {
                   >
                     Password
                   </label>
-                  <div className="addon px-3">
+                  {/* <div className="addon px-3">
                     <span
                       className="material-icons md-18"
                       style={{ padding: '7px 0' }}
                     >
-                      {' '}
-                      lock{' '}
+                      lock
                     </span>
                     <div className="line-right"></div>
-                  </div>
+                  </div> */}
                   <input
                     type="password"
                     id="password"

@@ -60,7 +60,6 @@ const FormRegister = (props) => {
   }, [data.confirmpassword]);
 
   const getProvinceFromAPI = async () => {
-    // var token = localStorage.getItem('access_token');
     await axios
       .get(props.base_url + 'location')
       .then((res) => {
@@ -72,7 +71,6 @@ const FormRegister = (props) => {
   };
 
   const getCityFromAPI = async (province) => {
-    // var token = localStorage.getItem('access_token');
     await axios
       .get(props.base_url + 'location/city', {
         params: {
@@ -92,10 +90,11 @@ const FormRegister = (props) => {
     if (e.target.name === 'province') {
       getCityFromAPI(e.target.value);
     }
-    if (e.target.name === 'phone') {
+    if (e.target.name === 'phone' && data.phone.toString().slice(0,1) === '0') {
+      let newPhone = '62' + e.target.value.slice(1)
       setData({
         ...data,
-        [e.target.name]: '62' + parseInt(e.target.value, 10),
+        phone: newPhone,
       });
     } else {
       setData({
@@ -376,6 +375,7 @@ const FormRegister = (props) => {
                               errorData.age !== '' ? 'is-invalid' : null
                             }`}
                             placeholder="age"
+                            min="1"
                             onChange={onChangeInput}
                           />
                           <div className="invalid-feedback">
@@ -386,9 +386,6 @@ const FormRegister = (props) => {
                         <div className="col-lg-6 mb-3">
                           <div className="form-label color-primary">Phone</div>
                           <div className="input-group">
-                            <span class="input-group-text" id="basic-addon1">
-                              +62
-                            </span>
                             <input
                               type="number"
                               name="phone"
@@ -397,6 +394,7 @@ const FormRegister = (props) => {
                                 errorData.phone !== '' ? 'is-invalid' : null
                               }`}
                               placeholder="Phone"
+                              value={data.phone}
                               onChange={onChangeInput}
                             />
                             <div className="invalid-feedback">

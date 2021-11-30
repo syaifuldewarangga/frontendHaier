@@ -7,21 +7,26 @@ import './ForgotPassword.css'
 
 const ForgotPassword = (props) => {
     const history = useHistory()
-    const [phoneNumber, setPhoneNumber] = useState()
+    const [phoneNumber, setPhoneNumber] = useState('')
     const [errorData, setErrorData] = useState({
         phone_number: '',
         anyError: ''
     })
 
     const handleInput = (e) => {
-        setPhoneNumber(e.target.value)
+        if(phoneNumber.toString().slice(0,1) === '0') {
+            setPhoneNumber('62' + e.target.value.toString().slice(1))
+        } else {
+            setPhoneNumber(e.target.value)
+        }
+        console.log(phoneNumber)
     }
     
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         var formData = new FormData();
-        formData.append('phone', "62" + phoneNumber );
+        formData.append('phone', phoneNumber );
 
         await axios.post(props.base_url + 'forgot-password', formData)
         .then((res) => {
@@ -66,12 +71,12 @@ const ForgotPassword = (props) => {
                             </div>
                             <div class="mb-3 mt-2">
                                 <div class="input-group mb-3">
-                                    <span class="input-group-text" id="basic-addon1">+62</span>
                                     <input
                                         type="number"
                                         class={ `form-control ${errorData.phone_number !== '' ? 'is-invalid' : null}` }
                                         placeholder="Phone Number"
                                         onChange={handleInput}
+                                        value={phoneNumber}
                                     />
                                     <div className="invalid-feedback">
                                         {errorData.phone_number}

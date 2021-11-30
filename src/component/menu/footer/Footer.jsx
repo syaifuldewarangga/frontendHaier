@@ -91,17 +91,19 @@ class Footer extends Component
                                     </div>
                                 </div>
                                 <div className="pt-lg-3">
-                                    <p className="fw-bold pb-lg-2 pb-1 pt-3 m-0 text-uppercase"> {t('navbar.promo_news_article')} </p>
+                                    <Link to="/blog/list" style={{ color: 'inherit', textDecoration: 'none'}}>
+                                        <p className="fw-bold pb-lg-2 pb-1 pt-3 m-0 text-uppercase"> {t('navbar.promo_news_article')} </p>
+                                    </Link>
                                     <div className="footer-menu m-0">
                                         <ul>
                                             <li>
-                                                <a href="#">EDUCATIONAL SERIES</a>
+                                                <Link to="/blog/list/Educational Series">EDUCATIONAL SERIES</Link>
                                             </li>
                                             <li>
-                                                <a href="#">NEWS UPDATE</a>
+                                                <a href="/blog/list/News Update">NEWS UPDATE</a>
                                             </li>
                                             <li>
-                                                <a href="#">VIDEO WEB SERIES</a>
+                                                <a href="/blog/list/Video Web Series">VIDEO WEB SERIES</a>
                                             </li>
                                         </ul>
                                     </div>

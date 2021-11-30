@@ -6,6 +6,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import Slider from 'react-slick';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 const BlogList = (props) => {
   const [lastPage, setLastPage] = useState(false);
@@ -16,6 +17,8 @@ const BlogList = (props) => {
   const [category, setCategory] = useState([]);
   const [stateCategory, setStateCategory] = useState('all category');
 
+  const { categoryNews } = useParams();
+  console.log(stateCategory)
   var token = localStorage.getItem('access_token');
   const getArticleFromAPI = () => {
     axios
@@ -29,7 +32,6 @@ const BlogList = (props) => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         if (res.data.last === true) {
           setLastPage(true);
         }
@@ -61,13 +63,15 @@ const BlogList = (props) => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         setCategory(res.data);
       });
   };
 
   useEffect(() => {
     getCategoryFromAPI();
+    if(categoryNews !== undefined) {
+      setStateCategory(categoryNews)
+    }
   }, []);
 
   useEffect(() => {
@@ -83,7 +87,6 @@ const BlogList = (props) => {
   }, [stateCategory]);
 
   const handleLoadMore = () => {
-    console.log(currentPage);
     setCurrentPage(currentPage + 1);
   };
 
@@ -132,7 +135,7 @@ const BlogList = (props) => {
                 <div>
                   <div
                     className={`category-list py-lg-3 mx-2 py-2 mb-2 me-2 ${
-                      stateCategory === 'all category' ? 'active' : null
+                      stateCategory.toLowerCase() === 'all category' ? 'active' : null
                     }`}
                     onClick={() => setStateCategory('all category')}
                   >
@@ -143,7 +146,7 @@ const BlogList = (props) => {
                   <div key={index}>
                     <div
                       className={`category-list py-lg-3 mx-2 py-2 mb-2 me-2 ${
-                        stateCategory === category.name ? 'active' : null
+                        stateCategory.toLowerCase() === category.name.toLowerCase() ? 'active' : null
                       }`}
                       onClick={() => setStateCategory(category.name)}
                     >

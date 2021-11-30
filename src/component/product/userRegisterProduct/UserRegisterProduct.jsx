@@ -17,7 +17,7 @@ function UserRegisterProduct(props) {
   const [showFile1, setShowFile1] = useState('');
   const [showFile2, setShowFile2] = useState('');
   const [userData, setUserData] = useState({
-    date: new Date(),
+    date: '',
     store_location: '',
     store_name: '',
     file1: '',
@@ -108,7 +108,9 @@ function UserRegisterProduct(props) {
     var email = localStorage.getItem('email');
     var phone = localStorage.getItem('phone');
 
-    var dateChange = userData.date.replaceAll('-', '/');
+    if(userData.date !== '') {
+      var dateChange = userData.date.replaceAll('-', '/');
+    }
 
     const formdata = new FormData();
 
