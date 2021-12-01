@@ -293,17 +293,6 @@ function UserRegisterProduct(props) {
                   filterOptions={fuzzySearch}
                   placeholder="Search something"
                 />
-                {/* <input
-                  type="text"
-                  className="form-control"
-                  id="store-location"
-                  onChange={(e) =>
-                    setUserData({
-                      ...userData,
-                      ['store_name']: e.target.value,
-                    })
-                  }
-                /> */}
               </div>
             </div>
 
@@ -316,12 +305,6 @@ function UserRegisterProduct(props) {
                   type="text"
                   className="form-control"
                   id="store-location"
-                  onChange={(e) =>
-                    setUserData({
-                      ...userData,
-                      ['store_location']: e.target.value,
-                    })
-                  }
                   value={storeStreet}
                   disabled
                 />

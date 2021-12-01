@@ -177,7 +177,7 @@ const FormLogin = (props) => {
               </div>
               {data.salah === false ? null : (
                 <p style={{ fontSize: 13, color: '#eb4d4b' }}>
-                  Login Gagal! Periksa kembali Email & Password.
+                  Login Failed! Check Your Phone Number or Password.
                 </p>
               )}
               <div>

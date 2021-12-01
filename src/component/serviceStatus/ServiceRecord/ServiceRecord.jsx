@@ -40,7 +40,7 @@ const ProductCard = () => {
                             <tr>
                                 <td colSpan="3">
                                     <Link to="/service-status/detail/1">
-                                        <button className="btn btn-sm btn-outline-primary mt-3">Tracking Status Sertice</button>
+                                        <button className="btn btn-sm btn-outline-primary mt-3">Tracking Status Service</button>
                                     </Link>
                                 </td>
                             </tr>

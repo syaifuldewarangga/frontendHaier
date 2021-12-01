@@ -73,19 +73,19 @@ class Footer extends Component
                                                 <Link to="/shop-list" className="text-uppercase">{t('navbar.find_store')}</Link>
                                             </li>
                                             <li>
-                                                <Link href="/service-center-list" className="text-uppercase">{t('navbar.service_center')}</Link>
+                                                <Link to="/service-center-list" className="text-uppercase">{t('navbar.service_center')}</Link>
                                             </li>
                                             <li>
-                                                <Link href="/customer-voice" className="text-uppercase">{t('navbar.customer_voice')}</Link>
+                                                <Link to="/customer-voice" className="text-uppercase">{t('navbar.customer_voice')}</Link>
                                             </li>
                                             <li>
-                                                <Link href="/service-status" className="text-uppercase">{t('navbar.status_service')}</Link>
+                                                <Link to="/service-status" className="text-uppercase">{t('navbar.status_service')}</Link>
                                             </li>
                                             <li>
-                                                <Link href="/about" className="text-uppercase">{t('navbar.about')}</Link>
+                                                <Link to="/about" className="text-uppercase">{t('navbar.about')}</Link>
                                             </li>
                                             <li>
-                                                <Link href="/contact" className="text-uppercase">{t('navbar.contact')}</Link>
+                                                <Link to="/contact" className="text-uppercase">{t('navbar.contact')}</Link>
                                             </li>
                                         </ul>
                                     </div>
