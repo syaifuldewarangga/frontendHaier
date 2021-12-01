@@ -13,10 +13,10 @@ const ListBlog2 = (props) => {
         <div>
           <p className="title">{props.data.title}</p>
           <p className="category">{props.data.category}</p>
-          <div
+          {/* <div
             className="description"
             dangerouslySetInnerHTML={{ __html: props.data.content }}
-          />
+          /> */}
           <p className="read-more">Read More</p>
         </div>
       </Link>

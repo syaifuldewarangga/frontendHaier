@@ -15,11 +15,11 @@ class ListBlog extends Component
                     <div>
                         <p className="blog-title">{this.props.data.title}</p>
                         <p className="blog-category">{this.props.data.category}</p>
-                        <div 
+                        {/* <div 
                             className="blog-desc" 
                             dangerouslySetInnerHTML={{ __html: this.props.data.content }}
                         >
-                        </div>
+                        </div> */}
                     </div>
                 </Link>
             </div>
