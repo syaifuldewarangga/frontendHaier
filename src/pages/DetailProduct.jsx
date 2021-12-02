@@ -11,6 +11,7 @@ class DetailProduct extends Component
     state = ({
         product: []
     })
+    
     async getDetailProductFromAPI(id) {
         const token = localStorage.getItem('access_token')
         await axios.get(this.props.base_url + 'register-product/product', {

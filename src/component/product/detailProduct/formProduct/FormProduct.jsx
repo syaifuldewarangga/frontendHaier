@@ -3,8 +3,11 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import './FormProduct.css'
 import SelectSearch, { fuzzySearch } from 'react-select-search';
+import { format } from 'date-fns'
+var X2JS = require("x2js")
 
 const FormProduct = (props) =>  {
+    const xtojson = new X2JS()
     const [newDate, setNewDate] = useState()
     const [data, setData] = useState({
         brand: '',
@@ -30,6 +33,7 @@ const FormProduct = (props) =>  {
         description: '',
         agreements: ''
     })
+    const [errorGSIS, setErrorGSIS] = useState('')
 
     const [dataUser, setDataUser] = useState()
     const [serviceCenter, setServiceCenter] = useState('')
@@ -78,7 +82,7 @@ const FormProduct = (props) =>  {
         setData({
             ...data, 
             brand: props.data.brand,
-            category: 'category',
+            category: 'Tv',
             product_model: props.data.product_model,
             serial_number: props.data.serial_number,
             purchase_date: props.data.date,
@@ -124,77 +128,140 @@ const FormProduct = (props) =>  {
         console.log(data)
     }
 
+    const InsertHSISRAPI = () => {
+        // format(new Date)
+        const newPurchaseDate = format(new Date(data.purchase_date), 'MM/dd/yyyy')
+        const newVisitDate = format(new Date(data.visit_date), 'MM/dd/yyyy')
+        console.log(data.category)
+        console.log(dataUser)
+        let xmls = `
+            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:hai="http://haier.com" xmlns:spi="http://www.siebel.com/xml/SPI%20HSI%20Website%20SR%20IO">
+                <soapenv:Header/>
+                <soapenv:Body>
+                <hai:InsertHSISR_Input>
+                    <spi:ServiceRequest>
+                        <spi:SerialNum>${data.serial_number}</spi:SerialNum>
+                        <spi:Category>TV</spi:Category>
+                        <spi:ProductModel>${data.product_model}</spi:ProductModel>
+                        <spi:PurchaseDate>${newPurchaseDate}</spi:PurchaseDate>
+                        <spi:PreferredVisitDate>${newVisitDate}</spi:PreferredVisitDate>
+                        <spi:PreferredTime>${data.visit_hours}</spi:PreferredTime>
+                        <spi:Requirement>${data.description}</spi:Requirement>
+                        <spi:FirstName>${dataUser.first_name}</spi:FirstName>
+                        <spi:LastName>${dataUser.last_name}</spi:LastName>
+                        <spi:HomePhone></spi:HomePhone>
+                        <spi:MobilePhone>${dataUser.phone}</spi:MobilePhone>
+                        <spi:Email>${dataUser.email}</spi:Email>
+                        <spi:Country>Indonesia</spi:Country>
+                        <spi:Brand>${data.brand}</spi:Brand>
+                        <spi:SRNum>APID211115001826</spi:SRNum>
+                        <spi:DetailAddress>${dataUser.address}</spi:DetailAddress>
+                        <spi:AddressId></spi:AddressId>
+                        <spi:SourceType>1</spi:SourceType>
+                        <spi:SourceCode>1</spi:SourceCode>
+                    </spi:ServiceRequest>
+                </hai:InsertHSISR_Input>
+                </soapenv:Body>
+            </soapenv:Envelope>
+        `;
+        console.log(xmls)
+
+        axios.post("http://gsis-ha.haier.net/eai_enu/start.swe?SWEExtSource=WebService&SWEExtCmd=Execute&UserName=EAIUSER2&Password=Haier@WEB", xmls, {
+        headers: {
+            "Content-Type": "text/xml",
+            "SOAPAction": '"document/http://haier.com:InsertHSISR"'
+        }
+        }).then((res) => {
+        // console.log(res.data)
+        
+        var json = xtojson.xml2js(res.data)
+        let cek_error = json.Envelope.Body.InsertHSISR_Output
+        // console.log(cek_error)
+        if(cek_error.ErrorCode.__text !== 0) {
+            console.log(cek_error.ErrorMessage.__text)
+            setErrorGSIS(cek_error.ErrorMessage.__text)
+        } else {
+            alert('berhasil')
+        }
+        console.log(cek_error)
+        
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        const formData = new FormData()
+        // const formData = new FormData()
 
-        if(data.visit_date !== '') {
-            data.visit_date.replaceAll('-', '/')
-        }
+        // if(data.visit_date !== '') {
+        //     data.visit_date.replaceAll('-', '/')
+        // }
 
-        let newVisiteDate = ''
-        if(data.visit_date !== '') {
-            newVisiteDate = data.visit_date.replaceAll('-', '/')
-        }
+        // let newVisiteDate = ''
+        // if(data.visit_date !== '') {
+        //     newVisiteDate = data.visit_date.replaceAll('-', '/')
+        // }
 
-        formData.append('brand', data.brand)
-        formData.append('category', data.category)
-        formData.append('product_model', data.product_model)
-        formData.append('serial_number', data.serial_number)
-        formData.append('purchase_date', data.purchase_date)
-        formData.append('address', data.address)
-        formData.append('barcode', data.barcode)
-        formData.append('product_id', data.product_id)
-        formData.append('product_name', data.product_name)
-        formData.append('store_name', data.store_name)
-        formData.append('store_location', data.store_location)
-        formData.append('visit_date', newVisiteDate)
-        formData.append('visit_hours', data.visit_hours)
-        formData.append('description', data.description)
-        formData.append('agreements', data.agreements)
-        formData.append('mobile_phone', data.mobile_phone)
+        // formData.append('brand', data.brand)
+        // formData.append('category', data.category)
+        // formData.append('product_model', data.product_model)
+        // formData.append('serial_number', data.serial_number)
+        // formData.append('purchase_date', data.purchase_date)
+        // formData.append('address', data.address)
+        // formData.append('barcode', data.barcode)
+        // formData.append('product_id', data.product_id)
+        // formData.append('product_name', data.product_name)
+        // formData.append('store_name', data.store_name)
+        // formData.append('store_location', data.store_location)
+        // formData.append('visit_date', newVisiteDate)
+        // formData.append('visit_hours', data.visit_hours)
+        // formData.append('description', data.description)
+        // formData.append('agreements', data.agreements)
+        // formData.append('mobile_phone', data.mobile_phone)
 
-        await axios.post(props.base_url + 'register-service', formData, {
-            headers: {
-                Authorization: 'Bearer ' + token,
-            },
-        }).then((res) => {
-            alert('berhasil')
-        }).catch((err) => {
-            if(err.response.data.errors !== undefined) {
-                let responError = err.response.data.errors
-                if(responError.location === 'visit_date') {
-                    setErrorData({
-                        ...errorData,
-                        visit_date: responError.reason
-                    })
-                }
+        // await axios.post(props.base_url + 'register-service', formData, {
+        //     headers: {
+        //         Authorization: 'Bearer ' + token,
+        //     },
+        // }).then((res) => {
+        //     alert('berhasil')
+        // }).catch((err) => {
+        //     if(err.response.data.errors !== undefined) {
+        //         let responError = err.response.data.errors
+        //         if(responError.location === 'visit_date') {
+        //             setErrorData({
+        //                 ...errorData,
+        //                 visit_date: responError.reason
+        //             })
+        //         }
     
-                if(responError.location === 'visit_hours') {
-                    setErrorData({
-                        ...errorData,
-                        visit_hours: responError.reason
-                    })
-                }
+        //         if(responError.location === 'visit_hours') {
+        //             setErrorData({
+        //                 ...errorData,
+        //                 visit_hours: responError.reason
+        //             })
+        //         }
     
-                if(responError.location === 'description') {
-                    setErrorData({
-                        ...errorData,
-                        description: responError.reason
-                    })
-                }
+        //         if(responError.location === 'description') {
+        //             setErrorData({
+        //                 ...errorData,
+        //                 description: responError.reason
+        //             })
+        //         }
                 
-                if(responError.location === 'agreements') {
-                    setErrorData({
-                        ...errorData,
-                        agreements: responError.reason
-                    })
-                }
-            } else {
-                console.log(err.response)
-            }
-        })
+        //         if(responError.location === 'agreements') {
+        //             setErrorData({
+        //                 ...errorData,
+        //                 agreements: responError.reason
+        //             })
+        //         }
+        //     } else {
+        //         console.log(err.response)
+        //     }
+        // })
+        InsertHSISRAPI()
     } 
 
     return (
@@ -406,6 +473,14 @@ const FormProduct = (props) =>  {
                                 }   
                             </div>
                         </div>
+
+                        {
+                            errorGSIS !== '' ? 
+                                <div className="text-danger mb-3">
+                                    { errorGSIS }
+                                </div>
+                            : null
+                        }
                     </div>
 
                     <div className="d-grid gap-2">
