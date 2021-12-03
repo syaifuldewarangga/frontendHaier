@@ -6,8 +6,11 @@ import axios from 'axios';
 import { getToken } from '../../../action/action';
 import SelectSearch, { fuzzySearch } from 'react-select-search';
 import './SelectSearch.css';
+import { format } from 'date-fns';
+var X2JS = require('x2js');
 
 function UserRegisterProduct(props) {
+  const xtojson = new X2JS();
   const { barcode } = useParams();
   const dispatch = useDispatch();
   const [data, setData] = useState('');
@@ -16,6 +19,7 @@ function UserRegisterProduct(props) {
   const [dataStore, setDataStore] = useState([]);
   const [showFile1, setShowFile1] = useState('');
   const [showFile2, setShowFile2] = useState('');
+  const [dataUser, setDataUser] = useState({});
   const [userData, setUserData] = useState({
     date: '',
     store_location: '',
@@ -23,6 +27,8 @@ function UserRegisterProduct(props) {
     file1: '',
     file2: '',
   });
+  var email = localStorage.getItem('email');
+  var token = localStorage.getItem('access_token');
 
   useEffect(() => {
     let isi = dataStore.filter((word) => word.StoreName === storeValue);
@@ -82,6 +88,31 @@ function UserRegisterProduct(props) {
         )
         .then((res) => {
           setDataStore(res.data.data);
+          async function fetchDataUser() {
+            const request = await axios
+              .get(props.base_url + 'user/get', {
+                headers: {
+                  Authorization: 'Bearer ' + token,
+                },
+                params: {
+                  identifier: email,
+                },
+              })
+              .then((res) => {
+                setDataUser(res.data);
+              })
+              .catch((e) => {
+                if (e.response) {
+                  console.log(e.response);
+                } else if (e.request) {
+                  console.log('request : ' + e.request);
+                } else {
+                  console.log('message : ' + e.message);
+                }
+              });
+            return request;
+          }
+          fetchDataUser();
         })
         .catch((e) => {
           dispatch(getToken());
@@ -96,6 +127,7 @@ function UserRegisterProduct(props) {
         });
       return request;
     }
+
     if (barcode !== '') {
       fetchDataProduct();
       fetchDataStore();
@@ -103,21 +135,22 @@ function UserRegisterProduct(props) {
   }, [props.token, barcode]);
 
   async function fetchData() {
-    var token = localStorage.getItem('access_token');
     var id = localStorage.getItem('id');
-    var email = localStorage.getItem('email');
     var phone = localStorage.getItem('phone');
 
-    if(userData.date !== '') {
+    if (userData.date !== '') {
       var dateChange = userData.date.replaceAll('-', '/');
     }
 
     const formdata = new FormData();
+    const newPurcaseDate = format(new Date(dateChange), 'MM/dd/yyyy');
+    const newBirthDateDate = format(new Date('1981//09/27'), 'MM/dd/yyyy');
+    const newGender = dataUser.gender === 'Pria' ? 'Mr' : 'Ms';
 
     formdata.append('customer_id', id);
     formdata.append('barcode', data.Barcode);
     formdata.append('product_id', data.ProductID);
-    formdata.append('brand', 'TEST');
+    formdata.append('brand', data.Brand);
     formdata.append('product_name', data.ProductName);
     formdata.append('product_model', data.ProductModel);
     formdata.append('serial_number', data.SerialNumber);
@@ -132,23 +165,118 @@ function UserRegisterProduct(props) {
     );
     formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
 
+    const getAPIGSIS = async () => {
+      await axios
+        .post(props.base_url + 'register-product', formdata, {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          alert('Berhasil Hore!');
+        })
+        .catch((e) => {
+          if (e.response) {
+            console.log(e.response);
+          } else if (e.request) {
+            console.log('request : ' + e.request);
+          } else {
+            console.log('message : ' + e.message);
+          }
+        });
+    };
+    let xmls = `
+                  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:hai="http://haier.com" xmlns:spir="http://www.siebel.com/xml/SPIRightNowInboundObject">
+                  <soapenv:Header/>
+                  <soapenv:Body>
+                    <hai:InsertHSIProdReg_Input>
+                        <spir:ProductRegister>
+                          <!--Optional:-->
+                          <spir:country>Indonesia</spir:country>
+                          <!--Optional:-->
+                          <spir:firstName>${dataUser.first_name}</spir:firstName>
+                          <!--Optional:-->
+                          <spir:lastName>${dataUser.last_name}</spir:lastName>
+                          <!--Optional:-->
+                          <spir:gender>${newGender}</spir:gender>
+                          <!--Optional:-->
+                          <spir:customerType></spir:customerType>
+                          <!--Optional:-->
+                          <spir:telPhone></spir:telPhone>
+                          <!--Optional:-->
+                          <spir:mobilePhone>${dataUser.phone}</spir:mobilePhone>
+                          <!--Optional:-->
+                          <spir:officePhone>${dataUser.phone_office}</spir:officePhone>
+                          <!--Optional:-->
+                          <spir:age>${dataUser.age}</spir:age>
+                          <!--Optional:-->
+                          <spir:birthday>${newBirthDateDate}</spir:birthday>
+                          <!--Optional:-->
+                          <spir:email>${dataUser.email}</spir:email>
+                          <!--Optional:-->
+                          <spir:fax>${dataUser.fax}</spir:fax>
+                          <!--Optional:-->
+                          <spir:brand>${data.Brand}</spir:brand>
+                          <!--Optional:-->
+                          <spir:category>TV</spir:category>
+                          <!--Optional:-->
+                          <spir:productModel>${data.ProductModel}</spir:productModel>
+                          <!--Optional:-->
+                          <spir:serialNum>${data.SerialNumber}</spir:serialNum>
+                          <!--Optional:-->
+                          <spir:purchaseDate>${newPurcaseDate}</spir:purchaseDate>
+                          <!--Optional:-->
+                          <spir:retailerName>${storeValue}</spir:retailerName>
+                          <!--Optional:-->
+                          <spir:retailerAddress>${storeStreet}</spir:retailerAddress>
+                          <!--Optional:-->
+                          <spir:addressId></spir:addressId>
+                          <!--Optional:-->
+                          <spir:retailerCity></spir:retailerCity>
+                          <!--Optional:-->
+                          <spir:retailerContactFirstName></spir:retailerContactFirstName>
+                          <!--Optional:-->
+                          <spir:retailerContactLastName></spir:retailerContactLastName>
+                          <!--Optional:-->
+                          <spir:retailerContactPhone></spir:retailerContactPhone>
+                          <!--Optional:-->
+                          <spir:retailerEmail></spir:retailerEmail>
+                          <!--Optional:-->
+                          <spir:address>${dataUser.address}</spir:address>
+                        </spir:ProductRegister>
+                    </hai:InsertHSIProdReg_Input>
+                  </soapenv:Body>
+              </soapenv:Envelope>
+  
+      `;
+
     await axios
-      .post(props.base_url + 'register-product', formdata, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      })
-      .then((res) => {
-        alert('Berhasil');
-      })
-      .catch((e) => {
-        if (e.response) {
-          console.log(e.response);
-        } else if (e.request) {
-          console.log('request : ' + e.request);
-        } else {
-          console.log('message : ' + e.message);
+      .post(
+        'http://gsis-ha.haier.net/eai_enu/start.swe?SWEExtSource=WebService&SWEExtCmd=Execute&UserName=EAIUSER2&Password=Haier@WEB',
+        xmls,
+        {
+          headers: {
+            'Content-Type': 'text/xml',
+
+            SOAPAction: '"document/http://haier.com:InsertHSIProdReg"',
+          },
         }
+      )
+      .then((res) => {
+        console.log(res.data);
+        var json = xtojson.xml2js(res.data);
+        let cek_error = json.Envelope.Body.InsertHSIProdReg_Output;
+        console.log(cek_error);
+        if (cek_error.ErrorCode.__text !== '0') {
+          console.log(cek_error.ErrorMessage.__text);
+          alert(cek_error.ErrorMessage.__text);
+        } else {
+          getAPIGSIS();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }
 
@@ -312,13 +440,11 @@ function UserRegisterProduct(props) {
             </div>
 
             <div className="col-lg-6">
-              {
-                showFile1 !== '' ?
+              {showFile1 !== '' ? (
                 <div className="col-lg-12 d-flex justify-content-center mb-3">
-                  <img src={showFile1} alt="file" className="img-fluid"/>
-                </div> : null
-
-              }
+                  <img src={showFile1} alt="file" className="img-fluid" />
+                </div>
+              ) : null}
               <div className="btn-upload-custom mb-4">
                 <div class="dropzone-wrapper">
                   <div class="dropzone-desc">
@@ -330,25 +456,24 @@ function UserRegisterProduct(props) {
                     name="warranty_card"
                     class="dropzone"
                     aria-label="file"
-                    onChange={(e) =>  {
-                      setShowFile1(URL.createObjectURL(e.target.files[0]))
+                    onChange={(e) => {
+                      setShowFile1(URL.createObjectURL(e.target.files[0]));
                       setUserData({
                         ...userData,
                         ['file1']: e.target.files[0],
-                      })}
-                    }
+                      });
+                    }}
                   />
                   {/* { errorData.file } */}
                 </div>
               </div>
             </div>
             <div className="col-lg-6">
-              {
-                showFile2 !== '' ?
+              {showFile2 !== '' ? (
                 <div className="col-lg-12 d-flex justify-content-center mb-3">
-                  <img src={showFile2} alt="file" className="img-fluid"/>
-                </div> : null
-              }
+                  <img src={showFile2} alt="file" className="img-fluid" />
+                </div>
+              ) : null}
               <div className="btn-upload-custom mb-4">
                 <div class="dropzone-wrapper">
                   <div class="dropzone-desc">
@@ -361,12 +486,12 @@ function UserRegisterProduct(props) {
                     class="dropzone"
                     aria-label="file"
                     onChange={(e) => {
-                      setShowFile2(URL.createObjectURL(e.target.files[0]))
+                      setShowFile2(URL.createObjectURL(e.target.files[0]));
                       setUserData({
                         ...userData,
                         ['file2']: e.target.files[0],
-                      })}
-                    }
+                      });
+                    }}
                   />
                   {/* { errorData.file } */}
                 </div>
