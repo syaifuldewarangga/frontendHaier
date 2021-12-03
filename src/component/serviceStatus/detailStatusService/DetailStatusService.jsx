@@ -96,7 +96,7 @@ const DetailStatusService = (props) => {
                         <div className="content mt-4">
                           <div>
                             <h6>Product </h6>
-                            <p>Kulkas 2 Pintu</p>
+                            <p>{data.Category}</p>
                           </div>
                           <div className="mt-4">
                             <h6>Model </h6>
@@ -108,7 +108,7 @@ const DetailStatusService = (props) => {
                           </div>
                           <div className="mt-4">
                             <h6>Date of Purchase </h6>
-                            <p>09-01-2021</p>
+                            <p>{data.DOP}</p>
                           </div>
                         </div>
                       </div>
