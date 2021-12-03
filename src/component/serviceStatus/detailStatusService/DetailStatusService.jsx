@@ -1,7 +1,65 @@
 import React from 'react';
 import './DetailStatusService.css';
+import { format } from 'date-fns';
+import axios from 'axios';
+var X2JS = require('x2js');
 
 const DetailStatusService = (props) => {
+  const xtojson = new X2JS();
+  const [data, setData] = React.useState('');
+  React.useEffect(() => {
+    const getData = async () => {
+      let xmls = `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:hai="http://haier.com">
+      <soapenv:Header/>
+      <soapenv:Body>
+         <hai:CheckHSISRStatus_Input>
+            <!--Optional:-->
+            <hai:SRNum>APID181010000236</hai:SRNum>
+            <!--Optional:-->
+            <hai:MobilePhone>082374353998</hai:MobilePhone>
+            <!--Optional:-->
+            <hai:SourceType>1</hai:SourceType>
+            <!--Optional:-->
+            <hai:SourceCode>1</hai:SourceCode>
+         </hai:CheckHSISRStatus_Input>
+      </soapenv:Body>
+   </soapenv:Envelope>
+      `;
+
+      await axios
+        .post(
+          'http://gsis-ha.haier.net/eai_enu/start.swe?SWEExtSource=WebService&SWEExtCmd=Execute&UserName=EAIUSER2&Password=Haier@WEB',
+          xmls,
+          {
+            headers: {
+              'Content-Type': 'text/xml',
+
+              SOAPAction: '"document/http://haier.com:CheckHSISRStatus"',
+            },
+          }
+        )
+        .then((res) => {
+          var json = xtojson.xml2js(res.data);
+          let cek_error = json.Envelope.Body.CheckHSISRStatus_Output;
+          //   console.log(cek_error);
+          if (cek_error.ErrorCode.__text !== '0') {
+            console.log(cek_error.ErrorMessage.__text);
+            alert(cek_error.ErrorMessage.__text);
+          } else {
+            setData(
+              json.Envelope.Body.CheckHSISRStatus_Output.ListOfServiceRequest
+                .ServiceRequest
+            );
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    getData();
+  }, []);
+  console.log(data);
   return (
     <div className="detail-status-service">
       <div className="container-fluid">
@@ -27,7 +85,7 @@ const DetailStatusService = (props) => {
                         <div className="content mt-4">
                           <div>
                             <h6>Request Date : </h6>
-                            <p>12-10-2021 11:45:09</p>
+                            <p>{data.RequestDate}</p>
                           </div>
                         </div>
                       </div>
@@ -42,11 +100,11 @@ const DetailStatusService = (props) => {
                           </div>
                           <div className="mt-4">
                             <h6>Model </h6>
-                            <p>Aqua Japan</p>
+                            <p>{data.ProductModel}</p>
                           </div>
                           <div className="mt-4">
                             <h6>Serial Number </h6>
-                            <p>1234567890ASD</p>
+                            <p>{data.serialNumber}</p>
                           </div>
                           <div className="mt-4">
                             <h6>Date of Purchase </h6>
@@ -72,33 +130,23 @@ const DetailStatusService = (props) => {
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  <tr>
-                                    <td className="text-nowrap">012121</td>
-                                    <td className="text-nowrap">
-                                      Received by Service Partner
-                                    </td>
-                                    <td className="text-nowrap">
-                                      11-13-2021 16:29:00
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td className="text-nowrap">012121</td>
-                                    <td className="text-nowrap">
-                                      Received by Service Partner
-                                    </td>
-                                    <td className="text-nowrap">
-                                      11-13-2021 16:29:00
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td className="text-nowrap">012121</td>
-                                    <td className="text-nowrap">
-                                      Received by Service Partner
-                                    </td>
-                                    <td className="text-nowrap">
-                                      11-13-2021 16:29:00
-                                    </td>
-                                  </tr>
+                                  {data === ''
+                                    ? null
+                                    : data.ListOfRepair.Repair.map((item) => {
+                                        return (
+                                          <tr>
+                                            <td className="text-nowrap">
+                                              {item.ChangedNo}
+                                            </td>
+                                            <td className="text-nowrap">
+                                              {item.ChangedStatus}
+                                            </td>
+                                            <td className="text-nowrap">
+                                              {item.StatusChangeDate}
+                                            </td>
+                                          </tr>
+                                        );
+                                      })}
                                 </tbody>
                               </table>
                             </div>
