@@ -22,8 +22,6 @@ function UserRegisterProduct(props) {
   const [dataUser, setDataUser] = useState({});
   const [userData, setUserData] = useState({
     date: '',
-    store_location: '',
-    store_name: '',
     file1: '',
     file2: '',
   });
@@ -154,111 +152,68 @@ function UserRegisterProduct(props) {
     formdata.append('product_name', data.ProductName);
     formdata.append('product_model', data.ProductModel);
     formdata.append('serial_number', data.SerialNumber);
+    formdata.append('category', data.Category);
     formdata.append('date', dateChange);
-    formdata.append('store_location', userData.store_location);
-    formdata.append('store_name', userData.store_name);
+    formdata.append('store_location', storeStreet);
+    formdata.append('store_name', storeValue);
     formdata.append('email', email);
     formdata.append('phone', phone);
+    formdata.append('status', 1);
     formdata.append(
       'warranty_card',
       userData.file1 === '' ? '' : userData.file1
     );
     formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
 
-    const getAPIGSIS = async () => {
-      await axios
-        .post(props.base_url + 'register-product', formdata, {
-          headers: {
-            Authorization: 'Bearer ' + token,
-          },
-        })
-        .then((res) => {
-          console.log(res);
-          alert('Berhasil Hore!');
-        })
-        .catch((e) => {
-          if (e.response) {
-            console.log(e.response);
-          } else if (e.request) {
-            console.log('request : ' + e.request);
-          } else {
-            console.log('message : ' + e.message);
-          }
-        });
-    };
-    let xmls = `
-                  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:hai="http://haier.com" xmlns:spir="http://www.siebel.com/xml/SPIRightNowInboundObject">
-                  <soapenv:Header/>
-                  <soapenv:Body>
-                    <hai:InsertHSIProdReg_Input>
-                        <spir:ProductRegister>
-                          <!--Optional:-->
-                          <spir:country>Indonesia</spir:country>
-                          <!--Optional:-->
-                          <spir:firstName>${dataUser.first_name}</spir:firstName>
-                          <!--Optional:-->
-                          <spir:lastName>${dataUser.last_name}</spir:lastName>
-                          <!--Optional:-->
-                          <spir:gender>${newGender}</spir:gender>
-                          <!--Optional:-->
-                          <spir:customerType></spir:customerType>
-                          <!--Optional:-->
-                          <spir:telPhone></spir:telPhone>
-                          <!--Optional:-->
-                          <spir:mobilePhone>${dataUser.phone}</spir:mobilePhone>
-                          <!--Optional:-->
-                          <spir:officePhone>${dataUser.phone_office}</spir:officePhone>
-                          <!--Optional:-->
-                          <spir:age>${dataUser.age}</spir:age>
-                          <!--Optional:-->
-                          <spir:birthday>${newBirthDateDate}</spir:birthday>
-                          <!--Optional:-->
-                          <spir:email>${dataUser.email}</spir:email>
-                          <!--Optional:-->
-                          <spir:fax>${dataUser.fax}</spir:fax>
-                          <!--Optional:-->
-                          <spir:brand>${data.Brand}</spir:brand>
-                          <!--Optional:-->
-                          <spir:category>TV</spir:category>
-                          <!--Optional:-->
-                          <spir:productModel>${data.ProductModel}</spir:productModel>
-                          <!--Optional:-->
-                          <spir:serialNum>${data.SerialNumber}</spir:serialNum>
-                          <!--Optional:-->
-                          <spir:purchaseDate>${newPurcaseDate}</spir:purchaseDate>
-                          <!--Optional:-->
-                          <spir:retailerName>${storeValue}</spir:retailerName>
-                          <!--Optional:-->
-                          <spir:retailerAddress>${storeStreet}</spir:retailerAddress>
-                          <!--Optional:-->
-                          <spir:addressId></spir:addressId>
-                          <!--Optional:-->
-                          <spir:retailerCity></spir:retailerCity>
-                          <!--Optional:-->
-                          <spir:retailerContactFirstName></spir:retailerContactFirstName>
-                          <!--Optional:-->
-                          <spir:retailerContactLastName></spir:retailerContactLastName>
-                          <!--Optional:-->
-                          <spir:retailerContactPhone></spir:retailerContactPhone>
-                          <!--Optional:-->
-                          <spir:retailerEmail></spir:retailerEmail>
-                          <!--Optional:-->
-                          <spir:address>${dataUser.address}</spir:address>
-                        </spir:ProductRegister>
-                    </hai:InsertHSIProdReg_Input>
-                  </soapenv:Body>
-              </soapenv:Envelope>
-  
+    const postToGSIS = async () => {
+      let xmls = `
+        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:hai="http://haier.com" xmlns:spir="http://www.siebel.com/xml/SPIRightNowInboundObject">
+          <soapenv:Header/>
+          <soapenv:Body>
+            <hai:HATProdReg0926>
+              <spir:ProductRegister>
+                <spir:id>1</spir:id>
+                <spir:country>Indonesia</spir:country>
+                <spir:firstName>${dataUser.first_name}</spir:firstName>
+                <spir:lastName>${dataUser.last_name}</spir:lastName>
+                <spir:gender>${newGender}</spir:gender>
+                <spir:customerType>End User</spir:customerType>
+                <spir:telPhone></spir:telPhone>
+                <spir:mobilePhone>${dataUser.phone}</spir:mobilePhone>
+                <spir:officePhone>${dataUser.phone_office}</spir:officePhone>
+                <spir:age>${dataUser.age}</spir:age>
+                <spir:birthday>${newBirthDateDate}</spir:birthday>
+                <spir:email>${dataUser.email}</spir:email>
+                <spir:fax>${dataUser.fax}</spir:fax>
+                <spir:brand>${data.Brand}</spir:brand>
+                <spir:category>${data.Category}</spir:category>
+                <spir:productModel>${data.ProductModel}</spir:productModel>
+                <spir:serialNum>${data.SerialNumber}</spir:serialNum>
+                <spir:purchaseDate>${newPurcaseDate}</spir:purchaseDate>
+                <spir:expiryDate></spir:expiryDate>
+                <spir:status></spir:status>
+                <spir:haveYouPurchasedExtendedWarranty></spir:haveYouPurchasedExtendedWarranty>
+                <spir:retailerName>${storeValue}</spir:retailerName>
+                <spir:retailerAddress>${storeStreet}</spir:retailerAddress>
+                <spir:retailerPostcode></spir:retailerPostcode>
+                <spir:retailerCity></spir:retailerCity>
+                <spir:retailerContactFirstName></spir:retailerContactFirstName>
+                <spir:retailerContactLastName></spir:retailerContactLastName>
+                <spir:retailerContactPhone></spir:retailerContactPhone>
+                <spir:retailerEmail></spir:retailerEmail>
+                <spir:address>${dataUser.address}</spir:address>
+                <spir:AddressId></spir:AddressId>
+                <spir:City>${dataUser.city}</spir:City>
+                <spir:State></spir:State>
+                <spir:Street></spir:Street>
+              </spir:ProductRegister>
+            </hai:HATProdReg0926>
+          </soapenv:Body>
+        </soapenv:Envelope>
       `;
-
-    await axios
-      .post(
-        'http://gsis-ha.haier.net/eai_enu/start.swe?SWEExtSource=WebService&SWEExtCmd=Execute&UserName=EAIUSER2&Password=Haier@WEB',
-        xmls,
-        {
+      await axios.post( props.gsis_url, xmls, {
           headers: {
             'Content-Type': 'text/xml',
-
             SOAPAction: '"document/http://haier.com:InsertHSIProdReg"',
           },
         }
@@ -266,18 +221,37 @@ function UserRegisterProduct(props) {
       .then((res) => {
         console.log(res.data);
         var json = xtojson.xml2js(res.data);
-        let cek_error = json.Envelope.Body.InsertHSIProdReg_Output;
-        console.log(cek_error);
-        if (cek_error.ErrorCode.__text !== '0') {
-          console.log(cek_error.ErrorMessage.__text);
-          alert(cek_error.ErrorMessage.__text);
-        } else {
-          getAPIGSIS();
-        }
+        console.log(json)
+        // let cek_error = json.Envelope.Body.InsertHSIProdReg_Output;
+        // if (cek_error.ErrorCode.__text !== '0') {
+        //   console.log(cek_error.ErrorMessage.__text);
+        // } else {
+        //   alert('berhasil')
+        // }
       })
       .catch((err) => {
         console.log(err);
       });
+    }
+    
+    await axios.post(props.base_url + 'register-product', formdata, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    }).then((res) => {
+      // alert('berhasil')
+      postToGSIS()
+    }).catch((e) => {
+      if (e.response) {
+        console.log(e.response);
+      } else if (e.request) {
+        console.log('request : ' + e.request);
+      } else {
+        console.log('message : ' + e.message);
+      }
+    });
+
+    
   }
 
   let newDataStore = dataStore.map(({ StoreName }) => ({
@@ -388,6 +362,21 @@ function UserRegisterProduct(props) {
                 />
               </div>
             </div>
+            
+            <div className="col-lg-6">
+              <div className="mb-lg-5 mb-4">
+                <label htmlFor="serial-number" className="form-label">
+                  Category
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="serial-number"
+                  value={data.Category}
+                  disabled="disabled"
+                />
+              </div>
+            </div>
 
             <div className="col-lg-6">
               <div className="mb-lg-5 mb-4">
@@ -424,7 +413,7 @@ function UserRegisterProduct(props) {
               </div>
             </div>
 
-            <div className="col-lg-12">
+            <div className="col-lg-6">
               <div className="mb-lg-5 mb-4">
                 <label htmlFor="store-location" className="form-label">
                   Store Location
@@ -517,6 +506,7 @@ const mapStateToProps = (state) => {
     gtm_url: state.GTM_URL,
     token: state.GTM_TOKEN,
     base_url: state.BASE_URL,
+    gsis_url: state.GSIS_URL,
   };
 };
 

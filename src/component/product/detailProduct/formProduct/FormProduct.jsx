@@ -4,10 +4,14 @@ import { connect } from "react-redux";
 import './FormProduct.css'
 import SelectSearch, { fuzzySearch } from 'react-select-search';
 import { format } from 'date-fns'
+import AlertModal from "../../../alertModal/AlertModal";
+import { Modal } from "bootstrap";
+import { useHistory } from "react-router";
 var X2JS = require("x2js")
 
 const FormProduct = (props) =>  {
     const xtojson = new X2JS()
+    const history = useHistory()
     const [newDate, setNewDate] = useState()
     const [data, setData] = useState({
         brand: '',
@@ -28,6 +32,7 @@ const FormProduct = (props) =>  {
         mobile_phone: '',
     })
     const [errorData, setErrorData] = useState({
+        store_name: '',
         visit_date: '',
         visit_hours: '',
         description: '',
@@ -39,6 +44,11 @@ const FormProduct = (props) =>  {
     const [serviceCenter, setServiceCenter] = useState('')
     const [dataServiceCenter, setDataServiceCenter] = useState([])
     const [serviceCenterLocation, setServiceCenterLocation] = useState('')
+    const [dataAlert, setDataAlert] = useState({
+        status: 'success',
+        title: 'Success',
+        subTitle: 'successfully requested service'
+    })
 
     let token = localStorage.getItem('access_token');
 
@@ -82,7 +92,7 @@ const FormProduct = (props) =>  {
         setData({
             ...data, 
             brand: props.data.brand,
-            category: 'Tv',
+            category: 'TV',
             product_model: props.data.product_model,
             serial_number: props.data.serial_number,
             purchase_date: props.data.date,
@@ -128,24 +138,22 @@ const FormProduct = (props) =>  {
         console.log(data)
     }
 
-    const InsertHSISRAPI = () => {
+    const InsertHSISRAPI = async () => {
         // format(new Date)
-        const newPurchaseDate = format(new Date(data.purchase_date), 'MM/dd/yyyy')
+        const newPurchaseDate = format(new Date(data.purchase_date), 'dd/MM/yyyy')
         const newVisitDate = format(new Date(data.visit_date), 'MM/dd/yyyy')
-        console.log(data.category)
-        console.log(dataUser)
         let xmls = `
-            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:hai="http://haier.com" xmlns:spi="http://www.siebel.com/xml/SPI%20HSI%20Website%20SR%20IO">
+            <soapenv:Envelope xmlns:soapenv="http://schemas.xml soap.org/soap/envelope/" xmlns:hai="http://haier.com" xmlns:spir="http://www.siebel.com/xml/SPIRightNowInboundObject">
                 <soapenv:Header/>
                 <soapenv:Body>
-                <hai:InsertHSISR_Input>
+                <hai:HATProdReg0926>
                     <spi:ServiceRequest>
                         <spi:SerialNum>${data.serial_number}</spi:SerialNum>
-                        <spi:Category>TV</spi:Category>
+                        <spi:Category>${data.category}</spi:Category>
                         <spi:ProductModel>${data.product_model}</spi:ProductModel>
                         <spi:PurchaseDate>${newPurchaseDate}</spi:PurchaseDate>
                         <spi:PreferredVisitDate>${newVisitDate}</spi:PreferredVisitDate>
-                        <spi:PreferredTime>${data.visit_hours}</spi:PreferredTime>
+                        <spi:PreferredTime></spi:PreferredTime>
                         <spi:Requirement>${data.description}</spi:Requirement>
                         <spi:FirstName>${dataUser.first_name}</spi:FirstName>
                         <spi:LastName>${dataUser.last_name}</spi:LastName>
@@ -154,115 +162,133 @@ const FormProduct = (props) =>  {
                         <spi:Email>${dataUser.email}</spi:Email>
                         <spi:Country>Indonesia</spi:Country>
                         <spi:Brand>${data.brand}</spi:Brand>
-                        <spi:SRNum>APID211115001826</spi:SRNum>
+                        <spi:SRNum>APID21111500119</spi:SRNum>
                         <spi:DetailAddress>${dataUser.address}</spi:DetailAddress>
                         <spi:AddressId></spi:AddressId>
                         <spi:SourceType>1</spi:SourceType>
                         <spi:SourceCode>1</spi:SourceCode>
                     </spi:ServiceRequest>
-                </hai:InsertHSISR_Input>
+                </hai:HATProdReg0926>
                 </soapenv:Body>
             </soapenv:Envelope>
         `;
-        console.log(xmls)
-
-        axios.post("http://gsis-ha.haier.net/eai_enu/start.swe?SWEExtSource=WebService&SWEExtCmd=Execute&UserName=EAIUSER2&Password=Haier@WEB", xmls, {
+        await axios.post(props.gsis_url, xmls, {
         headers: {
             "Content-Type": "text/xml",
-            "SOAPAction": '"document/http://haier.com:InsertHSISR"'
+            "SOAPAction": '"rpc/http://haier.com:HATProdReg0926"'
         }
         }).then((res) => {
-        // console.log(res.data)
-        
-        var json = xtojson.xml2js(res.data)
-        let cek_error = json.Envelope.Body.InsertHSISR_Output
-        // console.log(cek_error)
-        if(cek_error.ErrorCode.__text !== 0) {
-            console.log(cek_error.ErrorMessage.__text)
-            setErrorGSIS(cek_error.ErrorMessage.__text)
-        } else {
-            alert('berhasil')
-        }
-        console.log(cek_error)
+            var json = xtojson.xml2js(res.data)
+            console.log(json)
+            // let cek_error = json.Envelope.Body.InsertHSISR_Output
+            // if(cek_error.ErrorCode.__text !== '0') {
+            //     console.log(cek_error.ErrorMessage.__text)
+            //     setErrorGSIS(cek_error.ErrorMessage.__text)
+            // } else {
+            //     InsertServiceRegister()
+            // }
+            // console.log(cek_error)
         
         }).catch((err) => {
             console.log(err)
         })
     }
 
+    const InsertServiceRegister = async () => {
+        const formData = new FormData()
+
+        if(data.visit_date !== '') {
+            data.visit_date.replaceAll('-', '/')
+        }
+
+        let newVisiteDate = ''
+        if(data.visit_date !== '') {
+            newVisiteDate = data.visit_date.replaceAll('-', '/')
+        }
+
+        formData.append('brand', data.brand)
+        formData.append('category', data.category)
+        formData.append('product_model', data.product_model)
+        formData.append('serial_number', data.serial_number)
+        formData.append('purchase_date', data.purchase_date)
+        formData.append('address', data.address)
+        formData.append('barcode', data.barcode)
+        formData.append('product_id', data.product_id)
+        formData.append('product_name', data.product_name)
+        formData.append('store_name', data.store_name)
+        formData.append('store_location', data.store_location)
+        formData.append('visit_date', newVisiteDate)
+        formData.append('visit_hours', data.visit_hours)
+        formData.append('description', data.description)
+        formData.append('agreements', data.agreements)
+        formData.append('mobile_phone', data.mobile_phone)
+
+        await axios.post(props.base_url + 'register-service', formData, {
+            headers: {
+                Authorization: 'Bearer ' + token,
+            },
+        }).then((res) => {
+            alertModal()
+            onHideModal()
+        }).catch((err) => {
+            if(err.response.data.errors !== undefined) {
+                let responError = err.response.data.errors
+                if(responError.location === 'store_name') {
+                    setErrorData({
+                        ...errorData,
+                        store_name: responError.reason
+                    })
+                }
+
+                if(responError.location === 'visit_date') {
+                    setErrorData({
+                        ...errorData,
+                        visit_date: responError.reason
+                    })
+                }
+    
+                if(responError.location === 'visit_hours') {
+                    setErrorData({
+                        ...errorData,
+                        visit_hours: responError.reason
+                    })
+                }
+    
+                if(responError.location === 'description') {
+                    setErrorData({
+                        ...errorData,
+                        description: responError.reason
+                    })
+                }
+                
+                if(responError.location === 'agreements') {
+                    setErrorData({
+                        ...errorData,
+                        agreements: responError.reason
+                    })
+                }
+            } else {
+                console.log(err.response)
+            }
+        })
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
-
-        // const formData = new FormData()
-
-        // if(data.visit_date !== '') {
-        //     data.visit_date.replaceAll('-', '/')
-        // }
-
-        // let newVisiteDate = ''
-        // if(data.visit_date !== '') {
-        //     newVisiteDate = data.visit_date.replaceAll('-', '/')
-        // }
-
-        // formData.append('brand', data.brand)
-        // formData.append('category', data.category)
-        // formData.append('product_model', data.product_model)
-        // formData.append('serial_number', data.serial_number)
-        // formData.append('purchase_date', data.purchase_date)
-        // formData.append('address', data.address)
-        // formData.append('barcode', data.barcode)
-        // formData.append('product_id', data.product_id)
-        // formData.append('product_name', data.product_name)
-        // formData.append('store_name', data.store_name)
-        // formData.append('store_location', data.store_location)
-        // formData.append('visit_date', newVisiteDate)
-        // formData.append('visit_hours', data.visit_hours)
-        // formData.append('description', data.description)
-        // formData.append('agreements', data.agreements)
-        // formData.append('mobile_phone', data.mobile_phone)
-
-        // await axios.post(props.base_url + 'register-service', formData, {
-        //     headers: {
-        //         Authorization: 'Bearer ' + token,
-        //     },
-        // }).then((res) => {
-        //     alert('berhasil')
-        // }).catch((err) => {
-        //     if(err.response.data.errors !== undefined) {
-        //         let responError = err.response.data.errors
-        //         if(responError.location === 'visit_date') {
-        //             setErrorData({
-        //                 ...errorData,
-        //                 visit_date: responError.reason
-        //             })
-        //         }
-    
-        //         if(responError.location === 'visit_hours') {
-        //             setErrorData({
-        //                 ...errorData,
-        //                 visit_hours: responError.reason
-        //             })
-        //         }
-    
-        //         if(responError.location === 'description') {
-        //             setErrorData({
-        //                 ...errorData,
-        //                 description: responError.reason
-        //             })
-        //         }
-                
-        //         if(responError.location === 'agreements') {
-        //             setErrorData({
-        //                 ...errorData,
-        //                 agreements: responError.reason
-        //             })
-        //         }
-        //     } else {
-        //         console.log(err.response)
-        //     }
-        // })
         InsertHSISRAPI()
     } 
+
+    const alertModal = () => {
+        let alertModal = new Modal(document.getElementById('alertModal'));
+        alertModal.show();
+    }
+
+    const onHideModal = () => {
+        var alertModal = document.getElementById('alertModal');
+        alertModal.addEventListener('hide.bs.modal', function (event) {
+            history.push('/landing-page')
+        });
+    };
 
     return (
         <div className="px-lg-5 px-1 py-5 mb-5 detail-product">
@@ -363,7 +389,7 @@ const FormProduct = (props) =>  {
 
                         <div className="col-lg-6">
                             <div className="mb-4">
-                                <label htmlFor="store-name" className="form-label">Service Serter Name</label>
+                                <label htmlFor="store-name" className="form-label">Service Center Name</label>
                                 <SelectSearch
                                     options={newDataServiceCenter}
                                     value={serviceCenter}
@@ -371,6 +397,7 @@ const FormProduct = (props) =>  {
                                     search
                                     filterOptions={fuzzySearch}
                                     placeholder="Search something"
+                                    
                                 />
                             </div>
                         </div>
@@ -398,6 +425,7 @@ const FormProduct = (props) =>  {
                                         id="visit-date" 
                                         name="visit_date"
                                         onChange={onChangeData}
+                                        required
                                     />
                                     <div className="invalid-feedback">
                                         { errorData.visit_date }
@@ -408,16 +436,17 @@ const FormProduct = (props) =>  {
                             <div className="col-lg-6">
                                 <div>
                                     <label htmlFor="reapair-visit" className="form-label">Visit Hours</label>
-                                    <select 
+                                    {/* <select 
                                         className={`form-select ${errorData.visit_hours !== '' ? 'is-invalid' : null}`}
                                         name="visit_hours"
                                         onChange={onChangeData}
-                                    >
-                                        <option selected disabled>-- Select Visit Hour --</option>
-                                        <option value="1">12:00-14:00</option>
-                                        <option value="2">10:00-14:00</option>
-                                        <option value="3">14:00-16:00</option>
-                                    </select>
+                                    > */}
+                                    <input 
+                                        type="time"
+                                        className={`form-control ${errorData.visit_hours !== '' ? 'is-invalid' : null}`}
+                                        name="visit_hours"
+                                        onChange={onChangeData}
+                                    />
                                     <div className="invalid-feedback">
                                         { errorData.visit_hours }
                                     </div>
@@ -444,6 +473,7 @@ const FormProduct = (props) =>  {
                                     rows="5"
                                     name="description"
                                     onChange={onChangeData}
+                                    required
                                 >
                                 </textarea>
                                 <div className="invalid-feedback">
@@ -460,6 +490,7 @@ const FormProduct = (props) =>  {
                                         type="checkbox" value="1" 
                                         onChange={onChangeData}
                                         name="agreements"
+                                        required
                                     />
                                     <label class="form-check-label" >
                                         Dapatkah kami menghubungi Anda menggunakan WhatsApp kedepannya. 
@@ -488,13 +519,17 @@ const FormProduct = (props) =>  {
                     </div>
                 </form>
             </div>
+            <AlertModal 
+                data={dataAlert}
+            />
         </div>
     );
 }
 
 const mapStateToProps = (state) => {
     return {
-        base_url: state.BASE_URL
+        base_url: state.BASE_URL,
+        gsis_url: state.GSIS_URL
     }
 }
 export default connect(mapStateToProps, null) (FormProduct);

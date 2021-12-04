@@ -5,6 +5,7 @@ const initialCredential = {
   BASE_URL: 'https://e-warranty.click/api/',
   URL: 'https://images.e-warranty.click/',
   GTM_URL: 'https://openplat-sg-aws-test.haier.net/api/',
+  GSIS_URL: 'http://119.8.191.161/eai_enu/start.swe?SWEExtSource=WebService&SWEExtCmd=Execute&UserName=ADMIN&Password=ADMIN',
   GTM_TOKEN: '',
   ADMIN_LOGIN: false,
   CUSTOMER_LOGIN: false,

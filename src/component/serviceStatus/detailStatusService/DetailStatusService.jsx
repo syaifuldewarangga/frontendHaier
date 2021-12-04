@@ -34,7 +34,6 @@ const DetailStatusService = (props) => {
           {
             headers: {
               'Content-Type': 'text/xml',
-
               SOAPAction: '"document/http://haier.com:CheckHSISRStatus"',
             },
           }
@@ -48,8 +47,7 @@ const DetailStatusService = (props) => {
             alert(cek_error.ErrorMessage.__text);
           } else {
             setData(
-              json.Envelope.Body.CheckHSISRStatus_Output.ListOfServiceRequest
-                .ServiceRequest
+              json.Envelope.Body.CheckHSISRStatus_Output.ListOfServiceRequest.ServiceRequest
             );
           }
         })
