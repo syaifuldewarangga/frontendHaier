@@ -14,7 +14,7 @@ class ImageSlider extends Component
 
     async getBannerFromAPI() {
         const token = localStorage.getItem('access_token')
-        await axios.get(this.props.base_url + 'banner', {
+        await axios.get(this.props.base_url + 'banner/active', {
             headers: {
                 Authorization: 'Bearer ' + token,
             },
