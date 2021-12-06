@@ -13,6 +13,8 @@ function ProfileForm(props) {
   const [dataPonsel, setDataPonsel] = React.useState('');
   const [city, setCity] = useState([]);
   const [prov, setProv] = useState([]);
+  const [district, setDistrict] = useState([]);
+  const [sub_district, setSub_district] = useState([]);
 
   const [newPassword, setNewPasword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -32,6 +34,7 @@ function ProfileForm(props) {
     province: '',
     city: '',
     district: '',
+    sub_district: '',
     street: '',
   });
 
@@ -87,6 +90,8 @@ function ProfileForm(props) {
     }
     fetchData();
     getCityFromAPI(props.data.province);
+    getDisrictFromAPI(props.data.city);
+    getSubDisrictFromAPI(props.data.district);
   }, [props.base_url, props.data]);
 
   const getCityFromAPI = async (province) => {
@@ -105,13 +110,67 @@ function ProfileForm(props) {
       });
   };
 
+  const getDisrictFromAPI = async (city) => {
+    await axios
+      .get(props.base_url + 'location/city/districts', {
+        params: {
+          city_name: city,
+        },
+        headers: {
+          Authorization:
+            'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlcmxhbmdnYXJpYW5zeWFoMEBnbWFpbC5jb20iLCJhcHBsaWNhdGlvbl9uYW1lIjoiSGFpZXIgRS1XYXJyYW50eSIsInJvbGVzIjpbIkRFTEVURV9BUlRJQ0xFIiwiREVMRVRFX0JBTk5FUiIsIkRFTEVURV9DQVRFR09SWSIsIkRFTEVURV9DVVNUT01FUl9WT0lDRSIsIkRFTEVURV9NRVNTQUdFIiwiREVMRVRFX1JFR0lTVEVSX1BST0RVQ1QiLCJERUxFVEVfUk9MRSIsIkRFTEVURV9TRVJWSUNFX0NFTlRFUiIsIkRFTEVURV9TVE9SRSIsIkRFTEVURV9VU0VSIiwiR0VUX0FQSV9QQU5FTCIsIkdFVF9BUlRJQ0xFIiwiR0VUX0JBTk5FUiIsIkdFVF9DQVRFR09SWSIsIkdFVF9DT05UQUNUX0lORk9STUFUSU9OIiwiR0VUX0NVU1RPTUVSX0FOU1dFUiIsIkdFVF9DVVNUT01FUl9WT0lDRSIsIkdFVF9NRVNTQUdFIiwiR0VUX1JFR0lTVEVSX0NVU1RPTUVSIiwiR0VUX1JFR0lTVEVSX1BST0RVQ1QiLCJHRVRfUkVHSVNURVJfU0VSVklDRSIsIkdFVF9ST0xFIiwiR0VUX1NFUlZJQ0VfQ0VOVEVSIiwiR0VUX1NUT1JFIiwiR0VUX1VTRVIiLCJQT1NUX0FSVElDTEUiLCJQT1NUX0JBTk5FUiIsIlBPU1RfQ0FURUdPUlkiLCJQT1NUX0NVU1RPTUVSX0FOU1dFUiIsIlBPU1RfQ1VTVE9NRVJfVk9JQ0UiLCJQT1NUX01FU1NBR0UiLCJQT1NUX1JFR0lTVEVSX1BST0RVQ1QiLCJQT1NUX1JFR0lTVEVSX1NFUlZJQ0UiLCJQT1NUX1JPTEUiLCJQT1NUX1NFUlZJQ0VfQ0VOVEVSIiwiUE9TVF9TVE9SRSIsIlBPU1RfVVNFUiIsIlVQREFURV9BUElfUEFORUwiLCJVUERBVEVfQVJUSUNMRSIsIlVQREFURV9CQU5ORVIiLCJVUERBVEVfQ0FURUdPUlkiLCJVUERBVEVfQ1VTVE9NRVJfVk9JQ0UiLCJVUERBVEVfUkVHSVNURVJfUFJPRFVDVCIsIlVQREFURV9ST0xFIiwiVVBEQVRFX1NFUlZJQ0VfQ0VOVEVSIiwiVVBEQVRFX1NUT1JFIiwiVVBEQVRFX1VTRVIiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDAyL2FwaS9sb2dpbiIsIm5hbWUiOiJlcmxhbmdnYXJpYW5zeWFoMEBnbWFpbC5jb20iLCJleHAiOjE0NzQ2NDYxNjcwNX0.Y1T-yk4ozEz_ZOPPSnnG0AXVdtpVRg2B94LZ4j1-c-c',
+        },
+      })
+      .then((res) => {
+        setDistrict(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getSubDisrictFromAPI = async (district) => {
+    await axios
+      .get(props.base_url + 'location/city/districts/subdistricts', {
+        params: {
+          district_name: district,
+        },
+        headers: {
+          Authorization:
+            'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlcmxhbmdnYXJpYW5zeWFoMEBnbWFpbC5jb20iLCJhcHBsaWNhdGlvbl9uYW1lIjoiSGFpZXIgRS1XYXJyYW50eSIsInJvbGVzIjpbIkRFTEVURV9BUlRJQ0xFIiwiREVMRVRFX0JBTk5FUiIsIkRFTEVURV9DQVRFR09SWSIsIkRFTEVURV9DVVNUT01FUl9WT0lDRSIsIkRFTEVURV9NRVNTQUdFIiwiREVMRVRFX1JFR0lTVEVSX1BST0RVQ1QiLCJERUxFVEVfUk9MRSIsIkRFTEVURV9TRVJWSUNFX0NFTlRFUiIsIkRFTEVURV9TVE9SRSIsIkRFTEVURV9VU0VSIiwiR0VUX0FQSV9QQU5FTCIsIkdFVF9BUlRJQ0xFIiwiR0VUX0JBTk5FUiIsIkdFVF9DQVRFR09SWSIsIkdFVF9DT05UQUNUX0lORk9STUFUSU9OIiwiR0VUX0NVU1RPTUVSX0FOU1dFUiIsIkdFVF9DVVNUT01FUl9WT0lDRSIsIkdFVF9NRVNTQUdFIiwiR0VUX1JFR0lTVEVSX0NVU1RPTUVSIiwiR0VUX1JFR0lTVEVSX1BST0RVQ1QiLCJHRVRfUkVHSVNURVJfU0VSVklDRSIsIkdFVF9ST0xFIiwiR0VUX1NFUlZJQ0VfQ0VOVEVSIiwiR0VUX1NUT1JFIiwiR0VUX1VTRVIiLCJQT1NUX0FSVElDTEUiLCJQT1NUX0JBTk5FUiIsIlBPU1RfQ0FURUdPUlkiLCJQT1NUX0NVU1RPTUVSX0FOU1dFUiIsIlBPU1RfQ1VTVE9NRVJfVk9JQ0UiLCJQT1NUX01FU1NBR0UiLCJQT1NUX1JFR0lTVEVSX1BST0RVQ1QiLCJQT1NUX1JFR0lTVEVSX1NFUlZJQ0UiLCJQT1NUX1JPTEUiLCJQT1NUX1NFUlZJQ0VfQ0VOVEVSIiwiUE9TVF9TVE9SRSIsIlBPU1RfVVNFUiIsIlVQREFURV9BUElfUEFORUwiLCJVUERBVEVfQVJUSUNMRSIsIlVQREFURV9CQU5ORVIiLCJVUERBVEVfQ0FURUdPUlkiLCJVUERBVEVfQ1VTVE9NRVJfVk9JQ0UiLCJVUERBVEVfUkVHSVNURVJfUFJPRFVDVCIsIlVQREFURV9ST0xFIiwiVVBEQVRFX1NFUlZJQ0VfQ0VOVEVSIiwiVVBEQVRFX1NUT1JFIiwiVVBEQVRFX1VTRVIiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDAyL2FwaS9sb2dpbiIsIm5hbWUiOiJlcmxhbmdnYXJpYW5zeWFoMEBnbWFpbC5jb20iLCJleHAiOjE0NzQ2NDYxNjcwNX0.Y1T-yk4ozEz_ZOPPSnnG0AXVdtpVRg2B94LZ4j1-c-c',
+        },
+      })
+      .then((res) => {
+        setSub_district(res.data);
+      });
+  };
+
   const onChangeData = (e) => {
     if (e.target.ariaLabel === 'province') {
       getCityFromAPI(e.target.value);
+      setData({
+        ...data,
+        [e.target.ariaLabel]: e.target.value,
+      });
+    }
+    if (e.target.ariaLabel === 'city') {
+      getDisrictFromAPI(e.target.value);
+      setData({
+        ...data,
+        [e.target.ariaLabel]: e.target.value,
+      });
+    }
+    if (e.target.ariaLabel === 'district') {
+      getSubDisrictFromAPI(e.target.value);
+      setData({
+        ...data,
+        [e.target.ariaLabel]: e.target.value,
+      });
     }
     if (e.target.ariaLabel === 'phone') {
       setDataPonsel(e.target.value);
     } else {
+      console.log(e.target.ariaLabel);
       setData({
         ...data,
         [e.target.ariaLabel]: e.target.value,
@@ -120,11 +179,13 @@ function ProfileForm(props) {
   };
 
   const fetchAPI = () => {
+    console.log(data);
     var token = localStorage.getItem('access_token');
     let formData = new FormData();
     formData.append('roles', localStorage.getItem('role'));
     formData.append('first_name', data.first_name);
     formData.append('last_name', data.last_name);
+    formData.append('email', data.email);
     formData.append('username', data.username);
     formData.append('phone', '62' + dataPonsel);
     formData.append('nik', data.nik);
@@ -164,6 +225,7 @@ function ProfileForm(props) {
         onHideModal();
       })
       .catch((e) => {
+        console.log(e.request.response);
         if (e.response.data) {
           let responError = e.response.data.errors;
           if (responError.location === 'first_name') {
@@ -390,7 +452,7 @@ function ProfileForm(props) {
                           value="Pria"
                           selected={data.gender === 'Pria' ? 'selected' : ''}
                         >
-                          Pria 
+                          Pria
                         </option>
                         <option
                           value="Wanita"
@@ -594,20 +656,68 @@ function ProfileForm(props) {
                         {t('profile.district')}
                         <span className="text-danger">*</span>
                       </label>
-                      <input
-                        type="text"
-                        class={`form-control ${
+                      <select
+                        class={`form-select ${
                           errorData.district !== '' ? 'is-invalid' : null
                         }`}
-                        value={data.district}
                         aria-label="district"
                         onChange={onChangeData}
-                      />
+                      >
+                        {district.map(function (item, i) {
+                          return (
+                            <option
+                              value={item.dis_name}
+                              key={i}
+                              selected={
+                                item.dis_name === props.data.district
+                                  ? 'selected'
+                                  : null
+                              }
+                            >
+                              {item.dis_name}
+                            </option>
+                          );
+                        })}
+                      </select>
                     </div>
                   </div>
                 </div>
 
-                <div className="col-lg-12">
+                <div className="col-lg-6">
+                  <div className="px-lg-5">
+                    <div class="mb-4">
+                      <label class="form-label">
+                        {t('profile.sub_district')}
+                        <span className="text-danger">*</span>
+                      </label>
+                      <select
+                        class={`form-select ${
+                          errorData.district !== '' ? 'is-invalid' : null
+                        }`}
+                        aria-label="sub_district"
+                        onChange={onChangeData}
+                      >
+                        {sub_district.map(function (item, i) {
+                          return (
+                            <option
+                              value={item.subdis_name}
+                              key={i}
+                              selected={
+                                item.subdis_name === props.data.sub_district
+                                  ? 'selected'
+                                  : null
+                              }
+                            >
+                              {item.subdis_name}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-lg-6">
                   <div className="px-lg-5">
                     <div class="mb-4">
                       <label class="form-label">

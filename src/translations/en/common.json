@@ -11,12 +11,12 @@
     "profile": "Profile",
     "logout": "Logout"
   },
-  "landingPage" : {
+  "landingPage": {
     "scan_your_product_here": "Scan Your Product Here",
     "your_product": "Your Product",
     "new_blog": "New Blog"
   },
-  "general" : {
+  "general": {
     "see_more": "See More",
     "search_location": "Search Location",
     "load_more": "Load More",
@@ -72,6 +72,7 @@
     "province": "Province",
     "city": "City",
     "district": "District",
+    "sub_district": "Sub District",
     "postal_code": "Postal Code",
     "address": "Address",
     "save": "Save"

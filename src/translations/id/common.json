@@ -16,7 +16,7 @@
     "your_product": "Produk Anda",
     "new_blog": "Blog Baru"
   },
-  "general" : {
+  "general": {
     "see_more": "Lihat Lebih Banyak",
     "search_location": "Cari Lokasi",
     "load_more": "Muat Lebih Banyak",
@@ -72,6 +72,7 @@
     "province": "Provinsi",
     "city": "Kota",
     "district": "Kecamatan",
+    "sub_district": "Desa",
     "postal_code": "Kode Pos",
     "address": "Alamat",
     "save": "Simpan"
