@@ -25,6 +25,11 @@ function UserRegisterProduct(props) {
     file1: '',
     file2: '',
   });
+  const [errorDate, setErrorDate] = useState('');
+  const [errorFile1, setErrorFile1] = useState('');
+  const [errorFile2, setErrorFile2] = useState('');
+  const [errorStore, setErrorStore] = useState('');
+
   var email = localStorage.getItem('email');
   var token = localStorage.getItem('access_token');
 
@@ -136,122 +141,141 @@ function UserRegisterProduct(props) {
     var id = localStorage.getItem('id');
     var phone = localStorage.getItem('phone');
 
-    if (userData.date !== '') {
+    if (
+      userData.date !== '' ||
+      userData.file1 !== '' ||
+      userData.file2 !== '' ||
+      storeValue !== ''
+    ) {
       var dateChange = userData.date.replaceAll('-', '/');
-    }
+      const formdata = new FormData();
+      const newPurcaseDate = format(new Date(dateChange), 'MM/dd/yyyy');
+      const newBirthDateDate = format(new Date('1981//09/27'), 'MM/dd/yyyy');
+      const newGender = dataUser.gender === 'Pria' ? 'Mr' : 'Ms';
 
-    const formdata = new FormData();
-    const newPurcaseDate = format(new Date(dateChange), 'MM/dd/yyyy');
-    const newBirthDateDate = format(new Date('1981//09/27'), 'MM/dd/yyyy');
-    const newGender = dataUser.gender === 'Pria' ? 'Mr' : 'Ms';
+      formdata.append('customer_id', id);
+      formdata.append('barcode', data.Barcode);
+      formdata.append('product_id', data.ProductID);
+      formdata.append('brand', data.Brand);
+      formdata.append('product_name', data.ProductName);
+      formdata.append('product_model', data.ProductModel);
+      formdata.append('serial_number', data.SerialNumber);
+      formdata.append('category', data.Category);
+      formdata.append('date', dateChange);
+      formdata.append('store_location', storeStreet);
+      formdata.append('store_name', storeValue);
+      formdata.append('email', email);
+      formdata.append('phone', phone);
+      formdata.append('status', 1);
+      formdata.append(
+        'warranty_card',
+        userData.file1 === '' ? '' : userData.file1
+      );
+      formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
 
-    formdata.append('customer_id', id);
-    formdata.append('barcode', data.Barcode);
-    formdata.append('product_id', data.ProductID);
-    formdata.append('brand', data.Brand);
-    formdata.append('product_name', data.ProductName);
-    formdata.append('product_model', data.ProductModel);
-    formdata.append('serial_number', data.SerialNumber);
-    formdata.append('category', data.Category);
-    formdata.append('date', dateChange);
-    formdata.append('store_location', storeStreet);
-    formdata.append('store_name', storeValue);
-    formdata.append('email', email);
-    formdata.append('phone', phone);
-    formdata.append('status', 1);
-    formdata.append(
-      'warranty_card',
-      userData.file1 === '' ? '' : userData.file1
-    );
-    formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
+      const postToGSIS = async () => {
+        let xmls = `
+          <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:hai="http://haier.com" xmlns:spir="http://www.siebel.com/xml/SPIRightNowInboundObject">
+            <soapenv:Header/>
+            <soapenv:Body>
+              <hai:HATProdReg0926>
+                <spir:ProductRegister>
+                  <spir:id>1</spir:id>
+                  <spir:country>Indonesia</spir:country>
+                  <spir:firstName>${dataUser.first_name}</spir:firstName>
+                  <spir:lastName>${dataUser.last_name}</spir:lastName>
+                  <spir:gender>${newGender}</spir:gender>
+                  <spir:customerType>End User</spir:customerType>
+                  <spir:telPhone></spir:telPhone>
+                  <spir:mobilePhone>${dataUser.phone}</spir:mobilePhone>
+                  <spir:officePhone>${dataUser.phone_office}</spir:officePhone>
+                  <spir:age>${dataUser.age}</spir:age>
+                  <spir:birthday>${newBirthDateDate}</spir:birthday>
+                  <spir:email>${dataUser.email}</spir:email>
+                  <spir:fax>${dataUser.fax}</spir:fax>
+                  <spir:brand>${data.Brand}</spir:brand>
+                  <spir:category>${data.Category}</spir:category>
+                  <spir:productModel>${data.ProductModel}</spir:productModel>
+                  <spir:serialNum>${data.SerialNumber}</spir:serialNum>
+                  <spir:purchaseDate>${newPurcaseDate}</spir:purchaseDate>
+                  <spir:expiryDate></spir:expiryDate>
+                  <spir:status></spir:status>
+                  <spir:haveYouPurchasedExtendedWarranty></spir:haveYouPurchasedExtendedWarranty>
+                  <spir:retailerName>${storeValue}</spir:retailerName>
+                  <spir:retailerAddress>${storeStreet}</spir:retailerAddress>
+                  <spir:retailerPostcode></spir:retailerPostcode>
+                  <spir:retailerCity></spir:retailerCity>
+                  <spir:retailerContactFirstName></spir:retailerContactFirstName>
+                  <spir:retailerContactLastName></spir:retailerContactLastName>
+                  <spir:retailerContactPhone></spir:retailerContactPhone>
+                  <spir:retailerEmail></spir:retailerEmail>
+                  <spir:address>${dataUser.address}</spir:address>
+                  <spir:AddressId></spir:AddressId>
+                  <spir:City>${dataUser.city}</spir:City>
+                  <spir:State></spir:State>
+                  <spir:Street></spir:Street>
+                </spir:ProductRegister>
+              </hai:HATProdReg0926>
+            </soapenv:Body>
+          </soapenv:Envelope>
+        `;
+        await axios
+          .post(props.gsis_url, xmls, {
+            headers: {
+              'Content-Type': 'text/xml',
+              SOAPAction: '"document/http://haier.com:InsertHSIProdReg"',
+            },
+          })
+          .then((res) => {
+            console.log(res.data);
+            var json = xtojson.xml2js(res.data);
+            console.log(json);
+            // let cek_error = json.Envelope.Body.InsertHSIProdReg_Output;
+            // if (cek_error.ErrorCode.__text !== '0') {
+            //   console.log(cek_error.ErrorMessage.__text);
+            // } else {
+            //   alert('berhasil')
+            // }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      };
 
-    const postToGSIS = async () => {
-      let xmls = `
-        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:hai="http://haier.com" xmlns:spir="http://www.siebel.com/xml/SPIRightNowInboundObject">
-          <soapenv:Header/>
-          <soapenv:Body>
-            <hai:HATProdReg0926>
-              <spir:ProductRegister>
-                <spir:id>1</spir:id>
-                <spir:country>Indonesia</spir:country>
-                <spir:firstName>${dataUser.first_name}</spir:firstName>
-                <spir:lastName>${dataUser.last_name}</spir:lastName>
-                <spir:gender>${newGender}</spir:gender>
-                <spir:customerType>End User</spir:customerType>
-                <spir:telPhone></spir:telPhone>
-                <spir:mobilePhone>${dataUser.phone}</spir:mobilePhone>
-                <spir:officePhone>${dataUser.phone_office}</spir:officePhone>
-                <spir:age>${dataUser.age}</spir:age>
-                <spir:birthday>${newBirthDateDate}</spir:birthday>
-                <spir:email>${dataUser.email}</spir:email>
-                <spir:fax>${dataUser.fax}</spir:fax>
-                <spir:brand>${data.Brand}</spir:brand>
-                <spir:category>${data.Category}</spir:category>
-                <spir:productModel>${data.ProductModel}</spir:productModel>
-                <spir:serialNum>${data.SerialNumber}</spir:serialNum>
-                <spir:purchaseDate>${newPurcaseDate}</spir:purchaseDate>
-                <spir:expiryDate></spir:expiryDate>
-                <spir:status></spir:status>
-                <spir:haveYouPurchasedExtendedWarranty></spir:haveYouPurchasedExtendedWarranty>
-                <spir:retailerName>${storeValue}</spir:retailerName>
-                <spir:retailerAddress>${storeStreet}</spir:retailerAddress>
-                <spir:retailerPostcode></spir:retailerPostcode>
-                <spir:retailerCity></spir:retailerCity>
-                <spir:retailerContactFirstName></spir:retailerContactFirstName>
-                <spir:retailerContactLastName></spir:retailerContactLastName>
-                <spir:retailerContactPhone></spir:retailerContactPhone>
-                <spir:retailerEmail></spir:retailerEmail>
-                <spir:address>${dataUser.address}</spir:address>
-                <spir:AddressId></spir:AddressId>
-                <spir:City>${dataUser.city}</spir:City>
-                <spir:State></spir:State>
-                <spir:Street></spir:Street>
-              </spir:ProductRegister>
-            </hai:HATProdReg0926>
-          </soapenv:Body>
-        </soapenv:Envelope>
-      `;
-      await axios.post( props.gsis_url, xmls, {
+      await axios
+        .post(props.base_url + 'register-product', formdata, {
           headers: {
-            'Content-Type': 'text/xml',
-            SOAPAction: '"document/http://haier.com:InsertHSIProdReg"',
+            Authorization: 'Bearer ' + token,
           },
-        }
-      )
-      .then((res) => {
-        console.log(res.data);
-        var json = xtojson.xml2js(res.data);
-        console.log(json)
-        // let cek_error = json.Envelope.Body.InsertHSIProdReg_Output;
-        // if (cek_error.ErrorCode.__text !== '0') {
-        //   console.log(cek_error.ErrorMessage.__text);
-        // } else {
-        //   alert('berhasil')
-        // }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    }
-    
-    await axios.post(props.base_url + 'register-product', formdata, {
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    }).then((res) => {
-      // alert('berhasil')
-      postToGSIS()
-    }).catch((e) => {
-      if (e.response) {
-        console.log(e.response);
-      } else if (e.request) {
-        console.log('request : ' + e.request);
-      } else {
-        console.log('message : ' + e.message);
+        })
+        .then((res) => {
+          // alert('berhasil')
+          postToGSIS();
+        })
+        .catch((e) => {
+          if (e.response) {
+            console.log(e.response);
+          } else if (e.request) {
+            console.log('request : ' + e.request);
+          } else {
+            console.log('message : ' + e.message);
+          }
+        });
+    } else {
+      alert('Failed!');
+      if (userData.date === '') {
+        setErrorDate('Date Must be Required');
       }
-    });
-
-    
+      if (storeValue === '') {
+        setErrorStore('Store Must be Required');
+      }
+      if (userData.file1 === '') {
+        setErrorFile1('Warranty Card Must be Required');
+      }
+      if (userData.file2 === '') {
+        setErrorFile2('Invoice Must be Required');
+      }
+    }
   }
 
   let newDataStore = dataStore.map(({ StoreName }) => ({
@@ -362,7 +386,7 @@ function UserRegisterProduct(props) {
                 />
               </div>
             </div>
-            
+
             <div className="col-lg-6">
               <div className="mb-lg-5 mb-4">
                 <label htmlFor="serial-number" className="form-label">
@@ -386,6 +410,9 @@ function UserRegisterProduct(props) {
                 <input
                   type="date"
                   className="form-control"
+                  class={`form-control ${
+                    errorDate !== '' ? 'is-invalid' : null
+                  }`}
                   id="date-purchase"
                   onChange={(e) =>
                     setUserData({
@@ -394,6 +421,7 @@ function UserRegisterProduct(props) {
                     })
                   }
                 />
+                <div class="invalid-feedback">{errorDate}</div>
               </div>
             </div>
 
@@ -410,6 +438,9 @@ function UserRegisterProduct(props) {
                   filterOptions={fuzzySearch}
                   placeholder="Search something"
                 />
+                <div class="text-danger" style={{ fontSize: 14 }}>
+                  {errorStore}
+                </div>
               </div>
             </div>
 
@@ -443,8 +474,8 @@ function UserRegisterProduct(props) {
                   <input
                     type="file"
                     name="warranty_card"
-                    class="dropzone"
                     aria-label="file"
+                    class="dropzone"
                     onChange={(e) => {
                       setShowFile1(URL.createObjectURL(e.target.files[0]));
                       setUserData({
@@ -455,6 +486,7 @@ function UserRegisterProduct(props) {
                   />
                   {/* { errorData.file } */}
                 </div>
+                <div class="text-danger">{errorFile1}</div>
               </div>
             </div>
             <div className="col-lg-6">
@@ -484,6 +516,7 @@ function UserRegisterProduct(props) {
                   />
                   {/* { errorData.file } */}
                 </div>
+                <div class="text-danger">{errorFile2}</div>
               </div>
             </div>
           </div>
