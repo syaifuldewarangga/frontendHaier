@@ -63,17 +63,18 @@ const ServiceCenter = (props) => {
         headers: {
           Authorization: 'Bearer ' + token,
         },
-        props: {
+        params: {
           page: currentPage,
           itemPerPage: 10,
+          isPaginate: 1,
         },
       })
       .then((res) => {
         if (res.data.last === true) {
           setLastPage(true);
         }
+        console.log(res.data)
         setData(data.concat(res.data.content));
-        console.log(res.data.content);
       });
   };
 
@@ -85,7 +86,6 @@ const ServiceCenter = (props) => {
     setCurrentPage(currentPage + 1);
   };
 
-  console.log(props.data_search + 'kosong');
   const { t } = useTranslation('common')
   return (
     <div>
@@ -107,7 +107,9 @@ const ServiceCenter = (props) => {
                   </div>
                 );
               })}
-          <LoadMore />
+          <LoadMore 
+            handleLoadData = {handleLoadMore}
+          />
         </div>
       </div>
     </div>

@@ -115,25 +115,25 @@ class Footer extends Component
                                 <div className="footer-menu m-0">
                                     <ul>
                                         <li>
-                                            <a href="#">KULKAS</a>
+                                            <a href="https://aquajapanid.com/product/6/REFRIGERATOR" target="_blank">KULKAS</a>
                                         </li>
                                         <li>
-                                            <a href="#">MESIN CUCI</a>
+                                            <a href="https://aquajapanid.com/product/11/WASHING+MACHINE" target="_blank">MESIN CUCI</a>
                                         </li>
                                         <li>
-                                            <a href="#">AC</a>
+                                            <a href="https://aquajapanid.com/product/17/AIR+CONDITIONER" target="_blank">AC</a>
                                         </li>
                                         <li>
-                                            <a href="#">TELEVISI</a>
+                                            <a href="https://aquajapanid.com/product/22/TELEVISION" target="_blank">TELEVISI</a>
                                         </li>
                                         <li>
-                                            <a href="#">COLD CHAIN</a>
+                                            <a href="https://aquajapanid.com/product/25/COLD+CHAIN" target="_blank">COLD CHAIN</a>
                                         </li>
                                         <li>
-                                            <a href="#">SMALL DOMESTIC APPLIANCES</a>
+                                            <a href="https://aquajapanid.com/product/30/SMALL+DOMESTIC+APPLIANCES" target="_blank">SMALL DOMESTIC APPLIANCES</a>
                                         </li>
                                         <li>
-                                            <a href="#">360 THEMATIC PRODUCT</a>
+                                            <a href="https://aquajapanid.com/product/tematic/1/TEMATHIC+PRODUCT" target="_blank">360 THEMATIC PRODUCT</a>
                                         </li>
                                     </ul>
                                 </div>

@@ -77,7 +77,7 @@ const FormProduct = (props) =>  {
                 Authorization: 'Bearer ' + token,
             },
         }).then((res) => {
-            setDataServiceCenter(res.data.content)
+            setDataServiceCenter(res.data)
         }).catch(err => {
             console.log(err.response)
         })
@@ -175,7 +175,7 @@ const FormProduct = (props) =>  {
         await axios.post(props.gsis_url, xmls, {
         headers: {
             "Content-Type": "text/xml",
-            "SOAPAction": '"rpc/http://haier.com:HATProdReg0926"'
+            "SOAPAction": '"document/http://haier.com:InsertHSISR"'
         }
         }).then((res) => {
             var json = xtojson.xml2js(res.data)
@@ -222,6 +222,7 @@ const FormProduct = (props) =>  {
         formData.append('description', data.description)
         formData.append('agreements', data.agreements)
         formData.append('mobile_phone', data.mobile_phone)
+        formData.append('status', 1)
 
         await axios.post(props.base_url + 'register-service', formData, {
             headers: {
@@ -275,7 +276,7 @@ const FormProduct = (props) =>  {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        InsertHSISRAPI()
+        InsertServiceRegister()
     } 
 
     const alertModal = () => {

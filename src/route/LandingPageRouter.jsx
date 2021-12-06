@@ -91,7 +91,7 @@ const LandingPageRouter = () => {
         ></PrivateRoute>
         <PrivateRoute
           exact
-          path="/service-status/detail/:id"
+          path="/service-status/detail/:srNumber/:phoneNumber"
           component={DetailStatusService}
         ></PrivateRoute>
 
