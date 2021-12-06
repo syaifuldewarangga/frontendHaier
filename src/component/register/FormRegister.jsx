@@ -44,6 +44,8 @@ const FormRegister = (props) => {
 
   const [province, setProvince] = useState([]);
   const [city, setCity] = useState([]);
+  const [district, setDistrict] = useState([]);
+  const [sub_district, setSub_district] = useState([]);
 
   useEffect(() => {
     if (data.password !== data.confirmpassword) {
@@ -82,6 +84,41 @@ const FormRegister = (props) => {
       });
   };
 
+  const getDisrictFromAPI = async (city) => {
+    await axios
+      .get(props.base_url + 'location/city/districts', {
+        params: {
+          city_name: city,
+        },
+        headers: {
+          Authorization:
+            'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlcmxhbmdnYXJpYW5zeWFoMEBnbWFpbC5jb20iLCJhcHBsaWNhdGlvbl9uYW1lIjoiSGFpZXIgRS1XYXJyYW50eSIsInJvbGVzIjpbIkRFTEVURV9BUlRJQ0xFIiwiREVMRVRFX0JBTk5FUiIsIkRFTEVURV9DQVRFR09SWSIsIkRFTEVURV9DVVNUT01FUl9WT0lDRSIsIkRFTEVURV9NRVNTQUdFIiwiREVMRVRFX1JFR0lTVEVSX1BST0RVQ1QiLCJERUxFVEVfUk9MRSIsIkRFTEVURV9TRVJWSUNFX0NFTlRFUiIsIkRFTEVURV9TVE9SRSIsIkRFTEVURV9VU0VSIiwiR0VUX0FQSV9QQU5FTCIsIkdFVF9BUlRJQ0xFIiwiR0VUX0JBTk5FUiIsIkdFVF9DQVRFR09SWSIsIkdFVF9DT05UQUNUX0lORk9STUFUSU9OIiwiR0VUX0NVU1RPTUVSX0FOU1dFUiIsIkdFVF9DVVNUT01FUl9WT0lDRSIsIkdFVF9NRVNTQUdFIiwiR0VUX1JFR0lTVEVSX0NVU1RPTUVSIiwiR0VUX1JFR0lTVEVSX1BST0RVQ1QiLCJHRVRfUkVHSVNURVJfU0VSVklDRSIsIkdFVF9ST0xFIiwiR0VUX1NFUlZJQ0VfQ0VOVEVSIiwiR0VUX1NUT1JFIiwiR0VUX1VTRVIiLCJQT1NUX0FSVElDTEUiLCJQT1NUX0JBTk5FUiIsIlBPU1RfQ0FURUdPUlkiLCJQT1NUX0NVU1RPTUVSX0FOU1dFUiIsIlBPU1RfQ1VTVE9NRVJfVk9JQ0UiLCJQT1NUX01FU1NBR0UiLCJQT1NUX1JFR0lTVEVSX1BST0RVQ1QiLCJQT1NUX1JFR0lTVEVSX1NFUlZJQ0UiLCJQT1NUX1JPTEUiLCJQT1NUX1NFUlZJQ0VfQ0VOVEVSIiwiUE9TVF9TVE9SRSIsIlBPU1RfVVNFUiIsIlVQREFURV9BUElfUEFORUwiLCJVUERBVEVfQVJUSUNMRSIsIlVQREFURV9CQU5ORVIiLCJVUERBVEVfQ0FURUdPUlkiLCJVUERBVEVfQ1VTVE9NRVJfVk9JQ0UiLCJVUERBVEVfUkVHSVNURVJfUFJPRFVDVCIsIlVQREFURV9ST0xFIiwiVVBEQVRFX1NFUlZJQ0VfQ0VOVEVSIiwiVVBEQVRFX1NUT1JFIiwiVVBEQVRFX1VTRVIiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDAyL2FwaS9sb2dpbiIsIm5hbWUiOiJlcmxhbmdnYXJpYW5zeWFoMEBnbWFpbC5jb20iLCJleHAiOjE0NzQ2NDYxNjcwNX0.Y1T-yk4ozEz_ZOPPSnnG0AXVdtpVRg2B94LZ4j1-c-c',
+        },
+      })
+      .then((res) => {
+        setDistrict(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getSubDisrictFromAPI = async (district) => {
+    await axios
+      .get(props.base_url + 'location/city/districts/subdistricts', {
+        params: {
+          district_name: district,
+        },
+        headers: {
+          Authorization:
+            'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlcmxhbmdnYXJpYW5zeWFoMEBnbWFpbC5jb20iLCJhcHBsaWNhdGlvbl9uYW1lIjoiSGFpZXIgRS1XYXJyYW50eSIsInJvbGVzIjpbIkRFTEVURV9BUlRJQ0xFIiwiREVMRVRFX0JBTk5FUiIsIkRFTEVURV9DQVRFR09SWSIsIkRFTEVURV9DVVNUT01FUl9WT0lDRSIsIkRFTEVURV9NRVNTQUdFIiwiREVMRVRFX1JFR0lTVEVSX1BST0RVQ1QiLCJERUxFVEVfUk9MRSIsIkRFTEVURV9TRVJWSUNFX0NFTlRFUiIsIkRFTEVURV9TVE9SRSIsIkRFTEVURV9VU0VSIiwiR0VUX0FQSV9QQU5FTCIsIkdFVF9BUlRJQ0xFIiwiR0VUX0JBTk5FUiIsIkdFVF9DQVRFR09SWSIsIkdFVF9DT05UQUNUX0lORk9STUFUSU9OIiwiR0VUX0NVU1RPTUVSX0FOU1dFUiIsIkdFVF9DVVNUT01FUl9WT0lDRSIsIkdFVF9NRVNTQUdFIiwiR0VUX1JFR0lTVEVSX0NVU1RPTUVSIiwiR0VUX1JFR0lTVEVSX1BST0RVQ1QiLCJHRVRfUkVHSVNURVJfU0VSVklDRSIsIkdFVF9ST0xFIiwiR0VUX1NFUlZJQ0VfQ0VOVEVSIiwiR0VUX1NUT1JFIiwiR0VUX1VTRVIiLCJQT1NUX0FSVElDTEUiLCJQT1NUX0JBTk5FUiIsIlBPU1RfQ0FURUdPUlkiLCJQT1NUX0NVU1RPTUVSX0FOU1dFUiIsIlBPU1RfQ1VTVE9NRVJfVk9JQ0UiLCJQT1NUX01FU1NBR0UiLCJQT1NUX1JFR0lTVEVSX1BST0RVQ1QiLCJQT1NUX1JFR0lTVEVSX1NFUlZJQ0UiLCJQT1NUX1JPTEUiLCJQT1NUX1NFUlZJQ0VfQ0VOVEVSIiwiUE9TVF9TVE9SRSIsIlBPU1RfVVNFUiIsIlVQREFURV9BUElfUEFORUwiLCJVUERBVEVfQVJUSUNMRSIsIlVQREFURV9CQU5ORVIiLCJVUERBVEVfQ0FURUdPUlkiLCJVUERBVEVfQ1VTVE9NRVJfVk9JQ0UiLCJVUERBVEVfUkVHSVNURVJfUFJPRFVDVCIsIlVQREFURV9ST0xFIiwiVVBEQVRFX1NFUlZJQ0VfQ0VOVEVSIiwiVVBEQVRFX1NUT1JFIiwiVVBEQVRFX1VTRVIiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDAyL2FwaS9sb2dpbiIsIm5hbWUiOiJlcmxhbmdnYXJpYW5zeWFoMEBnbWFpbC5jb20iLCJleHAiOjE0NzQ2NDYxNjcwNX0.Y1T-yk4ozEz_ZOPPSnnG0AXVdtpVRg2B94LZ4j1-c-c',
+        },
+      })
+      .then((res) => {
+        setSub_district(res.data);
+      });
+  };
+
   useEffect(() => {
     getProvinceFromAPI();
   }, []);
@@ -90,8 +127,17 @@ const FormRegister = (props) => {
     if (e.target.name === 'province') {
       getCityFromAPI(e.target.value);
     }
-    if (e.target.name === 'phone' && data.phone.toString().slice(0,1) === '0') {
-      let newPhone = '62' + e.target.value.slice(1)
+    if (e.target.name === 'city') {
+      getDisrictFromAPI(e.target.value);
+    }
+    if (e.target.name === 'district') {
+      getSubDisrictFromAPI(e.target.value);
+    }
+    if (
+      e.target.name === 'phone' &&
+      data.phone.toString().slice(0, 1) === '0'
+    ) {
+      let newPhone = '62' + e.target.value.slice(1);
       setData({
         ...data,
         phone: newPhone,
@@ -451,14 +497,22 @@ const FormRegister = (props) => {
 
                         <div className="col-lg-6 mb-3">
                           <div className="form-label">District</div>
-                          <input
-                            type="text"
-                            class={`form-control ${
+                          <select
+                            class={`form-select ${
                               errorData.district !== '' ? 'is-invalid' : null
                             }`}
                             name="district"
                             onChange={onChangeInput}
-                          />
+                            disabled={district.length === 0 ? 'disabled' : null}
+                          >
+                            {district.map(function (item, i) {
+                              return (
+                                <option value={item.dis_name} key={i}>
+                                  {item.dis_name}
+                                </option>
+                              );
+                            })}
+                          </select>
                           <div className="invalid-feedback">
                             {errorData.district}
                           </div>
@@ -466,7 +520,7 @@ const FormRegister = (props) => {
 
                         <div className="col-lg-6 mb-3">
                           <div className="form-label">Sub district</div>
-                          <input
+                          {/* <input
                             type="text"
                             class={`form-control ${
                               errorData.sub_district !== ''
@@ -475,7 +529,30 @@ const FormRegister = (props) => {
                             }`}
                             name="sub_district"
                             onChange={onChangeInput}
-                          />
+                            disabled={
+                              subDistrict.length === 0 ? 'disabled' : null
+                            }
+                          /> */}
+                          <select
+                            class={`form-select ${
+                              errorData.sub_district !== ''
+                                ? 'is-invalid'
+                                : null
+                            }`}
+                            name="sub_district"
+                            onChange={onChangeInput}
+                            disabled={
+                              sub_district.length === 0 ? 'disabled' : null
+                            }
+                          >
+                            {sub_district.map(function (item, i) {
+                              return (
+                                <option value={item.subdis_name} key={i}>
+                                  {item.subdis_name}
+                                </option>
+                              );
+                            })}
+                          </select>
                           <div className="invalid-feedback">
                             {errorData.sub_district}
                           </div>
