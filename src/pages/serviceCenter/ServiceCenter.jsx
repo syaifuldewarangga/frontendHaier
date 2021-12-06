@@ -107,9 +107,12 @@ const ServiceCenter = (props) => {
                   </div>
                 );
               })}
-          <LoadMore 
-            handleLoadData = {handleLoadMore}
-          />
+          {
+            !lastPage ? 
+            <LoadMore 
+              handleLoadData = {handleLoadMore}
+            /> : null
+          }
         </div>
       </div>
     </div>

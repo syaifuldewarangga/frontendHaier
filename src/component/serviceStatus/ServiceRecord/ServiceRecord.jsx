@@ -82,7 +82,7 @@ const ServiceRecord = (props) => {
                 itemPerPage: 10
             }
         }).then((res) => {
-            if(res.data.lastPage === true) {
+            if(res.data.last === true) {
                 setLastPage(true)
             }
             setData(data.concat(res.data.content))
@@ -109,9 +109,12 @@ const ServiceRecord = (props) => {
                             />
                         ))
                     }
-                    <LoadMore 
-                        handleLoadData = {handleLoadMore}
-                    />
+                    {
+                        !lastPage ? 
+                        <LoadMore 
+                            handleLoadData = {handleLoadMore}
+                        /> : null
+                    }
                 </div>
             </div>
         </div>
