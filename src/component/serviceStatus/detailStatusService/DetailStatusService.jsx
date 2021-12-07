@@ -2,42 +2,26 @@ import React from 'react';
 import './DetailStatusService.css';
 import { format } from 'date-fns';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 var X2JS = require('x2js');
 
 const DetailStatusService = (props) => {
+  const { srNumber, phoneNumber } = useParams();
   const xtojson = new X2JS();
   const [data, setData] = React.useState('');
   React.useEffect(() => {
     const getData = async () => {
-      let xmls = `
-      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:hai="http://haier.com">
-      <soapenv:Header/>
-      <soapenv:Body>
-         <hai:CheckHSISRStatus_Input>
-            <!--Optional:-->
-            <hai:SRNum>APID181010000236</hai:SRNum>
-            <!--Optional:-->
-            <hai:MobilePhone>082374353998</hai:MobilePhone>
-            <!--Optional:-->
-            <hai:SourceType>1</hai:SourceType>
-            <!--Optional:-->
-            <hai:SourceCode>1</hai:SourceCode>
-         </hai:CheckHSISRStatus_Input>
-      </soapenv:Body>
-   </soapenv:Envelope>
-      `;
+      const fd = new FormData();
+
+      fd.append('SRNum', srNumber);
+      fd.append('MobilePhone', phoneNumber);
 
       await axios
-        .post(
-          'http://gsis-ha.haier.net/eai_enu/start.swe?SWEExtSource=WebService&SWEExtCmd=Execute&UserName=EAIUSER2&Password=Haier@WEB',
-          xmls,
-          {
-            headers: {
-              'Content-Type': 'text/xml',
-              SOAPAction: '"document/http://haier.com:CheckHSISRStatus"',
-            },
-          }
-        )
+        .post('https://e-warranty.click/oapi/gsis/checkhsisrstatus', fd, {
+          headers: {
+            Accept: 'application/xml',
+          },
+        })
         .then((res) => {
           var json = xtojson.xml2js(res.data);
           let cek_error = json.Envelope.Body.CheckHSISRStatus_Output;
@@ -47,7 +31,8 @@ const DetailStatusService = (props) => {
             alert(cek_error.ErrorMessage.__text);
           } else {
             setData(
-              json.Envelope.Body.CheckHSISRStatus_Output.ListOfServiceRequest.ServiceRequest
+              json.Envelope.Body.CheckHSISRStatus_Output.ListOfServiceRequest
+                .ServiceRequest
             );
           }
         })
