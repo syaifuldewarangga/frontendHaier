@@ -50,16 +50,22 @@ const FormRegister = (props) => {
   useEffect(() => {
     if (data.password !== data.confirmpassword) {
       setErrorData({
-        ...errorData,
         confirmpassword: 'password are not the same',
       });
     } else {
       setErrorData({
-        ...errorData,
         confirmpassword: '',
       });
     }
   }, [data.confirmpassword]);
+
+  useEffect(() => {
+    if(data.phone.toString().slice(0, 2) !== '62' && data.phone !== '') {
+      setErrorData({
+        phone: 'check your phone number, use 62 for phone number code'
+      })
+    }
+  }, [data.phone])
 
   const getProvinceFromAPI = async () => {
     await axios
@@ -144,6 +150,7 @@ const FormRegister = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     let formData = new FormData();
     formData.append('first_name', data.first_name);
     formData.append('last_name', data.last_name);
@@ -174,105 +181,90 @@ const FormRegister = (props) => {
       })
       .catch((err) => {
         let error = err.response;
+        console.log(error)
         if (error !== undefined) {
           let responError = error.data.errors;
           if (responError !== undefined) {
-            console.log(errorData.first_name);
             if (responError.location === 'first_name') {
               setErrorData({
-                ...errorData,
                 first_name: error.data.message,
               });
             }
 
-            console.log(errorData.last_name);
             if (responError.location === 'last_name') {
               setErrorData({
-                ...errorData,
                 last_name: error.data.message,
               });
             }
 
             if (responError.location === 'username') {
               setErrorData({
-                ...errorData,
                 username: error.data.message,
               });
             }
 
             if (responError.location === 'nik') {
               setErrorData({
-                ...errorData,
                 nik: error.data.message,
               });
             }
 
             if (responError.location === 'gender') {
               setErrorData({
-                ...errorData,
                 gender: error.data.message,
               });
             }
 
             if (responError.location === 'birth_date') {
               setErrorData({
-                ...errorData,
                 birth_date: error.data.message,
               });
             }
 
             if (responError.location === 'age') {
               setErrorData({
-                ...errorData,
                 age: error.data.message,
               });
             }
 
             if (responError.location === 'province') {
               setErrorData({
-                ...errorData,
                 province: error.data.message,
               });
             }
 
             if (responError.location === 'city') {
               setErrorData({
-                ...errorData,
                 city: error.data.message,
               });
             }
 
             if (responError.location === 'district') {
               setErrorData({
-                ...errorData,
                 district: error.data.message,
               });
             }
 
             if (responError.location === 'sub_district') {
               setErrorData({
-                ...errorData,
                 sub_district: error.data.message,
               });
             }
 
             if (responError.location === 'address') {
               setErrorData({
-                ...errorData,
                 address: error.data.message,
               });
             }
 
             if (responError.location === 'phone') {
               setErrorData({
-                ...errorData,
                 phone: error.data.message,
               });
             }
 
             if (responError.location === 'password') {
               setErrorData({
-                ...errorData,
                 password: error.data.message,
               });
             }
@@ -308,7 +300,7 @@ const FormRegister = (props) => {
                             type="text"
                             name="first_name"
                             className={`form-control ${
-                              errorData.first_name !== '' ? 'is-invalid' : null
+                              errorData.first_name !== '' && errorData.first_name !== undefined ? 'is-invalid' : null
                             }`}
                             placeholder="First Name"
                             onChange={onChangeInput}
@@ -326,7 +318,7 @@ const FormRegister = (props) => {
                             type="text"
                             name="last_name"
                             className={`form-control ${
-                              errorData.last_name !== '' ? 'is-invalid' : null
+                              errorData.last_name !== ''  && errorData.last_name !== undefined ? 'is-invalid' : null
                             }`}
                             placeholder="Last Name"
                             onChange={onChangeInput}
@@ -344,7 +336,7 @@ const FormRegister = (props) => {
                             type="text"
                             name="username"
                             className={`form-control ${
-                              errorData.username !== '' ? 'is-invalid' : null
+                              errorData.username !== '' && errorData.username !== undefined ? 'is-invalid' : null
                             }`}
                             placeholder="Username"
                             onChange={onChangeInput}
@@ -361,7 +353,7 @@ const FormRegister = (props) => {
                             name="nik"
                             min="0"
                             className={`form-control ${
-                              errorData.nik !== '' ? 'is-invalid' : null
+                              errorData.nik !== '' && errorData.nik !== undefined ? 'is-invalid' : null
                             }`}
                             placeholder="nik"
                             onChange={onChangeInput}
@@ -375,7 +367,7 @@ const FormRegister = (props) => {
                           <div className="form-label color-primary">Gender</div>
                           <select
                             class={`form-select ${
-                              errorData.gender !== '' ? 'is-invalid' : null
+                              errorData.gender !== '' && errorData.gender !== undefined ? 'is-invalid' : null
                             }`}
                             name="gender"
                           >
@@ -395,7 +387,7 @@ const FormRegister = (props) => {
                             type="date"
                             name="birth_date"
                             className={`form-control ${
-                              errorData.birth_date !== '' ? 'is-invalid' : null
+                              errorData.birth_date !== '' && errorData.birth_date !== undefined ? 'is-invalid' : null
                             }`}
                             placeholder="birth_date"
                             onChange={onChangeInput}
@@ -411,7 +403,7 @@ const FormRegister = (props) => {
                             type="number"
                             name="age"
                             className={`form-control ${
-                              errorData.age !== '' ? 'is-invalid' : null
+                              errorData.age !== '' && errorData.age !== undefined ? 'is-invalid' : null
                             }`}
                             placeholder="age"
                             min="1"
@@ -430,7 +422,7 @@ const FormRegister = (props) => {
                               name="phone"
                               min="0"
                               className={`form-control ${
-                                errorData.phone !== '' ? 'is-invalid' : null
+                                errorData.phone !== '' && errorData.phone !== undefined ? 'is-invalid' : null
                               }`}
                               placeholder="Phone"
                               value={data.phone}
@@ -446,7 +438,7 @@ const FormRegister = (props) => {
                           <div class="form-label"> Province </div>
                           <select
                             class={`form-select ${
-                              errorData.province !== '' ? 'is-invalid' : null
+                              errorData.province !== '' && errorData.province !== undefined ? 'is-invalid' : null
                             }`}
                             name="province"
                             onChange={onChangeInput}
@@ -469,7 +461,7 @@ const FormRegister = (props) => {
                           <div class="form-label"> City </div>
                           <select
                             class={`form-select ${
-                              errorData.city !== '' ? 'is-invalid' : null
+                              errorData.city !== '' && errorData.city !== undefined ? 'is-invalid' : null
                             }`}
                             name="city"
                             onChange={onChangeInput}
@@ -492,7 +484,7 @@ const FormRegister = (props) => {
                           <div className="form-label">District</div>
                           <select
                             class={`form-select ${
-                              errorData.district !== '' ? 'is-invalid' : null
+                              errorData.district !== '' && errorData.district !== undefined ? 'is-invalid' : null
                             }`}
                             name="district"
                             onChange={onChangeInput}
@@ -513,22 +505,9 @@ const FormRegister = (props) => {
 
                         <div className="col-lg-6 mb-3">
                           <div className="form-label">Sub district</div>
-                          {/* <input
-                            type="text"
-                            class={`form-control ${
-                              errorData.sub_district !== ''
-                                ? 'is-invalid'
-                                : null
-                            }`}
-                            name="sub_district"
-                            onChange={onChangeInput}
-                            disabled={
-                              subDistrict.length === 0 ? 'disabled' : null
-                            }
-                          /> */}
                           <select
                             class={`form-select ${
-                              errorData.sub_district !== ''
+                              errorData.sub_district !== '' && errorData.sub_district !== undefined
                                 ? 'is-invalid'
                                 : null
                             }`}
@@ -555,7 +534,7 @@ const FormRegister = (props) => {
                           <div className="form-label">address</div>
                           <textarea
                             class={`form-control ${
-                              errorData.address !== '' ? 'is-invalid' : null
+                              errorData.address !== '' && errorData.address !== undefined? 'is-invalid' : null
                             }`}
                             rows="6"
                             name="address"
@@ -574,7 +553,7 @@ const FormRegister = (props) => {
                             type="password"
                             name="password"
                             className={`form-control ${
-                              errorData.password !== '' ? 'is-invalid' : null
+                              errorData.password !== '' && errorData.password !== undefined ? 'is-invalid' : null
                             }`}
                             placeholder="Password"
                             onChange={onChangeInput}
@@ -592,7 +571,7 @@ const FormRegister = (props) => {
                             type="password"
                             name="confirmpassword"
                             className={`form-control ${
-                              errorData.confirmpassword !== ''
+                              errorData.confirmpassword !== '' && errorData.confirmpassword  !== undefined
                                 ? 'is-invalid'
                                 : null
                             }`}
