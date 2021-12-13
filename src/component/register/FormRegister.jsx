@@ -59,14 +59,6 @@ const FormRegister = (props) => {
     }
   }, [data.confirmpassword]);
 
-  useEffect(() => {
-    if(data.phone.toString().slice(0, 2) !== '62' && data.phone !== '') {
-      setErrorData({
-        phone: 'check your phone number, use 62 for phone number code'
-      })
-    }
-  }, [data.phone])
-
   const getProvinceFromAPI = async () => {
     await axios
       .get(props.base_url + 'location')
@@ -151,6 +143,12 @@ const FormRegister = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if(data.phone.toString().slice(0, 2) !== '62' && data.phone !== '') {
+      setErrorData({
+        phone: 'check your phone number, use 62 for phone number code'
+      })
+    }
+    
     let formData = new FormData();
     formData.append('first_name', data.first_name);
     formData.append('last_name', data.last_name);
