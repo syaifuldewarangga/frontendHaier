@@ -2,12 +2,17 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import './FormProduct.css';
-import SelectSearch, { fuzzySearch } from 'react-select-search';
 import { format } from 'date-fns';
 import AlertModal from '../../../alertModal/AlertModal';
 import { Modal } from 'bootstrap';
 import { useHistory } from 'react-router';
 var X2JS = require('x2js');
+
+const visitHoursData = [
+  '06:00-08:00',
+  '08:00-10:00',
+  '10:00-12:00',
+]
 
 const FormProduct = (props) => {
   const xtojson = new X2JS();
@@ -28,7 +33,6 @@ const FormProduct = (props) => {
     visit_date: '',
     visit_hours: '',
     description: '',
-    agreements: '',
     mobile_phone: '',
   });
   const [errorData, setErrorData] = useState({
@@ -36,19 +40,21 @@ const FormProduct = (props) => {
     visit_date: '',
     visit_hours: '',
     description: '',
-    agreements: '',
   });
   const [errorGSIS, setErrorGSIS] = useState('');
-
   const [dataUser, setDataUser] = useState();
-  const [serviceCenter, setServiceCenter] = useState('');
-  const [dataServiceCenter, setDataServiceCenter] = useState([]);
-  const [serviceCenterLocation, setServiceCenterLocation] = useState('');
   const [dataAlert, setDataAlert] = useState({
     status: 'success',
     title: 'Success',
     subTitle: 'successfully requested service',
   });
+
+  const minVisitDate = () => {
+    let currentDate = new Date().toLocaleDateString()
+    let newCurrentDate = format(new Date(currentDate), 'yyyy-MM-dd');
+    return newCurrentDate;
+  }
+  const [minDateVisitDate, setMinVisitDate] = useState(minVisitDate)
 
   let token = localStorage.getItem('access_token');
 
@@ -73,24 +79,9 @@ const FormProduct = (props) => {
       });
   };
 
-  const getDataServiceCenterFromAPI = async () => {
-    await axios
-      .get(props.base_url + 'service-center', {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      })
-      .then((res) => {
-        setDataServiceCenter(res.data);
-      })
-      .catch((err) => {
-        console.log(err.response);
-      });
-  };
-
   useEffect(() => {
     getDataUserFromAPI();
-    getDataServiceCenterFromAPI();
+    minVisitDate()
   }, []);
 
   useEffect(() => {
@@ -111,44 +102,14 @@ const FormProduct = (props) => {
     });
   }, [props.data, dataUser]);
 
-  useEffect(() => {
-    let location = dataServiceCenter.filter(
-      (item) => item.service_center_name === serviceCenter
-    );
-    if (serviceCenter !== '') {
-      setServiceCenterLocation(location[0].address);
-      setData({
-        ...data,
-        store_name: serviceCenter,
-        store_location: location[0].address,
-      });
-    }
-  }, [serviceCenter]);
-
-  let newDataServiceCenter = dataServiceCenter.map(
-    ({ service_center_name }) => ({
-      value: service_center_name,
-      name: service_center_name,
-    })
-  );
-
   const onChangeData = (e) => {
-    if (e.target.name === 'agreements') {
-      setData({
-        ...data,
-        agreements: e.target.checked ? '1' : '',
-      });
-    } else {
-      setData({
-        ...data,
-        [e.target.name]: e.target.value,
-      });
-    }
-    console.log(data);
+    setData({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const InsertHSISRAPI = async (SRNum) => {
-    // format(new Date)
     const newPurchaseDate = format(new Date(data.purchase_date), 'dd/MM/yyyy');
     const newVisitDate = format(new Date(data.visit_date), 'MM/dd/yyyy');
 
@@ -158,37 +119,35 @@ const FormProduct = (props) => {
     fd.append('ProductModel', data.product_model);
     fd.append('PurchaseDate', newPurchaseDate);
     fd.append('PreferredVisitDate', newVisitDate);
-    fd.append('PreferredTime', '');
+    fd.append('PreferredTime', data.visit_hours);
     fd.append('Requirement', data.description);
-    fd.append('FirstName', data.first_name);
-    fd.append('LastName', data.last_name);
+    fd.append('FirstName', dataUser.first_name);
+    fd.append('LastName', dataUser.last_name);
     fd.append('HomePhone', '');
-    fd.append('MobilePhone', data.phone);
-    fd.append('Email', data.email);
+    fd.append('MobilePhone', dataUser.phone);
+    fd.append('Email', dataUser.email);
     fd.append('Brand', data.brand);
     fd.append('SRNum', SRNum);
-    fd.append('DetailAddress', data.address);
-    fd.append('AddressId', '');
-
+    fd.append('DetailAddress', dataUser.address);
+    fd.append('AddressId', dataUser.province);
+    console.log(Object.fromEntries(fd))
     await axios
-      .post('https://e-warranty.click/oapi/gsis/inserthsisr', fd, {
+      .post(props.gsis_url + 'inserthsisr', fd, {
         headers: {
           Accept: 'application/xml',
         },
       })
       .then((res) => {
         var json = xtojson.xml2js(res.data);
-        console.log(json);
-        alertModal();
-        onHideModal();
-        // let cek_error = json.Envelope.Body.InsertHSISR_Output
-        // if(cek_error.ErrorCode.__text !== '0') {
-        //     console.log(cek_error.ErrorMessage.__text)
-        //     setErrorGSIS(cek_error.ErrorMessage.__text)
-        // } else {
-        //     InsertServiceRegister()
-        // }
-        // console.log(cek_error)
+        let cek_error = json.Envelope.Body.InsertHSISR_Output
+        if(cek_error.ErrorCode.__text !== '0') {
+          console.log(cek_error)
+          setErrorGSIS(cek_error.ErrorMessage.__text)
+          // delete 
+        } else {
+          alertModal();
+          onHideModal();
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -197,10 +156,6 @@ const FormProduct = (props) => {
 
   const InsertServiceRegister = async () => {
     const formData = new FormData();
-
-    if (data.visit_date !== '') {
-      data.visit_date.replaceAll('-', '/');
-    }
 
     let newVisiteDate = '';
     if (data.visit_date !== '') {
@@ -221,61 +176,62 @@ const FormProduct = (props) => {
     formData.append('visit_date', newVisiteDate);
     formData.append('visit_hours', data.visit_hours);
     formData.append('description', data.description);
-    formData.append('agreements', data.agreements);
     formData.append('mobile_phone', data.mobile_phone);
     formData.append('status', 1);
 
-    await axios
-      .post(props.base_url + 'register-service', formData, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      })
-      .then((res) => {
-        InsertHSISRAPI(res.data);
-        // console.log(res);
-      })
-      .catch((err) => {
-        if (err.response.data.errors !== undefined) {
-          let responError = err.response.data.errors;
-          if (responError.location === 'store_name') {
-            setErrorData({
-              ...errorData,
-              store_name: responError.reason,
-            });
-          }
+    await axios.post(props.base_url + 'register-service', formData, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    }).then((res) => {
+      InsertHSISRAPI(res.data);
+    }).catch((err) => {
+      console.log(err.response.data.errors)
+      console.log(err.response)
+      if (err.response.data.errors !== undefined) {
+        let responError = err.response.data.errors;
 
-          if (responError.location === 'visit_date') {
-            setErrorData({
-              ...errorData,
-              visit_date: responError.reason,
-            });
-          }
-
-          if (responError.location === 'visit_hours') {
-            setErrorData({
-              ...errorData,
-              visit_hours: responError.reason,
-            });
-          }
-
-          if (responError.location === 'description') {
-            setErrorData({
-              ...errorData,
-              description: responError.reason,
-            });
-          }
-
-          if (responError.location === 'agreements') {
-            setErrorData({
-              ...errorData,
-              agreements: responError.reason,
-            });
-          }
-        } else {
-          console.log(err.response);
+        if (responError.location === 'barcode') {
+          setDataAlert({
+            status: 'error',
+            title: 'Sory',
+            subTitle: 'Your product has been registered. please check the service status list',
+          })
+          alertModal();
+          onHideModal('/service-status')
         }
-      });
+        
+        if (responError.location === 'store_name') {
+          setErrorData({
+            ...errorData,
+            store_name: responError.reason,
+          });
+        }
+
+        if (responError.location === 'visit_date') {
+          setErrorData({
+            ...errorData,
+            visit_date: responError.reason,
+          });
+        }
+
+        if (responError.location === 'visit_hours') {
+          setErrorData({
+            ...errorData,
+            visit_hours: responError.reason,
+          });
+        }
+
+        if (responError.location === 'description') {
+          setErrorData({
+            ...errorData,
+            description: responError.reason,
+          });
+        }
+      } else {
+        console.log(err.response);
+      }
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -288,10 +244,10 @@ const FormProduct = (props) => {
     alertModal.show();
   };
 
-  const onHideModal = () => {
+  const onHideModal = (url = null) => {
     var alertModal = document.getElementById('alertModal');
     alertModal.addEventListener('hide.bs.modal', function (event) {
-      history.push('/landing-page');
+      url !== null ? history.push(url) : history.push('/landing-page');
     });
   };
 
@@ -406,37 +362,6 @@ const FormProduct = (props) => {
               </div>
             </div>
 
-            {/* <div className="col-lg-6">
-              <div className="mb-4">
-                <label htmlFor="store-name" className="form-label">
-                  Service Center Name
-                </label>
-                <SelectSearch
-                  options={newDataServiceCenter}
-                  value={serviceCenter}
-                  onChange={setServiceCenter}
-                  search
-                  filterOptions={fuzzySearch}
-                  placeholder="Search something"
-                />
-              </div>
-            </div>
-
-            <div className="col-lg-12">
-              <div className="mb-4">
-                <label htmlFor="store-location" className="form-label">
-                  Service Center Location
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="store-location"
-                  disabled
-                  value={serviceCenterLocation}
-                />
-              </div>
-            </div> */}
-
             <div className="row mb-4">
               <div className="col-lg-6">
                 <div>
@@ -451,6 +376,7 @@ const FormProduct = (props) => {
                     id="visit-date"
                     name="visit_date"
                     onChange={onChangeData}
+                    min={minDateVisitDate}
                     required
                   />
                   <div className="invalid-feedback">{errorData.visit_date}</div>
@@ -462,15 +388,19 @@ const FormProduct = (props) => {
                   <label htmlFor="reapair-visit" className="form-label">
                     Visit Hours
                   </label>
-                  {/* <select className= {`form-select ${ errorData.visit_hours !== '' ? 'is-invalid' : null  }`} name="visit_hours"  onChange={onChangeData} > */}
-                  <input
-                    type="time"
-                    className={`form-control ${
-                      errorData.visit_hours !== '' ? 'is-invalid' : null
-                    }`}
-                    name="visit_hours"
-                    onChange={onChangeData}
-                  />
+                  <select 
+                    className= {`form-select ${ errorData.visit_hours !== '' ? 'is-invalid' : null  }`} 
+                    name="visit_hours"  
+                    onChange={onChangeData} 
+                    required
+                  >
+                      <option value="" selected disabled>-- Select Visit Hours -- </option>
+                      {
+                        visitHoursData.map((item, index) => (
+                          <option value={item} key={index}>{item}</option>
+                        ))
+                      }
+                  </select>
                   <div className="invalid-feedback">
                     {errorData.visit_hours}
                   </div>
@@ -506,28 +436,6 @@ const FormProduct = (props) => {
                   required
                 ></textarea>
                 <div className="invalid-feedback">{errorData.description}</div>
-              </div>
-            </div>
-
-            <div className="col-lg-12">
-              <div className="mb-4">
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value="1"
-                    onChange={onChangeData}
-                    name="agreements"
-                    required
-                  />
-                  <label class="form-check-label">
-                    Dapatkah kami menghubungi Anda menggunakan WhatsApp
-                    kedepannya.
-                  </label>
-                </div>
-                {errorData.agreements !== '' ? (
-                  <div className="text-danger">{errorData.agreements}</div>
-                ) : null}
               </div>
             </div>
 

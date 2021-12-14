@@ -5,6 +5,8 @@ import 'slick-carousel/slick/slick-theme.css';
 import './Slider.css';
 import { connect } from "react-redux";
 import axios from "axios";
+import { withRouter } from "react-router";
+import { Link } from "react-router-dom";
 
 class ImageSlider extends Component
 {
@@ -20,14 +22,22 @@ class ImageSlider extends Component
             },
         })
         .then((res) => {
+            console.log(res.data)
             this.setState({
                 banners: res.data
             })
         })
     } 
+
     componentDidMount() {
         this.getBannerFromAPI()
     }
+
+    handleRedirect(url) {
+        // this.props.history.push(url)
+        alert('berhasil')
+    }
+
     render () {
         const settings = {
             dots: true,
@@ -41,8 +51,12 @@ class ImageSlider extends Component
             <Slider {...settings}>
                 {
                     this.state.banners.map((banner) => (
-                        <div key={banner.id}>
-                            <img src={this.props.image_url + banner.image} alt={banner.title}/>
+                        <div>
+                            <a href={ banner.link !== 'null' ? banner.link : '#'}>
+                                <div key={banner.id} >
+                                    <img src={this.props.image_url + banner.image} alt={banner.title}/>
+                                </div>
+                            </a>
                         </div>
                     ))
                 }
@@ -57,4 +71,4 @@ const mapStateToProps = (state) => {
         image_url: state.URL
     }
 }
-export default  connect(mapStateToProps, null)(ImageSlider);
+export default  connect(mapStateToProps, null) (withRouter(ImageSlider));
