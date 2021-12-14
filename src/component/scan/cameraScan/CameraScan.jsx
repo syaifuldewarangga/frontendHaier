@@ -56,6 +56,8 @@ const CameraScan = (props) => {
     const timeOutId = setTimeout(() => {
       if (barcode !== '') {
         fetchDataProductGTM();
+      } else {
+        setData('')
       }
     }, 300);
     return () => clearTimeout(timeOutId);
