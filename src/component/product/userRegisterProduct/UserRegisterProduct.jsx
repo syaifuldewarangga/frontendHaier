@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './UserRegisterProduct.css';
 import { connect, useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { getToken } from '../../../action/action';
 import SelectSearch, { fuzzySearch } from 'react-select-search';
 import './SelectSearch.css';
 import { format } from 'date-fns';
+import AlertModal from '../../alertModal/AlertModal';
+import { Modal } from 'bootstrap';
 var X2JS = require('x2js');
 
 function UserRegisterProduct(props) {
@@ -24,14 +26,36 @@ function UserRegisterProduct(props) {
     date: '',
     file1: '',
     file2: '',
+    agreements: ''
   });
+  const [errorData, setErrorData] = useState({
+    barcode: ''
+  })
   const [errorDate, setErrorDate] = useState('');
   const [errorFile1, setErrorFile1] = useState('');
   const [errorFile2, setErrorFile2] = useState('');
   const [errorStore, setErrorStore] = useState('');
-
+  const [errorGSIS, setErrorGSIS] = useState('');
+  const [messageModal, setMessageModal] = useState({
+    status: 'success',
+    title: 'Thanks You',
+    subTitle: 'Your product has been successfully registered'
+  })
   var email = localStorage.getItem('email');
   var token = localStorage.getItem('access_token');
+  const history = useHistory()
+
+  const alertModal = () => {
+    let alertModal = new Modal(document.getElementById('alertModal'));
+    alertModal.show();
+  }
+
+  const onHideModal = () => {
+    var alertModal = document.getElementById('alertModal');
+    alertModal.addEventListener('hide.bs.modal', function (event) {
+      history.push('/landing-page')
+    });
+  };
 
   useEffect(() => {
     let isi = dataStore.filter((word) => word.StoreName === storeValue);
@@ -40,118 +64,106 @@ function UserRegisterProduct(props) {
     }
   }, [storeValue]);
 
+  async function fetchDataProduct() {
+    const request = await axios
+      .post(
+        props.gtm_url + 'pmtcommondata/GetProductListByCondition',
+        {
+          Barcode: barcode,
+          ProductID: '',
+          ProductName: '',
+        },
+        {
+          headers: {
+            Authorization: props.token,
+            'Content-Type': 'text/plain',
+          },
+        }
+      )
+      .then((res) => {
+        setData(res.data.data[0]);
+      })
+      .catch((e) => {
+        dispatch(getToken());
+
+        if (e.response) {
+          console.log(e.response);
+        } else if (e.request) {
+          console.log('request : ' + e.request);
+        } else {
+          console.log('message : ' + e.message);
+        }
+      });
+    return request;
+  }
+  
+  async function fetchDataStore() {
+    await axios.post(props.gtm_url + 'pmtcommondata/GetStoreListByCondition',
+        {
+          StoreID: '',
+          StoreName: '',
+          StoreCode: '',
+        },
+        {
+          headers: {
+            Authorization: props.token,
+            'Content-Type': 'text/plain',
+          },
+        }
+      )
+      .then((res) => {
+        setDataStore(res.data.data);
+      })
+      .catch((e) => {
+        dispatch(getToken());
+
+        if (e.response) {
+          console.log(e.response);
+        } else if (e.request) {
+          console.log('request : ' + e.request);
+        } else {
+          console.log('message : ' + e.message);
+        }
+      });
+  }
+
+  async function fetchDataUser() {
+    await axios.get(props.base_url + 'user/get', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+      params: {
+        identifier: email,
+      },
+    }).then((res) => {
+      setDataUser(res.data);
+    })
+    .catch((e) => {
+      console.log(e.response)
+    });
+  }
+  
   useEffect(() => {
-    async function fetchDataProduct() {
-      const request = await axios
-        .post(
-          props.gtm_url + 'pmtcommondata/GetProductListByCondition',
-          {
-            Barcode: barcode,
-            ProductID: '',
-            ProductName: '',
-          },
-          {
-            headers: {
-              Authorization: props.token,
-              'Content-Type': 'text/plain',
-            },
-          }
-        )
-        .then((res) => {
-          setData(res.data.data[0]);
-        })
-        .catch((e) => {
-          dispatch(getToken());
+    fetchDataUser()
+  }, [])
 
-          if (e.response) {
-            console.log(e.response);
-          } else if (e.request) {
-            console.log('request : ' + e.request);
-          } else {
-            console.log('message : ' + e.message);
-          }
-        });
-      return request;
-    }
-    async function fetchDataStore() {
-      const request = await axios
-        .post(
-          props.gtm_url + 'pmtcommondata/GetStoreListByCondition',
-          {
-            StoreID: '',
-            StoreName: '',
-            StoreCode: '',
-          },
-          {
-            headers: {
-              Authorization: props.token,
-              'Content-Type': 'text/plain',
-            },
-          }
-        )
-        .then((res) => {
-          setDataStore(res.data.data);
-          async function fetchDataUser() {
-            const request = await axios
-              .get(props.base_url + 'user/get', {
-                headers: {
-                  Authorization: 'Bearer ' + token,
-                },
-                params: {
-                  identifier: email,
-                },
-              })
-              .then((res) => {
-                setDataUser(res.data);
-              })
-              .catch((e) => {
-                if (e.response) {
-                  console.log(e.response);
-                } else if (e.request) {
-                  console.log('request : ' + e.request);
-                } else {
-                  console.log('message : ' + e.message);
-                }
-              });
-            return request;
-          }
-          fetchDataUser();
-        })
-        .catch((e) => {
-          dispatch(getToken());
-
-          if (e.response) {
-            console.log(e.response);
-          } else if (e.request) {
-            console.log('request : ' + e.request);
-          } else {
-            console.log('message : ' + e.message);
-          }
-        });
-      return request;
-    }
-
+  useEffect(() => {
     if (barcode !== '') {
       fetchDataProduct();
       fetchDataStore();
     }
   }, [props.token, barcode]);
 
-  async function fetchData() {
+  async function handleSubmit() {
     var id = localStorage.getItem('id');
     var phone = localStorage.getItem('phone');
 
-    if (
-      userData.date !== '' ||
-      userData.file1 !== '' ||
-      userData.file2 !== '' ||
-      storeValue !== ''
-    ) {
+    if ( userData.date !== '' && userData.file1 !== '' && userData.file2 !== '' && storeValue !== '' ) {
       var dateChange = userData.date.replaceAll('-', '/');
       const formdata = new FormData();
       const newPurcaseDate = format(new Date(dateChange), 'MM/dd/yyyy');
-      const newBirthDateDate = format(new Date('1981//09/27'), 'MM/dd/yyyy');
-      const newGender = dataUser.gender === 'Pria' ? 'Mr' : 'Ms';
+      // const newBirthDateDate = format(new Date('1981//09/27'), 'MM/dd/yyyy');
+      // const newGender = dataUser.gender === 'Pria' ? 'Mr' : 'Ms';
 
       formdata.append('customer_id', id);
       formdata.append('barcode', data.Barcode);
@@ -167,80 +179,75 @@ function UserRegisterProduct(props) {
       formdata.append('email', email);
       formdata.append('phone', phone);
       formdata.append('status', 1);
-      formdata.append(
-        'warranty_card',
-        userData.file1 === '' ? '' : userData.file1
-      );
+      formdata.append( 'warranty_card', userData.file1 === '' ? '' : userData.file1 );
       formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
+      formdata.append('agreements', userData.agreements);
 
-      const postToGSIS = async () => {
-        let xmls = `
-          <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:hai="http://haier.com" xmlns:spir="http://www.siebel.com/xml/SPIRightNowInboundObject">
-            <soapenv:Header/>
-            <soapenv:Body>
-              <hai:HATProdReg0926>
-                <spir:ProductRegister>
-                  <spir:id>1</spir:id>
-                  <spir:country>Indonesia</spir:country>
-                  <spir:firstName>${dataUser.first_name}</spir:firstName>
-                  <spir:lastName>${dataUser.last_name}</spir:lastName>
-                  <spir:gender>${newGender}</spir:gender>
-                  <spir:customerType>End User</spir:customerType>
-                  <spir:telPhone></spir:telPhone>
-                  <spir:mobilePhone>${dataUser.phone}</spir:mobilePhone>
-                  <spir:officePhone>${dataUser.phone_office}</spir:officePhone>
-                  <spir:age>${dataUser.age}</spir:age>
-                  <spir:birthday>${newBirthDateDate}</spir:birthday>
-                  <spir:email>${dataUser.email}</spir:email>
-                  <spir:fax>${dataUser.fax}</spir:fax>
-                  <spir:brand>${data.Brand}</spir:brand>
-                  <spir:category>${data.Category}</spir:category>
-                  <spir:productModel>${data.ProductModel}</spir:productModel>
-                  <spir:serialNum>${data.SerialNumber}</spir:serialNum>
-                  <spir:purchaseDate>${newPurcaseDate}</spir:purchaseDate>
-                  <spir:expiryDate></spir:expiryDate>
-                  <spir:status></spir:status>
-                  <spir:haveYouPurchasedExtendedWarranty></spir:haveYouPurchasedExtendedWarranty>
-                  <spir:retailerName>${storeValue}</spir:retailerName>
-                  <spir:retailerAddress>${storeStreet}</spir:retailerAddress>
-                  <spir:retailerPostcode></spir:retailerPostcode>
-                  <spir:retailerCity></spir:retailerCity>
-                  <spir:retailerContactFirstName></spir:retailerContactFirstName>
-                  <spir:retailerContactLastName></spir:retailerContactLastName>
-                  <spir:retailerContactPhone></spir:retailerContactPhone>
-                  <spir:retailerEmail></spir:retailerEmail>
-                  <spir:address>${dataUser.address}</spir:address>
-                  <spir:AddressId></spir:AddressId>
-                  <spir:City>${dataUser.city}</spir:City>
-                  <spir:State></spir:State>
-                  <spir:Street></spir:Street>
-                </spir:ProductRegister>
-              </hai:HATProdReg0926>
-            </soapenv:Body>
-          </soapenv:Envelope>
-        `;
-        await axios
-          .post(props.gsis_url, xmls, {
-            headers: {
-              'Content-Type': 'text/xml',
-              SOAPAction: '"document/http://haier.com:InsertHSIProdReg"',
-            },
-          })
-          .then((res) => {
-            console.log(res.data);
-            var json = xtojson.xml2js(res.data);
-            console.log(json);
-            // let cek_error = json.Envelope.Body.InsertHSIProdReg_Output;
-            // if (cek_error.ErrorCode.__text !== '0') {
-            //   console.log(cek_error.ErrorMessage.__text);
-            // } else {
-            //   alert('berhasil')
-            // }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      };
+      const deleteProduct = async (id) => {
+        await axios.delete(props.base_url + 'register-product/product', {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+          params: {
+            id: id
+          }
+        }).then(() => {
+          console.log('delete')
+        }).catch((error) => {
+          console.log(error.response)
+        })
+      }
+
+      const postToGSIS = async (dbData) => {
+        let formGSIS = new FormData()
+        formGSIS.append('id', dbData.id)
+        formGSIS.append('country', 'Indonesia')
+        formGSIS.append('firstName', dataUser.first_name)
+        formGSIS.append('lastName', dataUser.last_name)
+        formGSIS.append('mobilePhone', dataUser.phone)
+        formGSIS.append('email', dataUser.email)
+        formGSIS.append('address', dataUser.address)
+        formGSIS.append('AddressId', dataUser.province)
+        formGSIS.append('City', dataUser.city)
+        formGSIS.append('State', dataUser.district)
+        formGSIS.append('Street', dataUser.sub_district)
+        
+        formGSIS.append('brand', data.Brand)
+        formGSIS.append('category', data.Category);
+        formGSIS.append('productModel', data.ProductModel);
+        formGSIS.append('serialNum', dbData.serial_number);
+        formGSIS.append('purchaseDate', newPurcaseDate);
+        let invoiceURL = props.image_url + dbData.invoice
+        formGSIS.append('Invoiceattachment', invoiceURL);
+        let attachmentURL = props.image_url + dbData.warranty_card
+        formGSIS.append('Warrantyattachment', attachmentURL);
+        formGSIS.append('whatsappflag', userData.agreements === 'Y' ? 'Y' : 'N');
+
+        await axios.post(props.gsis_url + 'hatprodreg', formGSIS, {
+          headers: {
+            Accept: 'application/xml',
+          }
+        }).then((res) => {
+          let response = xtojson.xml2js(res.data)
+          let errorCode = response.Envelope.Body.HESAProdRegResponse.Error_spcCode
+          if(errorCode === '0') {
+            setMessageModal({
+              status: 'success',
+              title: 'Thanks You',
+              subTitle: 'Your product has been successfully registered'
+            })
+            alertModal()
+            onHideModal()
+          } else {
+            deleteProduct(dbData.id)
+            setErrorGSIS(response.Envelope.Body.HESAProdRegResponse.Error_spcMessage)
+            setErrorData({ barcode: '' })
+          } 
+          console.log(response.Envelope.Body.HESAProdRegResponse)
+        }).catch((err) => {
+          console.log(err.response)
+        })
+      }
 
       await axios
         .post(props.base_url + 'register-product', formdata, {
@@ -249,32 +256,37 @@ function UserRegisterProduct(props) {
           },
         })
         .then((res) => {
-          // alert('berhasil')
-          postToGSIS();
+          postToGSIS(res.data);
         })
         .catch((e) => {
-          if (e.response) {
-            console.log(e.response);
-          } else if (e.request) {
-            console.log('request : ' + e.request);
+          let error = e.response
+          if(error.data.errors) {
+            if(error.data.errors.location === 'barcode') {
+              setErrorData({
+                ...errorData,
+                barcode: 'your data has been registered'
+              })
+              setMessageModal({
+                  status: 'error',
+                  title: 'Sorry',
+                  subTitle: 'your product has been registered'
+              })
+              alertModal()
+              onHideModal()
+            }
+            setErrorDate('')
+            setErrorStore('')
+            setErrorFile1('')
+            setErrorFile2('')
           } else {
-            console.log('message : ' + e.message);
+            console.log(error)
           }
         });
     } else {
-      alert('Failed!');
-      if (userData.date === '') {
-        setErrorDate('Date Must be Required');
-      }
-      if (storeValue === '') {
-        setErrorStore('Store Must be Required');
-      }
-      if (userData.file1 === '') {
-        setErrorFile1('Warranty Card Must be Required');
-      }
-      if (userData.file2 === '') {
-        setErrorFile2('Invoice Must be Required');
-      }
+      userData.date === '' ? setErrorDate('Date Must be Required') : setErrorDate('')
+      storeValue === '' ? setErrorStore('Store Must be Required') : setErrorStore('')
+      userData.file1 === '' ? setErrorFile1('Warranty Card Must be Required') : setErrorFile1('');
+      userData.file2 === '' ? setErrorFile2('Invoice Must be Required') : setErrorFile2('');
     }
   }
 
@@ -469,7 +481,11 @@ function UserRegisterProduct(props) {
                 <div class="dropzone-wrapper">
                   <div class="dropzone-desc">
                     <span class="material-icons"> cloud_upload </span>
-                    <p>Attach Your Warranty Card Here</p>
+                    {
+                      userData.file1 !== '' ? 
+                      <p>Re-upload Warranty Card</p> :
+                      <p>Attach Your Warranty Card Here</p>
+                    }
                   </div>
                   <input
                     type="file"
@@ -489,6 +505,7 @@ function UserRegisterProduct(props) {
                 <div class="text-danger">{errorFile1}</div>
               </div>
             </div>
+
             <div className="col-lg-6">
               {showFile2 !== '' ? (
                 <div className="col-lg-12 d-flex justify-content-center mb-3">
@@ -499,7 +516,11 @@ function UserRegisterProduct(props) {
                 <div class="dropzone-wrapper">
                   <div class="dropzone-desc">
                     <span class="material-icons"> cloud_upload </span>
-                    <p>Attach Your Invoice Here</p>
+                    {
+                      userData.file1 !== '' ? 
+                      <p>Re-upload Invoice</p> :
+                      <p>Attach Your Invoice Here</p>
+                    }
                   </div>
                   <input
                     type="file"
@@ -519,17 +540,47 @@ function UserRegisterProduct(props) {
                 <div class="text-danger">{errorFile2}</div>
               </div>
             </div>
+
+            <div className="col-lg-12">
+              <div className="mb-4">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value="Y"
+                    onChange={(e) =>
+                      setUserData({
+                        ...userData,
+                        ['agreements']: e.target.value,
+                      })
+                    }
+                  />
+                  <label class="form-check-label">
+                    Dapatkah kami menghubungi Anda menggunakan WhatsApp kedepannya.
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            {
+              errorGSIS !== '' ?
+              <div className="text-danger">
+                {errorGSIS}
+              </div> : null
+            }
           </div>
+
           <div className="d-grid gap-2">
             <button
               className="btn btn-color-primary py-lg-3 btn-submit"
-              onClick={fetchData}
+              onClick={handleSubmit}
             >
               Product Registration
             </button>
           </div>
         </div>
       </div>
+      <AlertModal data={messageModal}/>
     </div>
   );
 }
@@ -540,6 +591,7 @@ const mapStateToProps = (state) => {
     token: state.GTM_TOKEN,
     base_url: state.BASE_URL,
     gsis_url: state.GSIS_URL,
+    image_url: state.URL,
   };
 };
 

@@ -47,11 +47,12 @@ class AllProduct extends Component
 
     async getProductFromApi() {
         let token = localStorage.getItem('access_token')
-        await axios.get(this.props.base_url + 'register-product', {
+        await axios.get(this.props.base_url + 'register-product/user', {
             headers: {
                 Authorization: 'Bearer ' + token,
             },
             params: {
+                id: localStorage.getItem('id'),
                 itemPerPage: 8
             }
         }).then((res) => {

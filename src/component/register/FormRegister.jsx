@@ -147,132 +147,132 @@ const FormRegister = (props) => {
       setErrorData({
         phone: 'check your phone number, use 62 for phone number code'
       })
-    }
-    
-    let formData = new FormData();
-    formData.append('first_name', data.first_name);
-    formData.append('last_name', data.last_name);
-    formData.append('username', data.username);
-    formData.append('nik', data.nik);
-    formData.append('gender', data.gender);
-    formData.append('birth_date', data.birth_date);
-    formData.append('age', data.age);
-    formData.append('phone', data.phone);
-    formData.append('province', data.province);
-    formData.append('city', data.city);
-    formData.append('district', data.district);
-    formData.append('sub_district', data.sub_district);
-    formData.append('address', data.address);
-    formData.append('password', data.password);
-    formData.append('role', 'CUSTOMER');
-
-    await axios
-      .post(props.base_url + 'register', formData)
-      .then((res) => {
-        let response = res.data;
-        history.push(
-          '/register_otp/' +
-            encode(response.data.userId) +
-            '/' +
-            encode(data.phone)
-        );
-      })
-      .catch((err) => {
-        let error = err.response;
-        console.log(error)
-        if (error !== undefined) {
-          let responError = error.data.errors;
-          if (responError !== undefined) {
-            if (responError.location === 'first_name') {
-              setErrorData({
-                first_name: error.data.message,
-              });
-            }
-
-            if (responError.location === 'last_name') {
-              setErrorData({
-                last_name: error.data.message,
-              });
-            }
-
-            if (responError.location === 'username') {
-              setErrorData({
-                username: error.data.message,
-              });
-            }
-
-            if (responError.location === 'nik') {
-              setErrorData({
-                nik: error.data.message,
-              });
-            }
-
-            if (responError.location === 'gender') {
-              setErrorData({
-                gender: error.data.message,
-              });
-            }
-
-            if (responError.location === 'birth_date') {
-              setErrorData({
-                birth_date: error.data.message,
-              });
-            }
-
-            if (responError.location === 'age') {
-              setErrorData({
-                age: error.data.message,
-              });
-            }
-
-            if (responError.location === 'province') {
-              setErrorData({
-                province: error.data.message,
-              });
-            }
-
-            if (responError.location === 'city') {
-              setErrorData({
-                city: error.data.message,
-              });
-            }
-
-            if (responError.location === 'district') {
-              setErrorData({
-                district: error.data.message,
-              });
-            }
-
-            if (responError.location === 'sub_district') {
-              setErrorData({
-                sub_district: error.data.message,
-              });
-            }
-
-            if (responError.location === 'address') {
-              setErrorData({
-                address: error.data.message,
-              });
-            }
-
-            if (responError.location === 'phone') {
-              setErrorData({
-                phone: error.data.message,
-              });
-            }
-
-            if (responError.location === 'password') {
-              setErrorData({
-                password: error.data.message,
-              });
+    } else {
+      let formData = new FormData();
+      formData.append('first_name', data.first_name);
+      formData.append('last_name', data.last_name);
+      formData.append('username', data.username);
+      formData.append('nik', data.nik);
+      formData.append('gender', data.gender);
+      formData.append('birth_date', data.birth_date);
+      formData.append('age', data.age);
+      formData.append('phone', data.phone);
+      formData.append('province', data.province);
+      formData.append('city', data.city);
+      formData.append('district', data.district);
+      formData.append('sub_district', data.sub_district);
+      formData.append('address', data.address);
+      formData.append('password', data.password);
+      formData.append('role', 'CUSTOMER');
+  
+      await axios.post(props.base_url + 'register', formData)
+        .then((res) => {
+          let response = res.data;
+          history.push(
+            '/register_otp/' +
+              encode(response.data.userId) +
+              '/' +
+              encode(data.phone)
+          );
+        })
+        .catch((err) => {
+          let error = err.response;
+          console.log(error)
+          if (error !== undefined) {
+            let responError = error.data.errors;
+            if (responError !== undefined) {
+              if (responError.location === 'first_name') {
+                setErrorData({
+                  first_name: error.data.message,
+                });
+              }
+  
+              if (responError.location === 'last_name') {
+                setErrorData({
+                  last_name: error.data.message,
+                });
+              }
+  
+              if (responError.location === 'username') {
+                setErrorData({
+                  username: error.data.message,
+                });
+              }
+  
+              if (responError.location === 'nik') {
+                setErrorData({
+                  nik: error.data.message,
+                });
+              }
+  
+              if (responError.location === 'gender') {
+                setErrorData({
+                  gender: error.data.message,
+                });
+              }
+  
+              if (responError.location === 'birth_date') {
+                setErrorData({
+                  birth_date: error.data.message,
+                });
+              }
+  
+              if (responError.location === 'age') {
+                setErrorData({
+                  age: error.data.message,
+                });
+              }
+  
+              if (responError.location === 'province') {
+                setErrorData({
+                  province: error.data.message,
+                });
+              }
+  
+              if (responError.location === 'city') {
+                setErrorData({
+                  city: error.data.message,
+                });
+              }
+  
+              if (responError.location === 'district') {
+                setErrorData({
+                  district: error.data.message,
+                });
+              }
+  
+              if (responError.location === 'sub_district') {
+                setErrorData({
+                  sub_district: error.data.message,
+                });
+              }
+  
+              if (responError.location === 'address') {
+                setErrorData({
+                  address: error.data.message,
+                });
+              }
+  
+              if (responError.location === 'phone') {
+                setErrorData({
+                  phone: error.data.message,
+                });
+              }
+  
+              if (responError.location === 'password') {
+                setErrorData({
+                  password: error.data.message,
+                });
+              }
+            } else {
+              console.log(err.response);
             }
           } else {
-            console.log(err.response);
+            console.log(error)
           }
-        } else {
-          console.log(error)
-        }
-      });
+        });
+    }
+    
   };
 
   return (
@@ -465,6 +465,7 @@ const FormRegister = (props) => {
                             onChange={onChangeInput}
                             disabled={city.length === 0 ? 'disabled' : null}
                           >
+                            <option selected disabled> -- Select your city -- </option>
                             {city.map(function (item, i) {
                               return (
                                 <option value={item.city_name} key={i}>
@@ -488,6 +489,7 @@ const FormRegister = (props) => {
                             onChange={onChangeInput}
                             disabled={district.length === 0 ? 'disabled' : null}
                           >
+                            <option selected disabled> -- Select your district -- </option>
                             {district.map(function (item, i) {
                               return (
                                 <option value={item.dis_name} key={i}>
@@ -515,6 +517,7 @@ const FormRegister = (props) => {
                               sub_district.length === 0 ? 'disabled' : null
                             }
                           >
+                            <option selected disabled> -- Select your sub district -- </option>
                             {sub_district.map(function (item, i) {
                               return (
                                 <option value={item.subdis_name} key={i}>

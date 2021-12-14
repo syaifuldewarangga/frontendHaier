@@ -3,19 +3,14 @@ import { Link } from 'react-router-dom';
 import Quagga from 'quagga';
 import './CameraScan.css';
 import axios from 'axios';
-import { getToken } from '../../../action/action';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
+import { client_id, client_secret, grant_type } from '../../../variable';
 
 const CameraScan = (props) => {
   const firstUpdate = useRef(true);
   const [data, setData] = React.useState([]);
   const [barcode, setBarcode] = useState('');
   const [inputBarcodeNumber, setInputBarcodeNumber] = useState(false);
-  const dispatch = useDispatch();
-  const [state, setState] = useState({
-    tempSearch: '',
-    isSearch: false,
-  });
 
   useEffect(() => {
     return () => {
@@ -23,49 +18,48 @@ const CameraScan = (props) => {
     };
   }, []);
 
-  React.useEffect(() => {
-    async function fetchData() {
-      const request = await axios
-        .post(
-          props.gtm_url + 'pmtcommondata/GetProductListByCondition',
-          {
-            Barcode: barcode,
-            ProductID: '',
-            ProductName: '',
-          },
-          {
-            headers: {
-              Authorization: props.token,
-              'Content-Type': 'text/plain',
-            },
-          }
-        )
-        .then((res) => {
-          setData(res.data.data);
-          console.log(res.data.data);
-        })
-        .catch((e) => {
-          dispatch(getToken());
+  const productAPIGTM = async (token) => {
+    await axios.post(props.gtm_url + 'pmtcommondata/GetProductListByCondition',{
+        Barcode: barcode,
+        ProductID: '',
+        ProductName: '',
+      },
+      {
+        headers: {
+          Authorization: token,
+          'Content-Type': 'text/plain',
+        },
+      }
+    )
+    .then((res) => {
+      setData(res.data.data);
+    })
+    .catch((e) => {
+      console.log(e.response)
+    });
+  }
 
-          if (e.response) {
-            console.log(e.response);
-          } else if (e.request) {
-            console.log('request : ' + e.request);
-          } else {
-            console.log('message : ' + e.message);
-          }
-        });
-      return request;
-    }
-    if (barcode !== '') {
-      fetchData();
-    }
-  }, [props.token, barcode]);
+  const fetchDataProductGTM = async () => {
+    await axios.post(props.gtm_token_url, {
+      client_id: client_id,
+      client_secret: client_secret,
+      grant_type: grant_type,
+    }).then((res) => {
+      const token = res.data.access_token
+      productAPIGTM(token)
+    }).catch((err) => {
+      console.log(err.response)
+    })
+  }
 
   useEffect(() => {
-    const timeOutId = setTimeout(() => setBarcode(state.tempSearch), 300);
+    const timeOutId = setTimeout(() => {
+      if (barcode !== '') {
+        fetchDataProductGTM();
+      }
+    }, 300);
     return () => clearTimeout(timeOutId);
-  }, [state.tempSearch]);
+  }, [barcode]);
 
   useEffect(() => {
     if (firstUpdate.current) {
@@ -267,10 +261,11 @@ const CameraScan = (props) => {
                     className="form-control"
                     id="barcode-number"
                     onChange={(e) =>
-                      setState({ ...state, ['tempSearch']: e.target.value })
+                      setBarcode(e.target.value)
                     }
                     placeholder="name@example.com"
                     disabled={inputBarcodeNumber ? '' : 'disabled'}
+                    value={barcode}
                   />
                 </div>
 
@@ -348,12 +343,8 @@ const CameraScan = (props) => {
 const mapStateToProps = (state) => {
   return {
     gtm_url: state.GTM_URL,
-    token: state.GTM_TOKEN,
+    gtm_token_url: state.GTM_TOKEN_URL
   };
 };
 
-const mapPropsToState = (dispatch) => ({
-  createToken: () => dispatch({ type: 'GET_TOKEN' }),
-});
-
-export default connect(mapStateToProps, mapPropsToState)(CameraScan);
+export default connect(mapStateToProps, null)(CameraScan);
