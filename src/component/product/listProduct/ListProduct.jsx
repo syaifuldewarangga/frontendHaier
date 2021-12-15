@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { ImageFunction } from "../../../variable/ImageFunction";
 import './ListProduct.css'
 
 class ListProduct extends Component {
@@ -9,7 +10,7 @@ class ListProduct extends Component {
                 <div className="card card-product">
                     <Link to={`/product/detail/${this.props.data.id}`}>
                         <div className="image-product d-flex justify-content-center">
-                            <img src="/assets/images/product/product1.png" className="img-fluid" alt="" />
+                            <img src={ImageFunction(this.props.data.category)} className="img-fluid" alt="" />
                         </div>
                         <div className="card-body">
                             <div className="title-product mb-2">{this.props.data.product_name}</div>

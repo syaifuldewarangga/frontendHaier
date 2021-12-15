@@ -83,7 +83,6 @@ function ProfileForm(props) {
   useEffect(() => {
     setData(props.data);
     console.log(props.data);
-    console.log('disini');
     if (props.data !== '') {
       let newPhone = props.data.phone.toString();
       setDataPonsel(newPhone.slice(2));
@@ -162,7 +161,6 @@ function ProfileForm(props) {
     if (e.target.ariaLabel === 'phone') {
       setDataPonsel(e.target.value);
     } else {
-      console.log(e.target.ariaLabel);
       setData({
         ...data,
         [e.target.ariaLabel]: e.target.value,
@@ -171,7 +169,6 @@ function ProfileForm(props) {
   };
 
   const fetchAPI = () => {
-    console.log(data);
     var token = localStorage.getItem('access_token');
     let formData = new FormData();
     formData.append('roles', localStorage.getItem('role'));
@@ -207,6 +204,7 @@ function ProfileForm(props) {
         },
       })
       .then((res) => {
+        console.log(res.data)
         localStorage.setItem('phone', dataPonsel);
         alertModal();
         setMessageAlert({

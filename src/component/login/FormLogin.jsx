@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import ModalVerification from './ModalVerification';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import LoginMenu from '../loginMenu/LoginMenu';
+import ModalPrivacy from './ModalPrivacy';
 
 const FormLogin = (props) => {
   const history = useHistory();
@@ -230,13 +230,31 @@ const FormLogin = (props) => {
                       </span>
                     </Link>
                   </div>
+                  <div 
+                      className="text-center mt-3"
+                      style={{ 
+                        fontSize: '12px'
+                      }}
+                    >
+                      <span>Dengan masuk atau mendaftar, Anda Menyetujui Syarat & ketentuan serta </span> 
+                      <span 
+                        style={{ 
+                          color: '#266BAF',
+                          cursor: 'pointer'
+                        }} 
+                        data-bs-toggle="modal" data-bs-target="#privacyModal"
+                      >
+                        Privacy {' '}
+                      </span>
+                      E-warranty
+                    </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <ModalVerification />
+      <ModalPrivacy />
     </div>
   );
 };
