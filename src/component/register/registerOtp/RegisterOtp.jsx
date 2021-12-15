@@ -10,7 +10,7 @@ import './RegisterOtp.css'
 const RegisterOtp = (props) => {
     const history = useHistory()
 
-    const { userID, phoneNumber } = useParams()
+    const { userID, phoneNumber, createdAt } = useParams()
     const [errorData, setErrorData] = useState({
         otp: ''
     })
@@ -20,34 +20,71 @@ const RegisterOtp = (props) => {
         title: 'Success',
         subTitle: 'Your account has been successfully registered and activated. please login to your account'
     })
+    
+    const [ countdown, setCountdown ] = useState(new Date(decode(createdAt)));
 
-    const [ minutes, setMinutes ] = useState(0);
-    const [seconds, setSeconds ] =  useState(0);
-    // var date1 = window.localStorage.getItem("date");
-    // console.log(date1)
+    const calculateTimeLeft = () => {
+        let resendTime = localStorage.getItem('countdown') !== null ? new Date(localStorage.getItem('countdown')) : null;
+        let d1 = resendTime !== null ? resendTime : countdown
+        let d2 = new Date(d1)
+        d2.setMinutes(d1.getMinutes() + 5);
+        let difference = d2 - new Date();
+        // let difference = new Date(`10/01/2022`) - new Date();
+      
+        let timeLeft = {};
+      
+        if (difference > 0) {
+          timeLeft = {
+            days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+            hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+            minutes: Math.floor((difference / 1000 / 60) % 60),
+            seconds: Math.floor((difference / 1000) % 60)
+          };
+        }
+      
+        return timeLeft;
+    }
+    
+    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
-    // let d2 = new Date(d1)
-    // let newTime = d2.setMinutes(d1.getMinutes() + 5);
-    // console.log(newTime - d1)
-
-    useEffect(()=>{
-        let myInterval = setInterval(() => {
-            if (seconds > 0) {
-                setSeconds(seconds - 1);
-            }
-            if (seconds === 0) {
-                if (minutes === 0) {
-                    clearInterval(myInterval)
-                } else {
-                    setMinutes(minutes - 1);
-                    setSeconds(59);
-                }
-            } 
-        }, 1000)
-        return ()=> {
-            clearInterval(myInterval);
-        };
+    useEffect(() => {
+        const timer = setTimeout(() => {
+          setTimeLeft(calculateTimeLeft());
+        }, 1000);
+      
+        return () => clearTimeout(timer);
     });
+    
+    const timerComponents = [];
+    Object.keys(timeLeft).forEach((interval, index) => {
+        if (!timeLeft[interval]) {
+          return;
+        }
+        timerComponents.push(
+          <span key={index}>
+            {timeLeft[interval]} {index !== 3 && ' : ' }
+          </span>
+        );
+    });
+
+    // useEffect(()=>{
+    //     let myInterval = setInterval(() => {
+    //         if (seconds > 0) {
+    //             setSeconds(seconds - 1);
+    //         }
+    //         if (seconds === 0) {
+    //             if (minutes === 0) {
+    //                 clearInterval(myInterval)
+    //             } else {
+    //                 setMinutes(minutes - 1);
+    //                 setSeconds(59);
+    //             }
+    //         } 
+    //     }, 1000)
+    //     return ()=> {
+    //         clearInterval(myInterval);
+    //     };
+    // });
 
     const handleChangeInput = (e) => {
         setOtp(e.target.value)
@@ -92,6 +129,16 @@ const RegisterOtp = (props) => {
             })
         }
     }
+    
+    const handleResendOtp = () => {
+        let formData = new FormData()
+        formData.append('userId', decode(userID))
+        axios.post(props.base_url + 'register/otp/resend', formData)
+        .then(() => {
+            let date = new Date()
+            localStorage.setItem('countdown', date)
+        })
+    }
 
     return (
         <div>
@@ -108,7 +155,7 @@ const RegisterOtp = (props) => {
                 <div className="mt-5">
                     <div>
                         <span>Time remaining</span>
-                        <span className="text-danger"> {minutes < 10 ? `0${minutes}` : minutes}:{seconds < 10 ?  `0${seconds}` : seconds}</span>
+                        <span className="text-danger"> {timerComponents.length ? timerComponents : "00:00"} </span>
                     </div>
                     <form onSubmit={handleSubmit}>
                         <div className="m-4">
@@ -131,7 +178,9 @@ const RegisterOtp = (props) => {
                             <button className="btn btn-color-primary px-5 mb-2" type="submit">
                                 Submit
                             </button>
-                            <p className="send-code-button">Send the code again</p>
+                            <div>
+                                <span className="send-code-button" onClick={handleResendOtp}>Send the code again</span>
+                            </div>
                         </div>
                     </form>
                 </div>

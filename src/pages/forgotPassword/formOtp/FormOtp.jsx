@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import './FormOtp.css'
 import { useParams, useHistory } from "react-router-dom";
@@ -12,12 +12,10 @@ const FormOtp = (props) => {
         anyError: ''
     })
     const [otp, setOtp] = useState('')
-    const { userID } = useParams()
-
+    const { userID, createdAt } = useParams()
     const onChangeInput = (e) => {
         setOtp(e.target.value)
     }
-
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -46,6 +44,61 @@ const FormOtp = (props) => {
         })
 
     }
+
+    const [ countdown, setCountdown ] = useState(new Date(decode(createdAt)));
+
+    const calculateTimeLeft = () => {
+        let resendTime = localStorage.getItem('countdown') !== null ? new Date(localStorage.getItem('countdown')) : null;
+        let d1 = resendTime !== null ? resendTime : countdown
+        let d2 = new Date(d1)
+        d2.setMinutes(d1.getMinutes() + 5);
+        let difference = d2 - new Date();
+        // let difference = new Date(`10/01/2022`) - new Date();
+      
+        let timeLeft = {};
+      
+        if (difference > 0) {
+          timeLeft = {
+            days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+            hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+            minutes: Math.floor((difference / 1000 / 60) % 60),
+            seconds: Math.floor((difference / 1000) % 60)
+          };
+        }
+      
+        return timeLeft;
+    }
+
+    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+    useEffect(() => {
+        const timer = setTimeout(() => {
+          setTimeLeft(calculateTimeLeft());
+        }, 1000);
+      
+        return () => clearTimeout(timer);
+    });
+
+    const timerComponents = [];
+    Object.keys(timeLeft).forEach((interval, index) => {
+        if (!timeLeft[interval]) {
+          return;
+        }
+        timerComponents.push(
+          <span key={index}>
+            {timeLeft[interval]} {index !== 3 && ' : ' }
+          </span>
+        );
+    });
+
+    const handleResendOtp = () => {
+        let formData = new FormData()
+        formData.append('userId', decode(userID))
+        axios.post(props.base_url + 'register/otp/resend', formData)
+        .then(() => {
+            let date = new Date()
+            localStorage.setItem('countdown', date)
+        })
+    }
     return (
         <div className="container form-otp">
             <div className="col-lg-4 mx-auto" >
@@ -57,6 +110,13 @@ const FormOtp = (props) => {
                             </div>
                             <div className="sub-title">
                                 The verification code has been sent via sms to the number
+                            </div>
+                            <div 
+                                className="mt-3"
+                                style={{ fontSize: '13px' }}
+                            >
+                                <span>Time remaining</span>
+                                <span className="text-danger"> {timerComponents.length ? timerComponents : "00:00"} </span>
                             </div>
                         </div>
                         <form onSubmit={handleSubmit}>
@@ -78,6 +138,7 @@ const FormOtp = (props) => {
                                 >
                                     Verification
                                 </button>
+                                <span className="send-code-button" onClick={handleResendOtp}>Send the code again</span>
                             </div>
                         </form>
                     </div>

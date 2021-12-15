@@ -31,58 +31,57 @@ const FormLogin = (props) => {
   };
 
   const getProfile = async (token, email) => {
-    const getData = await axios
-      .get(props.base_url + 'user/get', {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-        params: {
-          identifier: email,
-        },
-      })
-      .then((res) => {
-        if (res.data.roles === 'CUSTOMER') {
-          localStorage.setItem('access_token', token);
-          localStorage.setItem('email', email);
-          localStorage.setItem('id', res.data.id);
-          localStorage.setItem('role', res.data.roles);
-          localStorage.setItem(
-            'fullname',
-            res.data.first_name + ' ' + res.data.last_name
-          );
-          localStorage.setItem('phone', res.data.phone);
-          localStorage.setItem('username', res.data.username);
-          if (res.data.image.length !== 0) {
-            localStorage.setItem('photo', res.data.image[0].path);
-          }
-          localStorage.setItem(
-            'permission',
-            JSON.stringify(res.data.permissions)
-          );
-          props.handleCustomerLogin(true);
-          props.handleUser(res.data);
-          history.push('/landing-page');
-        } else {
-          setData({
-            ...data,
-            ['salah']: true,
-          });
+    await axios
+    .get(props.base_url + 'user/get', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+      params: {
+        identifier: email,
+      },
+    })
+    .then((res) => {
+      if (res.data.roles === 'CUSTOMER') {
+        localStorage.setItem('access_token', token);
+        localStorage.setItem('email', email);
+        localStorage.setItem('id', res.data.id);
+        localStorage.setItem('role', res.data.roles);
+        localStorage.setItem(
+          'fullname',
+          res.data.first_name + ' ' + res.data.last_name
+        );
+        localStorage.setItem('phone', res.data.phone);
+        localStorage.setItem('username', res.data.username);
+        if (res.data.image.length !== 0) {
+          localStorage.setItem('photo', res.data.image[0].path);
         }
-      })
-      .catch((e) => {
-        if (e.response) {
-          setData({
-            ...data,
-            ['salah']: true,
-          });
-          console.log(e.response);
-        } else if (e.request) {
-          console.log('request : ' + e.request);
-        } else {
-          console.log('message : ' + e.message);
-        }
-      });
-    return getData;
+        localStorage.setItem(
+          'permission',
+          JSON.stringify(res.data.permissions)
+        );
+        props.handleCustomerLogin(true);
+        props.handleUser(res.data);
+        history.push('/landing-page');
+      } else {
+        setData({
+          ...data,
+          ['salah']: true,
+        });
+      }
+    })
+    .catch((e) => {
+      if (e.response) {
+        setData({
+          ...data,
+          ['salah']: true,
+        });
+        console.log(e.response);
+      } else if (e.request) {
+        console.log('request : ' + e.request);
+      } else {
+        console.log('message : ' + e.message);
+      }
+    });
   };
 
   const fetchAPI = async () => {
@@ -92,7 +91,7 @@ const FormLogin = (props) => {
       })
     } else {
       const formData = new FormData();
-      formData.append('email', data.phone_number);
+      formData.append('email', data.phone_number + 'C');
       formData.append('password', data.password);
       setData({
         ...data,

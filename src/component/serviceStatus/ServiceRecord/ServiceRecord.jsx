@@ -7,6 +7,7 @@ import './ServiceRecord.css';
 import { format } from 'date-fns';
 import { Modal } from 'bootstrap';
 import AlertModal from '../../alertModal/AlertModal';
+import { ImageFunction } from '../../../variable/ImageFunction';
 
 const ProductCard = (props) => {
   const newDate = format(
@@ -26,7 +27,7 @@ const ProductCard = (props) => {
       <div className="list-status-product">
         <div className="row col-lg-12">
           <div className="col-4 image">
-            <img src="/assets/images/product/product1.png" alt="" />
+            <img src={ImageFunction(props.data.category)} alt="" />
           </div>
           <div className="col-8">
             <div className="product-title">

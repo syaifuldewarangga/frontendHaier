@@ -37,7 +37,7 @@ const LandingPageRouter = () => {
           path="/forgot-password/"
           component={ForgotPassword}
         ></Route>
-        <Route exact path="/otp/:userID" component={FormOtp}></Route>
+        <Route exact path="/otp/:userID/:createdAt" component={FormOtp}></Route>
         <Route
           exact
           path="/reset-password/:userID/:tokenReset"
@@ -46,7 +46,7 @@ const LandingPageRouter = () => {
         <Route exact path="/register" component={Register}></Route>
         <Route
           exact
-          path="/register_otp/:userID/:phoneNumber"
+          path="/register_otp/:userID/:phoneNumber/:createdAt"
           component={RegisterOtp}
         ></Route>
 

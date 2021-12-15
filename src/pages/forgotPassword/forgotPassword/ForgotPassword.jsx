@@ -19,20 +19,20 @@ const ForgotPassword = (props) => {
         } else {
             setPhoneNumber(e.target.value)
         }
-        console.log(phoneNumber)
     }
     
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        localStorage.removeItem('countdown')
         var formData = new FormData();
         formData.append('phone', phoneNumber );
 
         await axios.post(props.base_url + 'forgot-password', formData)
         .then((res) => {
-            console.log(res)
             let user_id_encode = encode(res.data.data.userId)
-            history.push('/otp/' + user_id_encode)
+            let createdAt = encode(res.data.data.created_at)
+            history.push('/otp/' + user_id_encode + '/' + createdAt)
         }).catch((err) => {
             let responError = err.response.data.errors
             console.log(err.response)

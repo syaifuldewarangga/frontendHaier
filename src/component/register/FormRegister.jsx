@@ -142,7 +142,7 @@ const FormRegister = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    localStorage.removeItem('countdown')
     if(data.phone.toString().slice(0, 2) !== '62' && data.phone !== '') {
       setErrorData({
         phone: 'check your phone number, use 62 for phone number code'
@@ -168,12 +168,7 @@ const FormRegister = (props) => {
       await axios.post(props.base_url + 'register', formData)
         .then((res) => {
           let response = res.data;
-          history.push(
-            '/register_otp/' +
-              encode(response.data.userId) +
-              '/' +
-              encode(data.phone)
-          );
+          history.push( '/register_otp/' + encode(response.data.userId) + '/' + encode(data.phone) + '/' + encode(response.data.created_at));
         })
         .catch((err) => {
           let error = err.response;
