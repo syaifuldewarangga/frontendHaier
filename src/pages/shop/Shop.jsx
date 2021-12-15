@@ -8,6 +8,8 @@ import axios from 'axios';
 import { getToken } from '../../action/action';
 import { connect, useDispatch } from 'react-redux';
 import '../../component/shop/loadMore/LoadMore.css';
+import ModalOperationalHours from '../../component/shop/newShopList/ModalOperationalHours';
+import { useState } from 'react';
 
 const Shop = (props) => {
   const { t } = useTranslation('common');
@@ -15,48 +17,65 @@ const Shop = (props) => {
   const [data, setData] = React.useState([]);
   let dataShowing;
   const [border, setBorder] = React.useState(10);
+  const [storeDetail, setStoreDetail] = useState('')
+  const token = localStorage.getItem('access_token')
 
   React.useEffect(() => {
     async function fetchData() {
-      const request = await axios
-        .post(
-          props.gtm_url + 'pmtcommondata/GetStoreListByCondition',
-          {
-            StoreCode: '',
-            StoreID: '',
-            StoreName: props.search,
+      await axios.post(props.gtm_url + 'pmtcommondata/GetStoreListByCondition',
+        {
+          StoreCode: '',
+          StoreID: '',
+          StoreName: props.search,
+        },
+        {
+          headers: {
+            Authorization: props.token,
+            'Content-Type': 'text/plain',
           },
-          {
-            headers: {
-              Authorization: props.token,
-              'Content-Type': 'text/plain',
-            },
-          }
-        )
-        .then((res) => {
-          setData(res.data.data);
-        })
-        .catch((e) => {
-          dispatch(getToken());
+        }
+      )
+      .then((res) => {
+        setData(res.data.data);
+      })
+      .catch((e) => {
+        dispatch(getToken());
 
-          if (e.response) {
-            console.log(e.response);
-          } else if (e.request) {
-            console.log('request : ' + e.request);
-          } else {
-            console.log('message : ' + e.message);
-          }
-        });
-      return request;
+        if (e.response) {
+          console.log(e.response);
+        } else if (e.request) {
+          console.log('request : ' + e.request);
+        } else {
+          console.log('message : ' + e.message);
+        }
+      });
     }
     fetchData();
   }, [props.token, props.search]);
 
+  const handleModalOperationl = async (StoreID) => {
+    await axios.get(props.base_url + 'store', {
+      headers: {
+        Authorization: 'Bearer ' + token
+      },
+      params: {
+        store_id: StoreID
+      }
+    }).then((res) => {
+      setStoreDetail(res.data)
+    }).catch(() => {
+      setStoreDetail('')
+    })
+  }
   const List = () => {
     dataShowing = data.slice(0, border);
     return dataShowing.map((item, i) => (
       <div className="col-lg-6 mb-lg-5 mb-4">
-        <NewShopList data={item} key={i} />
+        <NewShopList 
+          data={item} 
+          key={i} 
+          handleModalOperationl = {handleModalOperationl}
+        />
       </div>
     ));
   };
@@ -77,6 +96,9 @@ const Shop = (props) => {
           </button>
         </div>
       </div>
+      <ModalOperationalHours 
+        data = {storeDetail}
+      />
     </div>
   );
 };
@@ -86,6 +108,7 @@ const mapStateToProps = (state) => {
     gtm_url: state.GTM_URL,
     token: state.GTM_TOKEN,
     search: state.DATA_SEARCH_SHOP_LIST,
+    base_url: state.BASE_URL
   };
 };
 

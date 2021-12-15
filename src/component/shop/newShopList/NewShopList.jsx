@@ -12,8 +12,9 @@ const NewShopList = (props) => {
 
   return (
     <div className="card shop-list h-100">
-      <Link to={`/shop-location/${name}/${latitude}/${longitude}`}>
+      
         <div className="card-body">
+          <Link to={`/shop-location/${name}/${latitude}/${longitude}`}>
           <div className="">
             <p className="shop-name">{props.data.StoreName}</p>
             <div className="address row mb-3">
@@ -21,8 +22,20 @@ const NewShopList = (props) => {
               <div className="col-lg-10 col-12">{props.data.Street}</div>
             </div>
           </div>
+          </Link>
+          <div 
+            className="text-end"
+            style={{ 
+              color: '#003D79',
+              fontWeight: 600,
+              cursor: 'pointer'
+            }}
+            data-bs-toggle="modal" data-bs-target="#modalOperationalHours"
+            onClick={() => props.handleModalOperationl(props.data.StoreID)}
+          >
+            Show Operational Hours
+          </div>
         </div>
-      </Link>
     </div>
   );
 };
