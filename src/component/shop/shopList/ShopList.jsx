@@ -9,16 +9,13 @@ const ShopList = (props) =>
     const { t } = useTranslation('common')
     const latitude = encode(props.data.latitude)
     const longitude = encode(props.data.longitude)
+    const name = encode(props.data.service_center_name)
     return (
         <div className="card shop-list">
-            <Link to={`/shop-location/${latitude}/${longitude}`}>
+            <Link to={`/shop-location/${name}/${latitude}/${longitude}`}>
                 <div className="card-body">
                     <div className="">
                         <p className="shop-name">{props.data.service_center_name}</p>
-                        {/* <div className="range mb-2">
-                            <span className="material-icons-outlined icon"> gps_fixed </span>
-                            <span className="ms-2 text">{props.range} Km</span>
-                        </div> */}
                         <div className="address row mb-3">
                             <div className="col-lg-2 col-12"> {t('general.address')} : </div>
                             <div className="col-lg-10 col-12">{props.data.address}</div>

@@ -75,7 +75,7 @@ const LandingPageRouter = () => {
         <PrivateRoute exact path="/shop-list" component={Shop}></PrivateRoute>
         <PrivateRoute
           exact
-          path="/shop-location/:latitude/:longitude"
+          path="/shop-location/:name/:latitude/:longitude"
           component={Location}
         ></PrivateRoute>
 

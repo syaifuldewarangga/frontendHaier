@@ -22,7 +22,6 @@ class ImageSlider extends Component
             },
         })
         .then((res) => {
-            console.log(res.data)
             this.setState({
                 banners: res.data
             })
@@ -31,11 +30,6 @@ class ImageSlider extends Component
 
     componentDidMount() {
         this.getBannerFromAPI()
-    }
-
-    handleRedirect(url) {
-        // this.props.history.push(url)
-        alert('berhasil')
     }
 
     render () {

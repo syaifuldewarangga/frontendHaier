@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import LocationMaps from '../../component/shop/locationMaps/LocationMaps';
 
 const Location = () => {
+  const { name } = useParams();
   const { latitude } = useParams();
   const { longitude } = useParams();
 
@@ -12,7 +13,7 @@ const Location = () => {
       <LocationMaps
         latitude={decode(latitude)}
         longitude={decode(longitude)}
-        title="Arjuna Elektronik"
+        title={decode(name)}
       />
     </div>
   );

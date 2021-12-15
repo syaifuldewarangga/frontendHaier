@@ -62,33 +62,12 @@ const ServiceStatusMenu = () => {
           <p>{t('status_service.status_service')}</p>
         </div>
 
-        <div className="service-menu-content">
-          {/* <div className="row text-center mb-4">
-                        <div className="col-12 col-lg p-lg-0">
-                            <div className="cover active">All Status</div>
-                        </div>
-                        <div className="col-12 col-lg p-lg-0">
-                            <div className="cover">Appointment Scheduled</div>
-                        </div>
-                        <div className="col-12 col-lg p-lg-0">
-                            <div className="cover">Received by Service Partner</div>
-                        </div>
-                        <div className="col-12 col-lg p-lg-0">
-                            <div className="cover">Processing by Call Center</div>
-                        </div>
-                        <div className="col-12 col-lg p-lg-0">
-                            <div className="cover">Repair Finished</div>
-                        </div>
-                    </div> */}
-          {/* <div className="mb-5 mt-4">
-                        <span className="material-icons-outlined md-36 search-addon"> search </span>
-                        <input type="text" className="form-control form-control-lg search-input" placeholder={t('status_service.search_id_service')} />
-                    </div> */}
-          <div className="mb-5">
+        <div className="service-menu-content row justify-content-center">
+          <div className="mb-5 col-lg-8">
             <form onSubmit={handleSubmit}>
               <div className="row">
-                <div className="col-lg-6 row">
-                  <div className="col">
+                <div className="col-lg-12 row">
+                  <div className="col-lg-6 mb-3">
                     <input
                       type="text"
                       class="form-control"
@@ -98,7 +77,7 @@ const ServiceStatusMenu = () => {
                       onChange={handleChange}
                     ></input>
                   </div>
-                  <div className="col">
+                  <div className="col-lg-6 mb-3">
                     <input
                       type="number"
                       class="form-control"
@@ -109,7 +88,7 @@ const ServiceStatusMenu = () => {
                       onChange={handleChange}
                     ></input>
                   </div>
-                  <div className="col">
+                  <div className="col-lg-12 d-flex justify-content-end">
                     <button className="btn btn-outline-success" type="submit">
                       Search
                     </button>

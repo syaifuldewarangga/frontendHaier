@@ -7,8 +7,8 @@ class ListBlog extends Component
 {
     render() {
         return(
-            <div className="col-lg-12" style={{ padding: "0 12px" }}>
-                <Link to={`/blog/detail/${this.props.data.slug}`}>
+            <div className="col-lg-12" style={{ padding: "0 12px"}}>
+                <Link to={`/blog/detail/${this.props.data.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
                     <div className="image-blog">
                         <img src={this.props.image_url + this.props.data.image} className="img-fluid" />
                     </div>

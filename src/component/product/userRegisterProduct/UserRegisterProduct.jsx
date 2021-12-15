@@ -41,6 +41,13 @@ function UserRegisterProduct(props) {
     title: 'Thanks You',
     subTitle: 'Your product has been successfully registered'
   })
+  const maxDate = () => {
+    let currentDate = new Date().toLocaleDateString()
+    let newCurrentDate = format(new Date(currentDate), 'yyyy-MM-dd');
+    return newCurrentDate;
+  }
+  const [maxPurchaseDate, setMaxPurchaseDate] = useState(maxDate)
+  const [isLoading, setIsLoadiing] = useState(false)
   var email = localStorage.getItem('email');
   var token = localStorage.getItem('access_token');
   const history = useHistory()
@@ -85,7 +92,6 @@ function UserRegisterProduct(props) {
       })
       .catch((e) => {
         dispatch(getToken());
-
         if (e.response) {
           console.log(e.response);
         } else if (e.request) {
@@ -154,7 +160,9 @@ function UserRegisterProduct(props) {
     }
   }, [props.token, barcode]);
 
-  async function handleSubmit() {
+  async function handleSubmit(e) {
+    e.preventDefault()
+    setIsLoadiing(true)
     var id = localStorage.getItem('id');
     var phone = localStorage.getItem('phone');
 
@@ -164,7 +172,7 @@ function UserRegisterProduct(props) {
       const newPurcaseDate = format(new Date(dateChange), 'MM/dd/yyyy');
       // const newBirthDateDate = format(new Date('1981//09/27'), 'MM/dd/yyyy');
       // const newGender = dataUser.gender === 'Pria' ? 'Mr' : 'Ms';
-
+      
       formdata.append('customer_id', id);
       formdata.append('barcode', data.Barcode);
       formdata.append('product_id', data.ProductID);
@@ -181,7 +189,7 @@ function UserRegisterProduct(props) {
       formdata.append('status', 1);
       formdata.append( 'warranty_card', userData.file1 === '' ? '' : userData.file1 );
       formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
-      formdata.append('agreements', userData.agreements);
+      formdata.append('agreements', userData.agreements === 'Y' ? 'Y' : 'N');
 
       const deleteProduct = async (id) => {
         await axios.delete(props.base_url + 'register-product/product', {
@@ -192,15 +200,15 @@ function UserRegisterProduct(props) {
             id: id
           }
         }).then(() => {
-          console.log('delete')
+          console.log('succes delete')
         }).catch((error) => {
           console.log(error.response)
         })
       }
-
+      // console.log(dataUser)
       const postToGSIS = async (dbData) => {
         let formGSIS = new FormData()
-        formGSIS.append('id', dbData.id)
+        formGSIS.append('id', data.ProductID)
         formGSIS.append('country', 'Indonesia')
         formGSIS.append('firstName', dataUser.first_name)
         formGSIS.append('lastName', dataUser.last_name)
@@ -211,7 +219,6 @@ function UserRegisterProduct(props) {
         formGSIS.append('City', dataUser.city)
         formGSIS.append('State', dataUser.district)
         formGSIS.append('Street', dataUser.sub_district)
-        
         formGSIS.append('brand', data.Brand)
         formGSIS.append('category', data.Category);
         formGSIS.append('productModel', data.ProductModel);
@@ -222,7 +229,6 @@ function UserRegisterProduct(props) {
         let attachmentURL = props.image_url + dbData.warranty_card
         formGSIS.append('Warrantyattachment', attachmentURL);
         formGSIS.append('whatsappflag', userData.agreements === 'Y' ? 'Y' : 'N');
-
         await axios.post(props.gsis_url + 'hatprodreg', formGSIS, {
           headers: {
             Accept: 'application/xml',
@@ -243,9 +249,10 @@ function UserRegisterProduct(props) {
             setErrorGSIS(response.Envelope.Body.HESAProdRegResponse.Error_spcMessage)
             setErrorData({ barcode: '' })
           } 
-          console.log(response.Envelope.Body.HESAProdRegResponse)
         }).catch((err) => {
           console.log(err.response)
+        }).finally(() => {
+          setIsLoadiing(false)
         })
       }
 
@@ -308,276 +315,289 @@ function UserRegisterProduct(props) {
           <div className="title">
             <p>Data Product</p>
           </div>
-          <div className="row">
-            <div className="col-lg-6">
-              <div className="mb-lg-5 mb-4">
-                <label htmlFor="barcode" className="form-label">
-                  Barcode
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="barcode"
-                  value={data.Barcode}
-                  disabled="disabled"
-                />
-              </div>
-            </div>
-
-            <div className="col-lg-6">
-              <div className="mb-lg-5 mb-4">
-                <label htmlFor="product-id" className="form-label">
-                  Product ID
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="product-id"
-                  value={data.ProductID}
-                  disabled="disabled"
-                />
-              </div>
-            </div>
-
-            <div className="col-lg-6">
-              <div className="mb-lg-5 mb-4">
-                <label htmlFor="brand" className="form-label">
-                  Brand
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="brand"
-                  value={data.Brand}
-                  disabled="disabled"
-                />
-              </div>
-            </div>
-
-            <div className="col-lg-6">
-              <div className="mb-lg-5 mb-4">
-                <label htmlFor="product" className="form-label">
-                  Product
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="product"
-                  value={data.ProductName}
-                  disabled="disabled"
-                />
-              </div>
-            </div>
-
-            <div className="col-lg-6">
-              <div className="mb-lg-5 mb-4">
-                <label htmlFor="product-model" className="form-label">
-                  Product Model
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="product-model"
-                  value={data.ProductModel}
-                  disabled="disabled"
-                />
-              </div>
-            </div>
-
-            <div className="col-lg-6">
-              <div className="mb-lg-5 mb-4">
-                <label htmlFor="serial-number" className="form-label">
-                  Serial Number
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="serial-number"
-                  value={data.SerialNumber}
-                  disabled="disabled"
-                />
-              </div>
-            </div>
-
-            <div className="col-lg-6">
-              <div className="mb-lg-5 mb-4">
-                <label htmlFor="serial-number" className="form-label">
-                  Category
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="serial-number"
-                  value={data.Category}
-                  disabled="disabled"
-                />
-              </div>
-            </div>
-
-            <div className="col-lg-6">
-              <div className="mb-lg-5 mb-4">
-                <label htmlFor="date-purchase" className="form-label">
-                  Date of Purchase
-                </label>
-                <input
-                  type="date"
-                  className="form-control"
-                  class={`form-control ${
-                    errorDate !== '' ? 'is-invalid' : null
-                  }`}
-                  id="date-purchase"
-                  onChange={(e) =>
-                    setUserData({
-                      ...userData,
-                      ['date']: e.target.value,
-                    })
-                  }
-                />
-                <div class="invalid-feedback">{errorDate}</div>
-              </div>
-            </div>
-
-            <div className="col-lg-6">
-              <div className="mb-lg-5 mb-4">
-                <label htmlFor="store-location" className="form-label">
-                  Store Name
-                </label>
-                <SelectSearch
-                  options={newDataStore}
-                  value={storeValue}
-                  onChange={setStoreValue}
-                  search
-                  filterOptions={fuzzySearch}
-                  placeholder="Search something"
-                />
-                <div class="text-danger" style={{ fontSize: 14 }}>
-                  {errorStore}
-                </div>
-              </div>
-            </div>
-
-            <div className="col-lg-6">
-              <div className="mb-lg-5 mb-4">
-                <label htmlFor="store-location" className="form-label">
-                  Store Location
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="store-location"
-                  value={storeStreet}
-                  disabled
-                />
-              </div>
-            </div>
-
-            <div className="col-lg-6">
-              {showFile1 !== '' ? (
-                <div className="col-lg-12 d-flex justify-content-center mb-3">
-                  <img src={showFile1} alt="file" className="img-fluid" />
-                </div>
-              ) : null}
-              <div className="btn-upload-custom mb-4">
-                <div class="dropzone-wrapper">
-                  <div class="dropzone-desc">
-                    <span class="material-icons"> cloud_upload </span>
-                    {
-                      userData.file1 !== '' ? 
-                      <p>Re-upload Warranty Card</p> :
-                      <p>Attach Your Warranty Card Here</p>
-                    }
-                  </div>
+          <form onSubmit={handleSubmit}>
+            <div className="row">
+              <div className="col-lg-6">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="barcode" className="form-label">
+                    Barcode
+                  </label>
                   <input
-                    type="file"
-                    name="warranty_card"
-                    aria-label="file"
-                    class="dropzone"
-                    onChange={(e) => {
-                      setShowFile1(URL.createObjectURL(e.target.files[0]));
-                      setUserData({
-                        ...userData,
-                        ['file1']: e.target.files[0],
-                      });
-                    }}
+                    type="text"
+                    className="form-control"
+                    id="barcode"
+                    value={data.Barcode}
+                    disabled="disabled"
                   />
-                  {/* { errorData.file } */}
                 </div>
-                <div class="text-danger">{errorFile1}</div>
               </div>
-            </div>
 
-            <div className="col-lg-6">
-              {showFile2 !== '' ? (
-                <div className="col-lg-12 d-flex justify-content-center mb-3">
-                  <img src={showFile2} alt="file" className="img-fluid" />
-                </div>
-              ) : null}
-              <div className="btn-upload-custom mb-4">
-                <div class="dropzone-wrapper">
-                  <div class="dropzone-desc">
-                    <span class="material-icons"> cloud_upload </span>
-                    {
-                      userData.file1 !== '' ? 
-                      <p>Re-upload Invoice</p> :
-                      <p>Attach Your Invoice Here</p>
-                    }
-                  </div>
+              <div className="col-lg-6">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="product-id" className="form-label">
+                    Product ID
+                  </label>
                   <input
-                    type="file"
-                    name="warranty_card"
-                    class="dropzone"
-                    aria-label="file"
-                    onChange={(e) => {
-                      setShowFile2(URL.createObjectURL(e.target.files[0]));
-                      setUserData({
-                        ...userData,
-                        ['file2']: e.target.files[0],
-                      });
-                    }}
+                    type="text"
+                    className="form-control"
+                    id="product-id"
+                    value={data.ProductID}
+                    disabled="disabled"
                   />
-                  {/* { errorData.file } */}
                 </div>
-                <div class="text-danger">{errorFile2}</div>
               </div>
-            </div>
 
-            <div className="col-lg-12">
-              <div className="mb-4">
-                <div class="form-check">
+              <div className="col-lg-6">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="brand" className="form-label">
+                    Brand
+                  </label>
                   <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value="Y"
+                    type="text"
+                    className="form-control"
+                    id="brand"
+                    value={data.Brand}
+                    disabled="disabled"
+                  />
+                </div>
+              </div>
+
+              <div className="col-lg-6">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="product" className="form-label">
+                    Product
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="product"
+                    value={data.ProductName}
+                    disabled="disabled"
+                  />
+                </div>
+              </div>
+
+              <div className="col-lg-6">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="product-model" className="form-label">
+                    Product Model
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="product-model"
+                    value={data.ProductModel}
+                    disabled="disabled"
+                  />
+                </div>
+              </div>
+
+              <div className="col-lg-6">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="serial-number" className="form-label">
+                    Serial Number
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="serial-number"
+                    value={data.SerialNumber}
+                    disabled="disabled"
+                  />
+                </div>
+              </div>
+
+              <div className="col-lg-6">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="serial-number" className="form-label">
+                    Category
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="serial-number"
+                    value={data.Category}
+                    disabled="disabled"
+                  />
+                </div>
+              </div>
+
+              <div className="col-lg-6">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="date-purchase" className="form-label">
+                    Date of Purchase
+                  </label>
+                  <input
+                    type="date"
+                    max={maxPurchaseDate}
+                    className="form-control"
+                    class={`form-control ${
+                      errorDate !== '' ? 'is-invalid' : null
+                    }`}
+                    id="date-purchase"
                     onChange={(e) =>
                       setUserData({
                         ...userData,
-                        ['agreements']: e.target.value,
+                        ['date']: e.target.value,
                       })
                     }
                   />
-                  <label class="form-check-label">
-                    Dapatkah kami menghubungi Anda menggunakan WhatsApp kedepannya.
-                  </label>
+                  <div class="invalid-feedback">{errorDate}</div>
                 </div>
               </div>
-            </div>
-            
-            {
-              errorGSIS !== '' ?
-              <div className="text-danger">
-                {errorGSIS}
-              </div> : null
-            }
-          </div>
 
-          <div className="d-grid gap-2">
-            <button
-              className="btn btn-color-primary py-lg-3 btn-submit"
-              onClick={handleSubmit}
-            >
-              Product Registration
-            </button>
-          </div>
+              <div className="col-lg-6">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="store-location" className="form-label">
+                    Store Name
+                  </label>
+                  <SelectSearch
+                    options={newDataStore}
+                    value={storeValue}
+                    onChange={setStoreValue}
+                    search
+                    filterOptions={fuzzySearch}
+                    placeholder="Search something"
+                  />
+                  <div class="text-danger" style={{ fontSize: 14 }}>
+                    {errorStore}
+                  </div>
+                </div>
+              </div>
+
+              <div className="col-lg-6">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="store-location" className="form-label">
+                    Store Location
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="store-location"
+                    value={storeStreet}
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <div className="col-lg-6">
+                {showFile1 !== '' ? (
+                  <div className="col-lg-12 d-flex justify-content-center mb-3">
+                    <img src={showFile1} alt="file" className="img-fluid" />
+                  </div>
+                ) : null}
+                <div className="btn-upload-custom mb-4">
+                  <div class="dropzone-wrapper">
+                    <div class="dropzone-desc">
+                      <span class="material-icons"> cloud_upload </span>
+                      {
+                        userData.file1 !== '' ? 
+                        <p>Re-upload Warranty Card</p> :
+                        <p>Attach Your Warranty Card Here</p>
+                      }
+                    </div>
+                    <input
+                      type="file"
+                      name="warranty_card"
+                      aria-label="file"
+                      class="dropzone"
+                      onChange={(e) => {
+                        setShowFile1(URL.createObjectURL(e.target.files[0]));
+                        setUserData({
+                          ...userData,
+                          ['file1']: e.target.files[0],
+                        });
+                      }}
+                    />
+                    {/* { errorData.file } */}
+                  </div>
+                  <div class="text-danger">{errorFile1}</div>
+                </div>
+              </div>
+
+              <div className="col-lg-6">
+                {showFile2 !== '' ? (
+                  <div className="col-lg-12 d-flex justify-content-center mb-3">
+                    <img src={showFile2} alt="file" className="img-fluid" />
+                  </div>
+                ) : null}
+                <div className="btn-upload-custom mb-4">
+                  <div class="dropzone-wrapper">
+                    <div class="dropzone-desc">
+                      <span class="material-icons"> cloud_upload </span>
+                      {
+                        userData.file1 !== '' ? 
+                        <p>Re-upload Invoice</p> :
+                        <p>Attach Your Invoice Here</p>
+                      }
+                    </div>
+                    <input
+                      type="file"
+                      name="warranty_card"
+                      class="dropzone"
+                      aria-label="file"
+                      onChange={(e) => {
+                        setShowFile2(URL.createObjectURL(e.target.files[0]));
+                        setUserData({
+                          ...userData,
+                          ['file2']: e.target.files[0],
+                        });
+                      }}
+                    />
+                    {/* { errorData.file } */}
+                  </div>
+                  <div class="text-danger">{errorFile2}</div>
+                </div>
+              </div>
+
+              <div className="col-lg-12">
+                <div className="mb-4">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      value="Y"
+                      onChange={(e) =>
+                        setUserData({
+                          ...userData,
+                          ['agreements']: e.target.value,
+                        })
+                      }
+                    />
+                    <label class="form-check-label">
+                      Dapatkah kami menghubungi Anda menggunakan WhatsApp kedepannya.
+                    </label>
+                  </div>
+                </div>
+              </div>
+              
+              {
+                errorGSIS !== '' ?
+                <div className="text-danger">
+                  {errorGSIS}
+                </div> : null
+              }
+            </div>
+
+            <div className="d-grid gap-2">
+              <button
+                className="btn btn-color-primary py-lg-3 btn-submit"
+                disabled={isLoading ? 'disabled' : null}
+              >
+                <div className="d-flex justify-content-center align-items-center">
+                  {
+                    isLoading ?
+                    <div class="spinner-border text-primary me-3" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div> : null
+                  }
+                  <div>
+                    Product Registration
+                  </div>
+                </div>
+              </button>
+            </div>
+          </form>
         </div>
       </div>
       <AlertModal data={messageModal}/>

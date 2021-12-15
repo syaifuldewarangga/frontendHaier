@@ -6,12 +6,13 @@ import './../shopList/ShopList.css';
 
 const NewShopList = (props) => {
   const { t } = useTranslation('common');
+  const name = encode(props.data.StoreName);
   const latitude = encode(props.data.Latitude);
   const longitude = encode(props.data.Longitude);
 
   return (
     <div className="card shop-list h-100">
-      <Link to={`/shop-location/${latitude}/${longitude}`}>
+      <Link to={`/shop-location/${name}/${latitude}/${longitude}`}>
         <div className="card-body">
           <div className="">
             <p className="shop-name">{props.data.StoreName}</p>

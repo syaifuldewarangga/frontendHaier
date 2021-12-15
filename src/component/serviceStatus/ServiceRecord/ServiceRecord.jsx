@@ -5,6 +5,8 @@ import { Link, useHistory } from 'react-router-dom';
 import LoadMore from '../../shop/loadMore/LoadMore';
 import './ServiceRecord.css';
 import { format } from 'date-fns';
+import { Modal } from 'bootstrap';
+import AlertModal from '../../alertModal/AlertModal';
 
 const ProductCard = (props) => {
   const newDate = format(
@@ -18,6 +20,7 @@ const ProductCard = (props) => {
       `/service-status/detail/${props.data.srnum}/${props.data.mobile_phone}`
     );
   };
+
   return (
     <div className="col-lg-6 mb-5 col-12">
       <div className="list-status-product">
@@ -35,31 +38,38 @@ const ProductCard = (props) => {
                 <td> &nbsp; : &nbsp;</td>
                 <td>{newDate}</td>
               </tr>
-              {/* <tr>
-                                <td>Status</td>
-                                <td> &nbsp; : &nbsp;</td>
-                                <td>
-                                    <span className="text-success">Repair Finish</span>
-                                </td>
-                            </tr> */}
-              {/* <tr>
-                                <td>Last Update</td>
-                                <td> &nbsp; : &nbsp;</td>
-                                <td>22-10-2021</td>
-                            </tr> */}
               <tr>
                 <td>Service Number</td>
                 <td> &nbsp; : &nbsp;</td>
                 <td>{props.data.srnum}</td>
               </tr>
               <tr>
+                <td>Barcode</td>
+                <td> &nbsp; : &nbsp;</td>
+                <td>{props.data.barcode}</td>
+              </tr>
+              <tr>
+                <td>Status</td>
+                <td> &nbsp; : &nbsp;</td>
+                <td>{props.data.status ? 'Finish' : 'Process'}</td>
+              </tr>
+              <tr>
                 <td colSpan="3">
                   <button
-                    className="btn btn-sm btn-outline-primary mt-3"
+                    className="btn btn-sm btn-outline-primary mt-3 me-2"
                     onClick={handleSubmit}
                   >
                     Tracking Status Service
                   </button>
+                  {
+                    props.data.status === false ?
+                    <button
+                      className="btn btn-sm btn-outline-primary mt-3"
+                      onClick={() => props.handleFinish(props.data.srnum)}
+                    >
+                      Finish
+                    </button> : null
+                  }
                 </td>
               </tr>
             </table>
@@ -75,6 +85,11 @@ const ServiceRecord = (props) => {
   const [lastPage, setLastPage] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   var token = localStorage.getItem('access_token');
+  const [messageAlert, setMessageAlert] = useState({
+    status: 'success',
+    title: 'Success',
+    subTitle: 'your password has been changed successfully',
+  });
 
   const getServiceRequestAPI = async () => {
     await axios
@@ -95,6 +110,47 @@ const ServiceRecord = (props) => {
       });
   };
 
+  const alertModal = () => {
+    let alertModal = new Modal(document.getElementById('alertModal'));
+    alertModal.show();
+  };
+
+  const onHideModal = () => {
+    var alertModal = document.getElementById('alertModal');
+    alertModal.addEventListener('hide.bs.modal', function (event) {
+      window.location.reload();
+    });
+  };
+
+  const handleFinish = async (SRNumber) => {
+    let formData = new FormData()
+    formData.append('SRNum', SRNumber)
+    formData.append('status', 1)
+
+    await axios.patch(props.base_url + 'register-service/status', formData, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }).then(() => {
+      setMessageAlert({
+        status: 'success',
+        title: 'Success',
+        subTitle: 'your password has been changed successfully',
+      })
+      alertModal()
+      onHideModal()
+    }).catch((err) => {
+      setMessageAlert({
+        status: 'error',
+        title: 'sorry',
+        subTitle: 'Finish service status failed',
+      })
+      alertModal()
+      onHideModal()
+      console.log(err.response)
+    })
+  }
+
   useEffect(() => {
     getServiceRequestAPI();
   }, [currentPage]);
@@ -105,14 +161,18 @@ const ServiceRecord = (props) => {
 
   return (
     <div className="service-record row justify-content-center">
-      <div className="col-lg-8 ">
+      <div className="col-lg-8">
         <div className="row">
           {data.map((item, index) => (
-            <ProductCard key={index} data={item} />
+            <ProductCard 
+              key={index} data={item} 
+              handleFinish={handleFinish}
+            />
           ))}
           {!lastPage ? <LoadMore handleLoadData={handleLoadMore} /> : null}
         </div>
       </div>
+      <AlertModal data={messageAlert} />
     </div>
   );
 };

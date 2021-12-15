@@ -55,6 +55,7 @@ const FormProduct = (props) => {
     return newCurrentDate;
   }
   const [minDateVisitDate, setMinVisitDate] = useState(minVisitDate)
+  const [isLoading, setIsLoading] = useState(false)
 
   let token = localStorage.getItem('access_token');
 
@@ -109,6 +110,21 @@ const FormProduct = (props) => {
     });
   };
 
+  const deleteServiceRequest = async (SRNum) => {
+    await axios.delete(props.base_url + 'register-service/delete', {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }, 
+      params: {
+        SRNum: SRNum
+      }
+    }).then(() => {
+      console.log('success delete')
+    }).catch((err) => {
+      console.log(err.response)
+    })
+  }
+
   const InsertHSISRAPI = async (SRNum) => {
     const newPurchaseDate = format(new Date(data.purchase_date), 'dd/MM/yyyy');
     const newVisitDate = format(new Date(data.visit_date), 'MM/dd/yyyy');
@@ -130,7 +146,6 @@ const FormProduct = (props) => {
     fd.append('SRNum', SRNum);
     fd.append('DetailAddress', dataUser.address);
     fd.append('AddressId', dataUser.province);
-    console.log(Object.fromEntries(fd))
     await axios
       .post(props.gsis_url + 'inserthsisr', fd, {
         headers: {
@@ -141,9 +156,8 @@ const FormProduct = (props) => {
         var json = xtojson.xml2js(res.data);
         let cek_error = json.Envelope.Body.InsertHSISR_Output
         if(cek_error.ErrorCode.__text !== '0') {
-          console.log(cek_error)
           setErrorGSIS(cek_error.ErrorMessage.__text)
-          // delete 
+          deleteServiceRequest(SRNum)
         } else {
           alertModal();
           onHideModal();
@@ -151,6 +165,8 @@ const FormProduct = (props) => {
       })
       .catch((err) => {
         console.log(err);
+      }).finally(() => {
+        setIsLoading(false)
       });
   };
 
@@ -236,6 +252,7 @@ const FormProduct = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true)
     InsertServiceRegister();
   };
 
@@ -448,8 +465,19 @@ const FormProduct = (props) => {
             <button
               className="btn btn-color-primary py-3 btn-submit"
               type="submit"
+              disabled={isLoading ? 'disabled' : null }
             >
-              Service Registration
+              <div className="d-flex justify-content-center">
+                {
+                  isLoading ?
+                  <div class="spinner-border text-primary me-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>: null
+                }
+                <div>
+                  Service Registration
+                </div>
+              </div>
             </button>
           </div>
         </form>

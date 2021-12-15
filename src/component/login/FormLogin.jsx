@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ModalVerification from './ModalVerification';
 import axios from 'axios';
 import { connect } from 'react-redux';
@@ -7,6 +7,9 @@ import LoginMenu from '../loginMenu/LoginMenu';
 
 const FormLogin = (props) => {
   const history = useHistory();
+  const [errorData, setErrorData] = useState({
+    phone_number: ''
+  })
   const [data, setData] = React.useState({
     phone_number: '',
     password: '',
@@ -83,34 +86,39 @@ const FormLogin = (props) => {
   };
 
   const fetchAPI = async () => {
-    const formData = new FormData();
-    formData.append('email', data.phone_number);
-    formData.append('password', data.password);
-    setData({
-      ...data,
-      ['salah']: false,
-    });
-
-    const request = await axios
-      .post(props.base_url + 'login', formData)
-      .then((res) => {
-        getProfile(res.data.access_token, res.data.identifier);
+    if(data.phone_number.toString().slice(0, 2) !== '62' && data.phone !== '') {
+      setErrorData({
+        phone_number: 'check your phone number, use 62 for phone number code'
       })
-      .catch((e) => {
-        if (e.response) {
-          setData({
-            ...data,
-            ['salah']: true,
-          });
-          console.log(e.response);
-        } else if (e.request) {
-          console.log('request : ' + e.request);
-        } else {
-          console.log('message : ' + e.message);
-        }
+    } else {
+      const formData = new FormData();
+      formData.append('email', data.phone_number);
+      formData.append('password', data.password);
+      setData({
+        ...data,
+        ['salah']: false,
       });
-    return request;
+  
+      await axios.post(props.base_url + 'login', formData)
+        .then((res) => {
+          getProfile(res.data.access_token, res.data.identifier);
+        })
+        .catch((e) => {
+          if (e.response) {
+            setData({
+              ...data,
+              ['salah']: true,
+            });
+            console.log(e.response);
+          } else if (e.request) {
+            console.log('request : ' + e.request);
+          } else {
+            console.log('message : ' + e.message);
+          }
+        });
+    }
   };
+
   return (
     <div className="col-lg-6">
       <div className="card border-0">
@@ -132,7 +140,7 @@ const FormLogin = (props) => {
                   </label>
                   <input
                     type="number"
-                    className="form-control pl-65"
+                    className={`form-control pl-65 ${errorData.phone_number !== '' ? 'is-invalid' : null}`}
                     placeholder="Phone Number"
                     aria-label="phone_number"
                     onChange={onChangeData}
@@ -140,6 +148,9 @@ const FormLogin = (props) => {
                     value={data.phone_number}
                     required
                   />
+                  <div className="invalid-feedback">
+                    {errorData.phone_number}
+                  </div>
                 </div>
               </div>
 
