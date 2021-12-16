@@ -93,8 +93,9 @@ const FormOtp = (props) => {
     const handleResendOtp = () => {
         let formData = new FormData()
         formData.append('userId', decode(userID))
-        axios.post(props.base_url + 'register/otp/resend', formData)
+        axios.post(props.base_url + 'forgot-password/otp/resend', formData)
         .then(() => {
+            console.log('berhasil')
             let date = new Date()
             localStorage.setItem('countdown', date)
         })
