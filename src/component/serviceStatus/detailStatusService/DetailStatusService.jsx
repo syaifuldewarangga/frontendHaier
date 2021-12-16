@@ -109,11 +109,27 @@ const DetailStatusService = (props) => {
                                   <tr>
                                     <th scope="col">Number</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col">Date</th>
+                                    <th scope="col">Date {data.ListOfRepair}</th>
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {data === ''
+                                  {
+                                    data === '' ? null : data.ListOfRepair === '' ? null : 
+                                    data.ListOfRepair.Repair.map((item) => (
+                                          <tr>
+                                            <td className="text-nowrap">
+                                              {item.ChangedNo}
+                                            </td>
+                                            <td className="text-nowrap">
+                                              {item.ChangedStatus}
+                                            </td>
+                                            <td className="text-nowrap">
+                                              {item.StatusChangeDate}
+                                            </td>
+                                          </tr>
+                                    ))
+                                  }
+                                  {/* {data === ''
                                     ? null
                                     : data.ListOfRepair.Repair.map((item) => {
                                         return (
@@ -129,7 +145,7 @@ const DetailStatusService = (props) => {
                                             </td>
                                           </tr>
                                         );
-                                      })}
+                                      })} */}
                                 </tbody>
                               </table>
                             </div>
