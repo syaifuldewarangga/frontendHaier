@@ -77,7 +77,7 @@ const FormRegister = (props) => {
     await axios
       .get(props.base_url + 'location/city', {
         params: {
-          prov_id: province,
+          prov_name: province,
         },
       })
       .then((res) => {
@@ -89,7 +89,8 @@ const FormRegister = (props) => {
     await axios
       .get(props.base_url + 'location/city/districts', {
         params: {
-          city_id: city,
+          prov_name: data.province,
+          city_name: city,
         }
       })
       .then((res) => {
@@ -104,7 +105,9 @@ const FormRegister = (props) => {
     await axios
       .get(props.base_url + 'location/city/districts/subdistricts', {
         params: {
-          district_id: district,
+          prov_name: data.province,
+          city_name: data.city,
+          dis_name: district,
         }
       })
       .then((res) => {
@@ -118,7 +121,6 @@ const FormRegister = (props) => {
 
   const onChangeInput = (e) => {
     if (e.target.name === 'province') {
-      console.log(data)
       setDistrict([])
       setSub_district([])
       setData({
@@ -128,7 +130,7 @@ const FormRegister = (props) => {
         district: '',
         sub_district: ''
       })
-      getCityFromAPI(e.target.selectedOptions[0].dataset.id);
+      getCityFromAPI(e.target.value);
     } else 
     if (e.target.name === 'city') {
       setSub_district([])
@@ -138,7 +140,7 @@ const FormRegister = (props) => {
         district: '',
         sub_district: ''
       })
-      getDisrictFromAPI(e.target.selectedOptions[0].dataset.id);
+      getDisrictFromAPI(e.target.value);
     } else 
     if (e.target.name === 'district') {
       setData({
@@ -146,7 +148,7 @@ const FormRegister = (props) => {
         district: e.target.value,
         sub_district: ''
       })
-      getSubDisrictFromAPI(e.target.selectedOptions[0].dataset.id);
+      getSubDisrictFromAPI(e.target.value);
     } else 
     if (
       e.target.name === 'phone' &&
@@ -503,7 +505,7 @@ const FormRegister = (props) => {
                             <option> -- Select your province -- </option>
                             {province.map(function (item, i) {
                               return (
-                                <option value={item.prov_name} data-id={item.prov_id} key={i}>
+                                <option value={item.prov_name} key={i}>
                                   {item.prov_name}
                                 </option>
                               );
@@ -531,7 +533,6 @@ const FormRegister = (props) => {
                                 <option 
                                   value={item.city_name} 
                                   key={i}
-                                  data-id={item.city_id}
                                 >
                                   {item.city_name}
                                 </option>
@@ -560,7 +561,6 @@ const FormRegister = (props) => {
                                 <option 
                                   value={item.dis_name} 
                                   key={i}
-                                  data-id={item.dis_id}
                                 >
                                   {item.dis_name}
                                 </option>

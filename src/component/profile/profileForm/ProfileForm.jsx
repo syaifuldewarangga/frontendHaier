@@ -43,28 +43,7 @@ function ProfileForm(props) {
     title: 'Success',
     subTitle: 'your password has been changed successfully',
   });
-
-  async function fetchData() {
-    var token = localStorage.getItem('access_token');
-    await axios
-      .get(props.base_url + 'location', {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      })
-      .then((res) => {
-        setProv(res.data);
-      })
-      .catch((e) => {
-        if (e.response) {
-          console.log(e.response);
-        } else if (e.request) {
-          console.log('request : ' + e.request);
-        } else {
-          console.log('message : ' + e.message);
-        }
-      });
-  }
+  var token = localStorage.getItem('access_token');
 
   useEffect(() => {
     if (newPassword !== confirmPassword) {
@@ -80,18 +59,25 @@ function ProfileForm(props) {
     }
   }, [confirmPassword]);
 
-  useEffect(() => {
-    setData(props.data);
-    console.log(props.data);
-    if (props.data !== '') {
-      let newPhone = props.data.phone.toString();
-      setDataPonsel(newPhone.slice(2));
-    }
-    fetchData();
-    getCityFromAPI(props.data.province);
-    getDisrictFromAPI(props.data.city);
-    getSubDisrictFromAPI(props.data.district);
-  }, [props.base_url, props.data]);
+  async function getProvinceFromAPI() {
+    await axios.get(props.base_url + 'location', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+    .then((res) => {
+      setProv(res.data);
+    })
+    .catch((e) => {
+      if (e.response) {
+        console.log(e.response);
+      } else if (e.request) {
+        console.log('request : ' + e.request);
+      } else {
+        console.log('message : ' + e.message);
+      }
+    });
+  }
 
   const getCityFromAPI = async (province) => {
     var token = localStorage.getItem('access_token');
@@ -109,19 +95,19 @@ function ProfileForm(props) {
       });
   };
 
-  const getDisrictFromAPI = async (city) => {
-    await axios
-      .get(props.base_url + 'location/city/districts', {
-        params: {
-          city_name: city,
-        }
-      })
-      .then((res) => {
-        setDistrict(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const getDisrictFromAPI = async (province, city) => {
+    await axios.get(props.base_url + 'location/city/districts', {
+      params: {
+        prov_name: province,
+        city_name: city,
+      }
+    })
+    .then((res) => {
+      setDistrict(res.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   };
 
   const getSubDisrictFromAPI = async (district) => {
@@ -135,6 +121,19 @@ function ProfileForm(props) {
         setSub_district(res.data);
       });
   };
+
+  useEffect(() => {
+    setData(props.data);
+    console.log(props.data);
+    if (props.data !== '') {
+      let newPhone = props.data.phone.toString();
+      setDataPonsel(newPhone.slice(2));
+    }
+    getProvinceFromAPI();
+    getCityFromAPI(props.data.province);
+    getDisrictFromAPI(props.data.province, props.data.city);
+    getSubDisrictFromAPI(props.data.district);
+  }, [props.base_url, props.data]);
 
   const onChangeData = (e) => {
     if (e.target.ariaLabel === 'province') {
@@ -591,7 +590,6 @@ function ProfileForm(props) {
                               value={item.prov_name}
                               key={i}
                               selected={ item.prov_name === props.data.province ? 'selected' : '' }
-                              data-id={item.prov_id}
                             >
                               {item.prov_name}
                             </option>
