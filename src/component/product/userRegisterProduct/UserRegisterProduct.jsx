@@ -95,8 +95,7 @@ function UserRegisterProduct(props) {
       },
       {
         headers: {
-          Authorization: gtmToken,
-          'Content-Type': 'text/plain',
+          Authorization: "Bearer " + gtmToken,
         },
       }
     )
@@ -123,8 +122,7 @@ function UserRegisterProduct(props) {
         },
         {
           headers: {
-            Authorization: gtmToken,
-            'Content-Type': 'text/plain',
+            Authorization: "Bearer " + gtmToken,
           },
         }
       )
