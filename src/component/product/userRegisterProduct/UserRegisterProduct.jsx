@@ -46,7 +46,6 @@ function UserRegisterProduct(props) {
   var email = localStorage.getItem('email');
   var token = localStorage.getItem('access_token');
   const history = useHistory()
-
   const alertModal = () => {
     let alertModal = new Modal(document.getElementById('alertModal'));
     alertModal.show();
@@ -247,8 +246,6 @@ function UserRegisterProduct(props) {
           } 
         }).catch((err) => {
           console.log(err.response)
-        }).finally(() => {
-          setIsLoadiing(false)
         })
       }
 

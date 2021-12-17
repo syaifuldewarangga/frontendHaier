@@ -48,13 +48,7 @@ const FormProduct = (props) => {
     title: 'Success',
     subTitle: 'successfully requested service',
   });
-
-  const minVisitDate = () => {
-    let currentDate = new Date().toLocaleDateString()
-    let newCurrentDate = format(new Date(currentDate), 'yyyy-MM-dd');
-    return newCurrentDate;
-  }
-  const [minDateVisitDate, setMinVisitDate] = useState(minVisitDate)
+  const [minDateVisitDate, setMinVisitDate] = useState(format(new Date(), 'yyyy-MM-dd'))
   const [isLoading, setIsLoading] = useState(false)
 
   let token = localStorage.getItem('access_token');
@@ -82,7 +76,6 @@ const FormProduct = (props) => {
 
   useEffect(() => {
     getDataUserFromAPI();
-    minVisitDate()
   }, []);
 
   useEffect(() => {
