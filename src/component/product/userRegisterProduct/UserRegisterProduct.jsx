@@ -41,10 +41,7 @@ function UserRegisterProduct() {
     title: 'Thanks You',
     subTitle: 'Your product has been successfully registered'
   })
-  let currentDate = new Date().toLocaleDateString()
-  let newCurrentDate = format(new Date(currentDate), 'yyyy-MM-dd');
-  
-  const [maxPurchaseDate, setMaxPurchaseDate] = useState(newCurrentDate)
+  const [maxPurchaseDate, setMaxPurchaseDate] = useState(format(new Date(), 'yyyy-MM-dd'))
   const [isLoading, setIsLoadiing] = useState(false)
   var email = localStorage.getItem('email');
   var token = localStorage.getItem('access_token');
