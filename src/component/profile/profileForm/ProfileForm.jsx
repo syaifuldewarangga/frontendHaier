@@ -590,11 +590,8 @@ function ProfileForm(props) {
                             <option
                               value={item.prov_name}
                               key={i}
-                              selected={
-                                item.prov_name === props.data.province
-                                  ? 'selected'
-                                  : ''
-                              }
+                              selected={ item.prov_name === props.data.province ? 'selected' : '' }
+                              data-id={item.prov_id}
                             >
                               {item.prov_name}
                             </option>

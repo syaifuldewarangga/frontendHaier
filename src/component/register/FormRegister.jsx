@@ -10,6 +10,7 @@ const FormRegister = (props) => {
   const [errorData, setErrorData] = useState({
     first_name: '',
     last_name: '',
+    email: '',
     username: '',
     nik: '',
     gender: '',
@@ -27,9 +28,10 @@ const FormRegister = (props) => {
   const [data, setData] = useState({
     first_name: '',
     last_name: '',
+    email: '',
     username: '',
     nik: '',
-    gender: '',
+    gender: 'Pria',
     birth_date: '',
     age: '',
     phone: '',
@@ -46,6 +48,7 @@ const FormRegister = (props) => {
   const [city, setCity] = useState([]);
   const [district, setDistrict] = useState([]);
   const [sub_district, setSub_district] = useState([]);
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     if (data.password !== data.confirmpassword) {
@@ -74,7 +77,7 @@ const FormRegister = (props) => {
     await axios
       .get(props.base_url + 'location/city', {
         params: {
-          prov_name: province,
+          prov_id: province,
         },
       })
       .then((res) => {
@@ -86,7 +89,7 @@ const FormRegister = (props) => {
     await axios
       .get(props.base_url + 'location/city/districts', {
         params: {
-          city_name: city,
+          city_id: city,
         }
       })
       .then((res) => {
@@ -101,7 +104,7 @@ const FormRegister = (props) => {
     await axios
       .get(props.base_url + 'location/city/districts/subdistricts', {
         params: {
-          district_name: district,
+          district_id: district,
         }
       })
       .then((res) => {
@@ -115,14 +118,36 @@ const FormRegister = (props) => {
 
   const onChangeInput = (e) => {
     if (e.target.name === 'province') {
-      getCityFromAPI(e.target.value);
-    }
+      console.log(data)
+      setDistrict([])
+      setSub_district([])
+      setData({
+        ...data,
+        province: e.target.value,
+        city: '',
+        district: '',
+        sub_district: ''
+      })
+      getCityFromAPI(e.target.selectedOptions[0].dataset.id);
+    } else 
     if (e.target.name === 'city') {
-      getDisrictFromAPI(e.target.value);
-    }
+      setSub_district([])
+      setData({
+        ...data,
+        city: e.target.value,
+        district: '',
+        sub_district: ''
+      })
+      getDisrictFromAPI(e.target.selectedOptions[0].dataset.id);
+    } else 
     if (e.target.name === 'district') {
-      getSubDisrictFromAPI(e.target.value);
-    }
+      setData({
+        ...data,
+        district: e.target.value,
+        sub_district: ''
+      })
+      getSubDisrictFromAPI(e.target.selectedOptions[0].dataset.id);
+    } else 
     if (
       e.target.name === 'phone' &&
       data.phone.toString().slice(0, 1) === '0'
@@ -142,6 +167,7 @@ const FormRegister = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true)
     localStorage.removeItem('countdown')
     if(data.phone.toString().slice(0, 2) !== '62' && data.phone !== '') {
       setErrorData({
@@ -151,6 +177,7 @@ const FormRegister = (props) => {
       let formData = new FormData();
       formData.append('first_name', data.first_name);
       formData.append('last_name', data.last_name);
+      formData.append('email', data.email);
       formData.append('username', data.username);
       formData.append('nik', data.nik);
       formData.append('gender', data.gender);
@@ -191,6 +218,12 @@ const FormRegister = (props) => {
               if (responError.location === 'username') {
                 setErrorData({
                   username: error.data.message,
+                });
+              }
+
+              if (responError.location === 'email') {
+                setErrorData({
+                  email: error.data.message,
                 });
               }
   
@@ -265,6 +298,8 @@ const FormRegister = (props) => {
           } else {
             console.log(error)
           }
+        }).finally(() => {
+          setIsLoading(false)
         });
     }
     
@@ -297,6 +332,7 @@ const FormRegister = (props) => {
                             }`}
                             placeholder="First Name"
                             onChange={onChangeInput}
+                            required
                           />
                           <div className="invalid-feedback">
                             {errorData.first_name}
@@ -315,9 +351,29 @@ const FormRegister = (props) => {
                             }`}
                             placeholder="Last Name"
                             onChange={onChangeInput}
+                            required
                           />
                           <div className="invalid-feedback">
                             {errorData.last_name}
+                          </div>
+                        </div>
+
+                        <div className="col-lg-12 mb-3">
+                          <div className="form-label color-primary">
+                            Email
+                          </div>
+                          <input
+                            type="email"
+                            name="email"
+                            className={`form-control ${
+                              errorData.email !== ''  && errorData.email !== undefined ? 'is-invalid' : null
+                            }`}
+                            placeholder="email"
+                            onChange={onChangeInput}
+                            required
+                          />
+                          <div className="invalid-feedback">
+                            {errorData.email}
                           </div>
                         </div>
 
@@ -333,6 +389,7 @@ const FormRegister = (props) => {
                             }`}
                             placeholder="Username"
                             onChange={onChangeInput}
+                            required
                           />
                           <div className="invalid-feedback">
                             {errorData.username}
@@ -350,6 +407,7 @@ const FormRegister = (props) => {
                             }`}
                             placeholder="nik"
                             onChange={onChangeInput}
+                            required
                           />
                           <div className="invalid-feedback">
                             {errorData.nik}
@@ -363,6 +421,8 @@ const FormRegister = (props) => {
                               errorData.gender !== '' && errorData.gender !== undefined ? 'is-invalid' : null
                             }`}
                             name="gender"
+                            onChange={onChangeInput}
+                            required
                           >
                             <option value="Pria"> Pria </option>
                             <option value="Wanita"> Wanita </option>
@@ -384,6 +444,7 @@ const FormRegister = (props) => {
                             }`}
                             placeholder="birth_date"
                             onChange={onChangeInput}
+                            required
                           />
                           <div className="invalid-feedback">
                             {errorData.birth_date}
@@ -401,6 +462,7 @@ const FormRegister = (props) => {
                             placeholder="age"
                             min="1"
                             onChange={onChangeInput}
+                            required
                           />
                           <div className="invalid-feedback">
                             {errorData.age}
@@ -420,6 +482,7 @@ const FormRegister = (props) => {
                               placeholder="Phone"
                               value={data.phone}
                               onChange={onChangeInput}
+                              required
                             />
                             <div className="invalid-feedback">
                               {errorData.phone}
@@ -435,11 +498,12 @@ const FormRegister = (props) => {
                             }`}
                             name="province"
                             onChange={onChangeInput}
+                            required
                           >
                             <option> -- Select your province -- </option>
                             {province.map(function (item, i) {
                               return (
-                                <option value={item.prov_name} key={i}>
+                                <option value={item.prov_name} data-id={item.prov_id} key={i}>
                                   {item.prov_name}
                                 </option>
                               );
@@ -451,7 +515,7 @@ const FormRegister = (props) => {
                         </div>
 
                         <div className="col-lg-6 mb-3">
-                          <div class="form-label"> City </div>
+                          <div class="form-label"> City</div>
                           <select
                             class={`form-select ${
                               errorData.city !== '' && errorData.city !== undefined ? 'is-invalid' : null
@@ -459,11 +523,16 @@ const FormRegister = (props) => {
                             name="city"
                             onChange={onChangeInput}
                             disabled={city.length === 0 ? 'disabled' : null}
+                            required
                           >
-                            <option selected disabled> -- Select your city -- </option>
+                            <option selected={data.city === '' ? 'selected' : null} disabled > -- Select your city -- </option>
                             {city.map(function (item, i) {
                               return (
-                                <option value={item.city_name} key={i}>
+                                <option 
+                                  value={item.city_name} 
+                                  key={i}
+                                  data-id={item.city_id}
+                                >
                                   {item.city_name}
                                 </option>
                               );
@@ -483,11 +552,16 @@ const FormRegister = (props) => {
                             name="district"
                             onChange={onChangeInput}
                             disabled={district.length === 0 ? 'disabled' : null}
+                            required
                           >
-                            <option selected disabled> -- Select your district -- </option>
+                            <option selected={data.district === '' ? 'selected' : null}disabled> -- Select your district -- </option>
                             {district.map(function (item, i) {
                               return (
-                                <option value={item.dis_name} key={i}>
+                                <option 
+                                  value={item.dis_name} 
+                                  key={i}
+                                  data-id={item.dis_id}
+                                >
                                   {item.dis_name}
                                 </option>
                               );
@@ -511,8 +585,9 @@ const FormRegister = (props) => {
                             disabled={
                               sub_district.length === 0 ? 'disabled' : null
                             }
+                            required
                           >
-                            <option selected disabled> -- Select your sub district -- </option>
+                            <option selected={data.sub_district === '' ? 'selected' : null} disabled> -- Select your sub district -- </option>
                             {sub_district.map(function (item, i) {
                               return (
                                 <option value={item.subdis_name} key={i}>
@@ -535,6 +610,7 @@ const FormRegister = (props) => {
                             rows="6"
                             name="address"
                             onChange={onChangeInput}
+                            required
                           ></textarea>
                           <div class="invalid-feedback">
                             {errorData.address}
@@ -553,6 +629,7 @@ const FormRegister = (props) => {
                             }`}
                             placeholder="Password"
                             onChange={onChangeInput}
+                            required
                           />
                           <div className="invalid-feedback">
                             {errorData.password}
@@ -573,6 +650,7 @@ const FormRegister = (props) => {
                             }`}
                             placeholder="Password Confirmation"
                             onChange={onChangeInput}
+                            required
                           />
                           <div className="invalid-feedback">
                             {errorData.confirmpassword}
@@ -585,8 +663,16 @@ const FormRegister = (props) => {
                             <button
                               className="btn btn-color-primary"
                               type="submit"
+                              disabled={isLoading && 'disabled'}
                             >
-                              Sign Up
+                              {
+                                isLoading ?
+                                <Fragment>
+                                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                  Loading... 
+                                </Fragment>
+                                : 'Sign Up'
+                              }
                             </button>
                           </div>
 

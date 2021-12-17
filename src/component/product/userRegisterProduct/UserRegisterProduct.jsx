@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import './UserRegisterProduct.css';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
-import { getToken } from '../../../action/action';
 import SelectSearch, { fuzzySearch } from 'react-select-search';
 import './SelectSearch.css';
 import { format } from 'date-fns';
 import AlertModal from '../../alertModal/AlertModal';
 import { Modal } from 'bootstrap';
+import { client_id, client_secret, grant_type } from '../../../variable';
+import { useTranslation } from 'react-i18next';
 var X2JS = require('x2js');
 
 function UserRegisterProduct(props) {
   const xtojson = new X2JS();
   const { barcode } = useParams();
-  const dispatch = useDispatch();
   const [data, setData] = useState('');
   const [storeValue, setStoreValue] = useState('');
   const [storeStreet, setStoreStreet] = useState('');
@@ -71,39 +71,50 @@ function UserRegisterProduct(props) {
     }
   }, [storeValue]);
 
-  async function fetchDataProduct() {
-    const request = await axios
-      .post(
-        props.gtm_url + 'pmtcommondata/GetProductListByCondition',
-        {
-          Barcode: barcode,
-          ProductID: '',
-          ProductName: '',
+  const getTokenGTM = async () => {
+    await axios.post(props.gtm_token_url, {
+      client_id: client_id,
+      client_secret: client_secret,
+      grant_type: grant_type,
+    }).then((res) => {
+      const token = res.data.access_token
+      fetchDataProduct(token)
+      fetchDataStore(token)
+    }).catch((err) => {
+      console.log(err.response)
+    })
+  }
+
+  async function fetchDataProduct(gtmToken) {
+    await axios.post(
+      props.gtm_url + 'pmtcommondata/GetProductListByCondition',
+      {
+        Barcode: barcode,
+        ProductID: '',
+        ProductName: '',
+      },
+      {
+        headers: {
+          Authorization: gtmToken,
+          'Content-Type': 'text/plain',
         },
-        {
-          headers: {
-            Authorization: props.token,
-            'Content-Type': 'text/plain',
-          },
-        }
-      )
-      .then((res) => {
-        setData(res.data.data[0]);
-      })
-      .catch((e) => {
-        dispatch(getToken());
-        if (e.response) {
-          console.log(e.response);
-        } else if (e.request) {
-          console.log('request : ' + e.request);
-        } else {
-          console.log('message : ' + e.message);
-        }
-      });
-    return request;
+      }
+    )
+    .then((res) => {
+      setData(res.data.data[0]);
+    })
+    .catch((e) => {
+      if (e.response) {
+        console.log(e.response);
+      } else if (e.request) {
+        console.log('request : ' + e.request);
+      } else {
+        console.log('message : ' + e.message);
+      }
+    });
   }
   
-  async function fetchDataStore() {
+  async function fetchDataStore(gtmToken) {
     await axios.post(props.gtm_url + 'pmtcommondata/GetStoreListByCondition',
         {
           StoreID: '',
@@ -112,7 +123,7 @@ function UserRegisterProduct(props) {
         },
         {
           headers: {
-            Authorization: props.token,
+            Authorization: gtmToken,
             'Content-Type': 'text/plain',
           },
         }
@@ -121,8 +132,6 @@ function UserRegisterProduct(props) {
         setDataStore(res.data.data);
       })
       .catch((e) => {
-        dispatch(getToken());
-
         if (e.response) {
           console.log(e.response);
         } else if (e.request) {
@@ -151,14 +160,8 @@ function UserRegisterProduct(props) {
   
   useEffect(() => {
     fetchDataUser()
+    getTokenGTM();
   }, [])
-
-  useEffect(() => {
-    if (barcode !== '') {
-      fetchDataProduct();
-      fetchDataStore();
-    }
-  }, [props.token, barcode]);
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -288,12 +291,15 @@ function UserRegisterProduct(props) {
           } else {
             console.log(error)
           }
+        }).finally(() => {
+          setIsLoadiing(false)
         });
     } else {
       userData.date === '' ? setErrorDate('Date Must be Required') : setErrorDate('')
       storeValue === '' ? setErrorStore('Store Must be Required') : setErrorStore('')
       userData.file1 === '' ? setErrorFile1('Warranty Card Must be Required') : setErrorFile1('');
       userData.file2 === '' ? setErrorFile2('Invoice Must be Required') : setErrorFile2('');
+      setIsLoadiing(false)
     }
   }
 
@@ -301,6 +307,8 @@ function UserRegisterProduct(props) {
     value: StoreName,
     name: StoreName,
   }));
+
+  const { t } = useTranslation('common')
 
   return (
     <div className="user-register-product mb-5">
@@ -430,8 +438,7 @@ function UserRegisterProduct(props) {
                   <input
                     type="date"
                     max={maxPurchaseDate}
-                    className="form-control"
-                    class={`form-control ${
+                    className={`form-control ${
                       errorDate !== '' ? 'is-invalid' : null
                     }`}
                     id="date-purchase"
@@ -442,7 +449,7 @@ function UserRegisterProduct(props) {
                       })
                     }
                   />
-                  <div class="invalid-feedback">{errorDate}</div>
+                  <div className="invalid-feedback">{errorDate}</div>
                 </div>
               </div>
 
@@ -459,7 +466,7 @@ function UserRegisterProduct(props) {
                     filterOptions={fuzzySearch}
                     placeholder="Search something"
                   />
-                  <div class="text-danger" style={{ fontSize: 14 }}>
+                  <div className="text-danger" style={{ fontSize: 14 }}>
                     {errorStore}
                   </div>
                 </div>
@@ -487,9 +494,9 @@ function UserRegisterProduct(props) {
                   </div>
                 ) : null}
                 <div className="btn-upload-custom mb-4">
-                  <div class="dropzone-wrapper">
-                    <div class="dropzone-desc">
-                      <span class="material-icons"> cloud_upload </span>
+                  <div className="dropzone-wrapper">
+                    <div className="dropzone-desc">
+                      <span className="material-icons"> cloud_upload </span>
                       {
                         userData.file1 !== '' ? 
                         <p>Re-upload Warranty Card</p> :
@@ -500,7 +507,7 @@ function UserRegisterProduct(props) {
                       type="file"
                       name="warranty_card"
                       aria-label="file"
-                      class="dropzone"
+                      className="dropzone"
                       onChange={(e) => {
                         setShowFile1(URL.createObjectURL(e.target.files[0]));
                         setUserData({
@@ -511,7 +518,7 @@ function UserRegisterProduct(props) {
                     />
                     {/* { errorData.file } */}
                   </div>
-                  <div class="text-danger">{errorFile1}</div>
+                  <div className="text-danger">{errorFile1}</div>
                 </div>
               </div>
 
@@ -522,9 +529,9 @@ function UserRegisterProduct(props) {
                   </div>
                 ) : null}
                 <div className="btn-upload-custom mb-4">
-                  <div class="dropzone-wrapper">
-                    <div class="dropzone-desc">
-                      <span class="material-icons"> cloud_upload </span>
+                  <div className="dropzone-wrapper">
+                    <div className="dropzone-desc">
+                      <span className="material-icons"> cloud_upload </span>
                       {
                         userData.file1 !== '' ? 
                         <p>Re-upload Invoice</p> :
@@ -534,7 +541,7 @@ function UserRegisterProduct(props) {
                     <input
                       type="file"
                       name="warranty_card"
-                      class="dropzone"
+                      className="dropzone"
                       aria-label="file"
                       onChange={(e) => {
                         setShowFile2(URL.createObjectURL(e.target.files[0]));
@@ -546,15 +553,15 @@ function UserRegisterProduct(props) {
                     />
                     {/* { errorData.file } */}
                   </div>
-                  <div class="text-danger">{errorFile2}</div>
+                  <div className="text-danger">{errorFile2}</div>
                 </div>
               </div>
 
               <div className="col-lg-12">
                 <div className="mb-4">
-                  <div class="form-check">
+                  <div className="form-check">
                     <input
-                      class="form-check-input"
+                      className="form-check-input"
                       type="checkbox"
                       value="Y"
                       onChange={(e) =>
@@ -564,8 +571,8 @@ function UserRegisterProduct(props) {
                         })
                       }
                     />
-                    <label class="form-check-label">
-                      Dapatkah kami menghubungi Anda menggunakan WhatsApp kedepannya.
+                    <label className="form-check-label">
+                      {t('form_product_register.wa_flag')}
                     </label>
                   </div>
                 </div>
@@ -587,8 +594,8 @@ function UserRegisterProduct(props) {
                 <div className="d-flex justify-content-center align-items-center">
                   {
                     isLoading ?
-                    <div class="spinner-border text-primary me-3" role="status">
-                      <span class="visually-hidden">Loading...</span>
+                    <div className="spinner-border text-primary me-3" role="status">
+                      <span className="visually-hidden">Loading...</span>
                     </div> : null
                   }
                   <div>
@@ -612,6 +619,7 @@ const mapStateToProps = (state) => {
     base_url: state.BASE_URL,
     gsis_url: state.GSIS_URL,
     image_url: state.URL,
+    gtm_token_url: state.GTM_TOKEN_URL
   };
 };
 

@@ -76,5 +76,17 @@
     "postal_code": "Kode Pos",
     "address": "Alamat",
     "save": "Simpan"
+  },
+  "product_register": {
+    "search_barcode": "Cari Product Anda",
+    "barcode_number": "Nomor Barcode",
+    "product_name": "Nama Product",
+    "or": "atau", 
+    "alert": "Jika product adan tidak dapat di temukan silahkan hubungi customer service aqua japan",
+    "manual_input": "Input Manual",
+    "retry": "Ulang"
+  },
+  "form_product_register": {
+    "wa_flag": "Dapatkah kami menghubungi Anda menggunakan WhatsApp kedepannya."
   }
 }

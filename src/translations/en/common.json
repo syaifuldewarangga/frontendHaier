@@ -76,5 +76,17 @@
     "postal_code": "Postal Code",
     "address": "Address",
     "save": "Save"
+  },
+  "product_register": {
+    "search_barcode": "Search Your Product",
+    "barcode_number": "Barcode Number",
+    "product_name": "Product Name",
+    "or": "or", 
+    "alert": "If the product cannot be found, please contact aqua japan customer service",
+    "manual_input": "Manual Input",
+    "retry": "Retry"
+  },
+  "form_product_register": {
+    "wa_flag": "Can we contact you using WhatsApp in the future."
   }
 }

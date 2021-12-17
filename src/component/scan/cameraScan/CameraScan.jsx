@@ -5,8 +5,10 @@ import './CameraScan.css';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { client_id, client_secret, grant_type } from '../../../variable';
+import { useTranslation } from 'react-i18next';
 
 const CameraScan = (props) => {
+  const { t } = useTranslation('common');
   const firstUpdate = useRef(true);
   const [data, setData] = React.useState([]);
   const [barcode, setBarcode] = useState('');
@@ -18,7 +20,7 @@ const CameraScan = (props) => {
     };
   }, []);
 
-  const productAPIGTM = async (token) => {
+  const productAPIGTM = async (gtmToken) => {
     await axios.post(props.gtm_url + 'pmtcommondata/GetProductListByCondition',{
         Barcode: barcode,
         ProductID: '',
@@ -26,7 +28,7 @@ const CameraScan = (props) => {
       },
       {
         headers: {
-          Authorization: token,
+          Authorization: gtmToken,
           'Content-Type': 'text/plain',
         },
       }
@@ -220,7 +222,7 @@ const CameraScan = (props) => {
               </span>
             </div>
             <div className="manual-scan px-lg-4">
-              <p className="title text-center mb-4">Search Your Product</p>
+              <p className="title text-center mb-4">{t('product_register.search_barcode')}</p>
 
               <div className="camera-scan text-center">
                 {!props.cameraStatus && (
@@ -229,7 +231,7 @@ const CameraScan = (props) => {
                     style={{ marginBottom: 20 }}
                     className="btn btn-color-primary btn-play mt-3"
                   >
-                    Retry
+                    {t('product_register.retry')}
                   </button>
                 )}
                 {props.cameraStatus && (
@@ -256,7 +258,7 @@ const CameraScan = (props) => {
               <div className="mb-4">
                 <div className="mb-4">
                   <label htmlFor="barcode-number" className="form-label">
-                    Barcode Number
+                  {t('product_register.barcode_number')}
                   </label>
                   <input
                     type="text"
@@ -273,7 +275,7 @@ const CameraScan = (props) => {
 
                 <div className="mb-4">
                   <label htmlFor="product_name" className="form-label">
-                    Product Name
+                  {t('product_register.product_name')}
                   </label>
                   <input
                     type="text"
@@ -309,6 +311,14 @@ const CameraScan = (props) => {
                     >
                       Detail
                     </button>
+                    <span 
+                      className="text-danger"
+                      style={{ 
+                        fontSize: '12px'
+                      }}
+                    >
+                      {t('product_register.alert')}
+                    </span>
                   </div>
                 ) : (
                   <Link to={'/product/register-product/' + data[0].Barcode}>
@@ -322,7 +332,7 @@ const CameraScan = (props) => {
 
                 <div className="my-4">
                   <div className="border-center">
-                    <span>or</span>
+                    <span>{t('product_register.or')}</span>
                   </div>
                 </div>
 
@@ -331,7 +341,7 @@ const CameraScan = (props) => {
                     className="btn btn-color-outline-primary btn-detail"
                     onClick={handleManualInput}
                   >
-                    Manual Input
+                    {t('product_register.manual_input')}
                   </button>
                 </div>
               </div>
