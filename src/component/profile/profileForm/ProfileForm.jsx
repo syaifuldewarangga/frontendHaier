@@ -735,7 +735,7 @@ function ProfileForm(props) {
                           onChange={onChangeData}
                           disabled={district.length === 0 ? 'disabled' : null}
                         >
-                          <option selected={data.district === '' || data.district === undefined ? 'selected' : null} disabled>-- Select your city --</option>
+                          <option selected={data.district === '' || data.district === undefined ? 'selected' : null} disabled>-- Select your district --</option>
                           {district.map(function (item, i) {
                             return (
                               <option
@@ -773,7 +773,7 @@ function ProfileForm(props) {
                           onChange={onChangeData}
                           disabled={sub_district.length === 0 ? 'disabled' : null}
                         >
-                          <option selected={data.sub_district === '' || data.sub_district === undefined ? 'selected' : null} disabled>-- Select your city --</option>
+                          <option selected={data.sub_district === '' || data.sub_district === undefined ? 'selected' : null} disabled>-- Select your sub district --</option>
                           {sub_district.map(function (item, i) {
                             return (
                               <option
