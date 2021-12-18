@@ -28,9 +28,6 @@ function UserRegisterProduct(props) {
     file2: '',
     agreements: ''
   });
-  const [errorData, setErrorData] = useState({
-    barcode: ''
-  })
   const [errorDate, setErrorDate] = useState('');
   const [errorFile1, setErrorFile1] = useState('');
   const [errorFile2, setErrorFile2] = useState('');
@@ -195,7 +192,7 @@ function UserRegisterProduct(props) {
             id: id
           }
         }).then(() => {
-          console.log('succes delete')
+          console.log('success delete')
         }).catch((error) => {
           console.log(error.response)
         })
@@ -203,7 +200,7 @@ function UserRegisterProduct(props) {
       // console.log(dataUser)
       const postToGSIS = async (dbData) => {
         let formGSIS = new FormData()
-        formGSIS.append('id', data.ProductID)
+        // formGSIS.append('id', '')
         formGSIS.append('country', 'Indonesia')
         formGSIS.append('firstName', dataUser.first_name)
         formGSIS.append('lastName', dataUser.last_name)
@@ -242,9 +239,9 @@ function UserRegisterProduct(props) {
           } else {
             deleteProduct(dbData.id)
             setErrorGSIS(response.Envelope.Body.HESAProdRegResponse.Error_spcMessage)
-            setErrorData({ barcode: '' })
           } 
         }).catch((err) => {
+          deleteProduct(dbData.id)
           console.log(err.response)
         })
       }
@@ -260,12 +257,9 @@ function UserRegisterProduct(props) {
         })
         .catch((e) => {
           let error = e.response
+          console.log(error)
           if(error.data.errors) {
-            if(error.data.errors.location === 'barcode') {
-              setErrorData({
-                ...errorData,
-                barcode: 'your data has been registered'
-              })
+            if(error.data.errors.location === 'barcode' || error.data.errors.location === 'product_id') {
               setMessageModal({
                   status: 'error',
                   title: 'Sorry',

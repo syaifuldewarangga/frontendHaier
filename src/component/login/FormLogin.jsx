@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
@@ -10,11 +10,12 @@ const FormLogin = (props) => {
   const [errorData, setErrorData] = useState({
     phone_number: ''
   })
-  const [data, setData] = React.useState({
+  const [data, setData] = useState({
     phone_number: '',
     password: '',
     salah: false,
   });
+  const [isLoading, setIsLoading] = useState(false)
 
   const onChangeData = (e) => {
     if(e.target.ariaLabel === 'phone_number' && data.phone_number.toString().slice(0,1) === '0') {
@@ -31,8 +32,7 @@ const FormLogin = (props) => {
   };
 
   const getProfile = async (token, email) => {
-    await axios
-    .get(props.base_url + 'user/get', {
+    await axios.get(props.base_url + 'user/get', {
       headers: {
         Authorization: 'Bearer ' + token,
       },
@@ -85,10 +85,12 @@ const FormLogin = (props) => {
   };
 
   const fetchAPI = async () => {
+    setIsLoading(true)
     if(data.phone_number.toString().slice(0, 2) !== '62' && data.phone !== '') {
       setErrorData({
         phone_number: 'check your phone number, use 62 for phone number code'
       })
+      setIsLoading(false)
     } else {
       const formData = new FormData();
       formData.append('email', data.phone_number + 'C');
@@ -98,23 +100,24 @@ const FormLogin = (props) => {
         ['salah']: false,
       });
   
-      await axios.post(props.base_url + 'login', formData)
-        .then((res) => {
-          getProfile(res.data.access_token, res.data.identifier);
-        })
-        .catch((e) => {
-          if (e.response) {
-            setData({
-              ...data,
-              ['salah']: true,
-            });
-            console.log(e.response);
-          } else if (e.request) {
-            console.log('request : ' + e.request);
-          } else {
-            console.log('message : ' + e.message);
-          }
-        });
+      await axios.post(props.base_url + 'login', formData).then((res) => {
+        getProfile(res.data.access_token, res.data.identifier);
+      })
+      .catch((e) => {
+        if (e.response) {
+          setData({
+            ...data,
+            ['salah']: true,
+          });
+          console.log(e.response);
+        } else if (e.request) {
+          console.log('request : ' + e.request);
+        } else {
+          console.log('message : ' + e.message);
+        }
+      }).finally(() => {
+        setIsLoading(false)
+      });
     }
   };
 
@@ -203,18 +206,19 @@ const FormLogin = (props) => {
               <div className="d-flex justify-content-center">
                 <div className="col-12">
                   <div className="d-grid gap-2">
-                    {/* <button
-                      className="btn btn-color-primary"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                    >
-                      Sign In
-                    </button> */}
                     <button
                       className="btn btn-color-primary"
                       onClick={fetchAPI}
+                      disabled={isLoading && 'disabled'}
                     >
-                      Sign In
+                      {
+                        isLoading ?
+                        <Fragment>
+                            <span class="spinner-border spinner-border-sm me-1  " role="status" aria-hidden="true"></span>
+                            Loading...
+                        </Fragment> :
+                            'Sign In'
+                      }
                     </button>
                   </div>
 
