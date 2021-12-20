@@ -174,7 +174,7 @@ class Question extends Component {
     }
 
     insertQuestionToAPI = async (data) => {
-        console.log(Object.fromEntries(data))
+        // console.log(Object.fromEntries(data))
         const token = localStorage.getItem('access_token')
         await axios.post(this.props.base_url + 'customer-voice-answer', data, {
             headers: {
@@ -200,6 +200,7 @@ class Question extends Component {
                 formData.append('user_id', question.user_id)
                 formData.append('question', question.question)
                 formData.append('question_type_id', question.question_type_id)
+
                 question_anwered = question.answer.length !== 0 ? question_anwered + 1 : question_anwered;
                 question.answer.map((answer) => {
                     formData.append('answer', answer)
@@ -217,7 +218,6 @@ class Question extends Component {
             let alertModal = new Modal(document.getElementById('alertModal'));
             alertModal.show();
         }
-        console.log(question_anwered)
     }
 
     componentDidMount() {
