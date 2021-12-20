@@ -207,6 +207,7 @@ class Question extends Component {
                 })
                 this.insertQuestionToAPI(formData)
             })
+            console.log(Object)
         } else {
             this.setState({
                 alert: {
