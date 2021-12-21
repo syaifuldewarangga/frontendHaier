@@ -44,10 +44,10 @@ class ImageSlider extends Component
         return (
             <Slider {...settings}>
                 {
-                    this.state.banners.map((banner) => (
-                        <div>
+                    this.state.banners.map((banner, index) => (
+                        <div key={index}>
                             <a href={ banner.link !== 'null' ? banner.link : '#'}>
-                                <div key={banner.id} >
+                                <div>
                                     <img src={this.props.image_url + banner.image} alt={banner.title}/>
                                 </div>
                             </a>
