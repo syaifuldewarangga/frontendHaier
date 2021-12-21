@@ -195,8 +195,8 @@ class Question extends Component {
         })
 
         if(this.state.questions.length === question_anwered) {
-            const formData = new FormData()
             this.state.answer.map((question) => {
+                const formData = new FormData()
                 formData.append('user_id', question.user_id)
                 formData.append('question', question.question)
                 formData.append('question_type_id', question.question_type_id)
