@@ -13,6 +13,7 @@
 
 #redux
 /src/redux.js
+
 # misc
 .DS_Store
 .env.local
