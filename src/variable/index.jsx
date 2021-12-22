@@ -5,6 +5,6 @@ const grant_type = 'client_credentials'
 export {
     client_id,
     client_secret,
-    grant_type
+    grant_type,
 }
 
