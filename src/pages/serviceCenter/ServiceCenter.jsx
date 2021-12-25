@@ -73,7 +73,6 @@ const ServiceCenter = (props) => {
         if (res.data.last === true) {
           setLastPage(true);
         }
-        console.log(res.data)
         setData(data.concat(res.data.content));
       });
   };
