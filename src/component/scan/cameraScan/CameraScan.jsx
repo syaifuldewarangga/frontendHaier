@@ -317,7 +317,11 @@ const CameraScan = (props) => {
                         fontSize: '12px'
                       }}
                     >
-                      {t('product_register.alert')}
+                      <div className='text-center'>
+                        {t('product_register.alert')}
+                        {' '}
+                        <a href='http://wa.me/6285210003003'>wa.me/6285210003003</a>
+                      </div>
                     </span>
                   </div>
                 ) : (
