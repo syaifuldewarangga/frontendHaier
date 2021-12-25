@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import LoadMore from "../../shop/loadMore/LoadMore";
 import ListProduct from "../listProduct/ListProduct";
 import './AllProduct.css'
 
@@ -12,7 +13,11 @@ class AllProduct extends Component
     }
 
     state = ({
-        products: []
+        products: [],
+        searchDataProduct: [],
+        currentPage: 0,
+        lastPage: false,
+        search: false,
     })
 
     doSearch(event){
@@ -20,9 +25,14 @@ class AllProduct extends Component
         if(this.timeout) clearTimeout(this.timeout);
         this.timeout = setTimeout(() => {
           if(searchText !== '') {
+            this.setState({
+                search: true
+            })
             this.searchProductFromApi(searchText)
           } else {
-            this.getProductFromApi()
+            this.setState({
+                search: false
+            })
           }
         }, 500);
     }
@@ -38,13 +48,12 @@ class AllProduct extends Component
             },
         }).then((res) => {
             let data = res.data
-            console.log(data)
             this.setState({
-                products: data
+                searchDataProduct: data
             })
         })
     }
-
+    
     async getProductFromApi() {
         let token = localStorage.getItem('access_token')
         await axios.get(this.props.base_url + 'register-product/user', {
@@ -53,12 +62,18 @@ class AllProduct extends Component
             },
             params: {
                 id: localStorage.getItem('id'),
-                itemPerPage: 8
+                page: this.state.currentPage,
+                itemPerPage: 1
             }
         }).then((res) => {
             let data = res.data
+            if(data.last === true) {
+                this.setState({
+                    lastPage: true
+                })
+            }
             this.setState({
-                products: data.content
+                products: this.state.products.concat(data.content)
             })
         })
     }
@@ -66,6 +81,18 @@ class AllProduct extends Component
     componentDidMount() {
         this.getProductFromApi()
     }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(prevState.currentPage !== this.state.currentPage) {
+            this.getProductFromApi()
+        }
+    }
+
+    handleLoadMore = () => {
+        this.setState({
+            currentPage: this.state.currentPage + 1
+        });
+    };
 
     render () {
         return (
@@ -90,15 +117,30 @@ class AllProduct extends Component
                     <div className="col-lg-10 mx-auto">
                         <div className="row">
                             {
-                                this.state.products.map((product) => (
-                                    <ListProduct 
-                                        key={product.id}
-                                        data={product}
-                                    />
-                                ))
+                                this.state.search ? 
+                                    this.state.searchDataProduct.map((sproduct) => (
+                                        <ListProduct 
+                                            key={sproduct.id}
+                                            data={sproduct}
+                                        />
+                                    ))
+                                :
+                                    this.state.products.map((product) => (
+                                        <ListProduct 
+                                            key={product.id}
+                                            data={product}
+                                        />
+                                    ))
                             }
                         </div>
                     </div>
+                    {
+                        !this.state.search ? !this.state.lastPage ? 
+                            <LoadMore 
+                            handleLoadData = {this.handleLoadMore}
+                            /> 
+                        : null : null
+                    }
                 </div>
             </div>
         );
