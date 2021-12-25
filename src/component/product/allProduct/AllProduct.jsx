@@ -63,7 +63,7 @@ class AllProduct extends Component
             params: {
                 id: localStorage.getItem('id'),
                 page: this.state.currentPage,
-                itemPerPage: 1
+                itemPerPage: 8
             }
         }).then((res) => {
             let data = res.data
