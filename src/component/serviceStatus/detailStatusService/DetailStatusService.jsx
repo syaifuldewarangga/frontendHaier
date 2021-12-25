@@ -3,6 +3,7 @@ import './DetailStatusService.css';
 import { format } from 'date-fns';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { connect } from 'react-redux';
 var X2JS = require('x2js');
 
 const DetailStatusService = (props) => {
@@ -17,7 +18,7 @@ const DetailStatusService = (props) => {
       fd.append('MobilePhone', phoneNumber);
 
       await axios
-        .post('https://e-warranty.click/oapi/gsis/checkhsisrstatus', fd, {
+        .post(props.gsis_url + 'checkhsisrstatus', fd, {
           headers: {
             Accept: 'application/xml',
           },
@@ -25,15 +26,11 @@ const DetailStatusService = (props) => {
         .then((res) => {
           var json = xtojson.xml2js(res.data);
           let cek_error = json.Envelope.Body.CheckHSISRStatus_Output;
-          //   console.log(cek_error);
           if (cek_error.ErrorCode.__text !== '0') {
             console.log(cek_error.ErrorMessage.__text);
-            alert(cek_error.ErrorMessage.__text);
-          } else {
-            setData(
-              json.Envelope.Body.CheckHSISRStatus_Output.ListOfServiceRequest
-                .ServiceRequest
-            );
+          } 
+          else {
+            setData(json.Envelope.Body.CheckHSISRStatus_Output.ListOfServiceRequest.ServiceRequest);
           }
         })
         .catch((err) => {
@@ -42,7 +39,7 @@ const DetailStatusService = (props) => {
     };
     getData();
   }, []);
-  console.log(data);
+  // console.log(data.ListOfRepair.Repair)
   return (
     <div className="detail-status-service">
       <div className="container-fluid">
@@ -109,12 +106,12 @@ const DetailStatusService = (props) => {
                                   <tr>
                                     <th scope="col">Number</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col">Date {data.ListOfRepair}</th>
+                                    <th scope="col">Date</th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                   {
-                                    data === '' ? null : data.ListOfRepair === '' ? null : 
+                                    data === '' ? null : data.ListOfRepair === undefined ? null : Array.isArray(data.ListOfRepair) ?
                                     data.ListOfRepair.Repair.map((item) => (
                                           <tr>
                                             <td className="text-nowrap">
@@ -127,7 +124,18 @@ const DetailStatusService = (props) => {
                                               {item.StatusChangeDate}
                                             </td>
                                           </tr>
-                                    ))
+                                    )) : 
+                                    <tr>
+                                      <td className="text-nowrap">
+                                        {data.ListOfRepair.Repair.ChangedNo}
+                                      </td>
+                                      <td className="text-nowrap">
+                                        {data.ListOfRepair.Repair.ChangedStatus}
+                                      </td>
+                                      <td className="text-nowrap">
+                                        {data.ListOfRepair.Repair.StatusChangeDate}
+                                      </td>
+                                    </tr>
                                   }
                                   {/* {data === ''
                                     ? null
@@ -164,4 +172,10 @@ const DetailStatusService = (props) => {
   );
 };
 
-export default DetailStatusService;
+const mapStateToProps = (state) => {
+  return {
+    gsis_url: state.GSIS_URL
+  }  
+}
+
+export default connect(mapStateToProps, null) (DetailStatusService);

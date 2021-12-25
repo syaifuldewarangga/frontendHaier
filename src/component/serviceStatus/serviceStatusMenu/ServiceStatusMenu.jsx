@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 import './ServiceStatusMenu.css';
 import axios from 'axios';
+import { connect } from 'react-redux';
 var X2JS = require('x2js');
 
-const ServiceStatusMenu = () => {
+const ServiceStatusMenu = (props) => {
   const xtojson = new X2JS();
   const { t } = useTranslation('common');
   const history = useHistory();
@@ -30,7 +31,7 @@ const ServiceStatusMenu = () => {
     fd.append('MobilePhone', data.phone_number);
 
     await axios
-      .post('https://e-warranty.click/oapi/gsis/checkhsisrstatus', fd, {
+      .post(props.gsis_url + 'checkhsisrstatus', fd, {
         headers: {
           Accept: 'application/xml',
         },
@@ -103,4 +104,9 @@ const ServiceStatusMenu = () => {
   );
 };
 
-export default ServiceStatusMenu;
+const mapStateToProps = (state) => {
+  return {
+    gsis_url: state.GSIS_URL
+  }
+}
+export default connect(mapStateToProps, null) (ServiceStatusMenu);
