@@ -243,7 +243,9 @@ function UserRegisterProduct(props) {
         }).catch((err) => {
           deleteProduct(dbData.id)
           console.log(err.response)
-        })
+        }).finally(() => {
+          setIsLoadiing(false)
+        });
       }
 
       await axios
@@ -275,9 +277,7 @@ function UserRegisterProduct(props) {
           } else {
             console.log(error)
           }
-        }).finally(() => {
-          setIsLoadiing(false)
-        });
+        })
     } else {
       userData.date === '' ? setErrorDate('Date Must be Required') : setErrorDate('')
       storeValue === '' ? setErrorStore('Store Must be Required') : setErrorStore('')
