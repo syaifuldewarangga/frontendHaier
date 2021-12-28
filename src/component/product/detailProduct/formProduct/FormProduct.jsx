@@ -140,8 +140,7 @@ const FormProduct = (props) => {
     fd.append('Brand', data.brand);
     fd.append('SRNum', SRNum);
     fd.append('DetailAddress', dataUser.address);
-    fd.append('AddressId', dataUser.province);
-    console.log(Object.fromEntries(fd))
+    fd.append('AddressId', "");
     await axios
       .post(props.gsis_url + 'inserthsisr', fd, {
         headers: {
@@ -198,7 +197,6 @@ const FormProduct = (props) => {
     }).then((res) => {
       InsertHSISRAPI(res.data);
     }).catch((err) => {
-      console.log(err.response.data.errors)
       console.log(err.response)
       if (err.response.data.errors !== undefined) {
         let responError = err.response.data.errors;

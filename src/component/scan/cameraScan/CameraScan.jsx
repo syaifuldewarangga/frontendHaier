@@ -320,7 +320,7 @@ const CameraScan = (props) => {
                       <div className='text-center'>
                         {t('product_register.alert')}
                         {' '}
-                        <a href='http://wa.me/6285210003003'>wa.me/6285210003003</a>
+                        <a href='http://wa.me/6285810003003'>wa.me/6285810003003</a>
                       </div>
                     </span>
                   </div>

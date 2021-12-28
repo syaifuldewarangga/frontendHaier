@@ -207,7 +207,7 @@ function UserRegisterProduct(props) {
         formGSIS.append('mobilePhone', dataUser.phone)
         formGSIS.append('email', dataUser.email)
         formGSIS.append('address', dataUser.address)
-        formGSIS.append('AddressId', dataUser.province)
+        formGSIS.append('AddressId', "")
         formGSIS.append('City', dataUser.city)
         formGSIS.append('State', dataUser.district)
         formGSIS.append('Street', dataUser.sub_district)
