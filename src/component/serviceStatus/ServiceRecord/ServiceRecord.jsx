@@ -2,7 +2,6 @@ import axios from 'axios';
 import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
-import LoadMore from '../../shop/loadMore/LoadMore';
 import './ServiceRecord.css';
 import { format } from 'date-fns';
 import { Modal } from 'bootstrap';
@@ -83,8 +82,6 @@ const ProductCard = (props) => {
 
 const ServiceRecord = (props) => {
   const [data, setData] = useState([]);
-  const [lastPage, setLastPage] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
   var token = localStorage.getItem('access_token');
   const [messageAlert, setMessageAlert] = useState({
     status: 'success',
@@ -94,20 +91,16 @@ const ServiceRecord = (props) => {
 
   const getServiceRequestAPI = async () => {
     await axios
-      .get(props.base_url + 'register-service', {
+      .get(props.base_url + 'register-service/get', {
         headers: {
           Authorization: 'Bearer ' + token,
         },
         params: {
-          page: currentPage,
-          itemPerPage: 10,
+          mobile_phone: localStorage.getItem('phone')
         },
       })
       .then((res) => {
-        if (res.data.last === true) {
-          setLastPage(true);
-        }
-        setData(data.concat(res.data.content));
+        setData(data.concat(res.data));
       });
   };
 
@@ -154,11 +147,7 @@ const ServiceRecord = (props) => {
 
   useEffect(() => {
     getServiceRequestAPI();
-  }, [currentPage]);
-
-  const handleLoadMore = () => {
-    setCurrentPage(currentPage + 1);
-  };
+  }, []);
 
   return (
     <div className="service-record row justify-content-center">
@@ -170,7 +159,7 @@ const ServiceRecord = (props) => {
               handleFinish={handleFinish}
             />
           ))}
-          {!lastPage ? <LoadMore handleLoadData={handleLoadMore} /> : null}
+          
         </div>
       </div>
       <AlertModal data={messageAlert} />
