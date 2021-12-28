@@ -39,7 +39,7 @@ const DetailStatusService = (props) => {
     };
     getData();
   }, []);
-  // console.log(data.ListOfRepair.Repair)
+  console.log(data.ListOfRepair)
   return (
     <div className="detail-status-service">
       <div className="container-fluid">
@@ -111,7 +111,7 @@ const DetailStatusService = (props) => {
                                 </thead>
                                 <tbody>
                                   {
-                                    data === '' ? null : data.ListOfRepair === undefined ? null : Array.isArray(data.ListOfRepair) ?
+                                    data === '' ? null : data.ListOfRepair === undefined || data.ListOfRepair === '' ? null : Array.isArray(data.ListOfRepair) ?
                                     data.ListOfRepair.Repair.map((item) => (
                                           <tr>
                                             <td className="text-nowrap">
