@@ -82,7 +82,8 @@ const FormProduct = (props) => {
     setData({
       ...data,
       brand: props.data.brand,
-      category: 'TV',
+      category: props.data.category,
+      // category: "TV",
       product_model: props.data.product_model,
       serial_number: props.data.serial_number,
       purchase_date: props.data.date,
@@ -119,7 +120,8 @@ const FormProduct = (props) => {
   }
 
   const InsertHSISRAPI = async (SRNum) => {
-    const newPurchaseDate = format(new Date(data.purchase_date), 'dd/MM/yyyy');
+    console.log(SRNum)
+    const newPurchaseDate = format(new Date(data.purchase_date), 'MM/dd/yyyy');
     const newVisitDate = format(new Date(data.visit_date), 'MM/dd/yyyy');
 
     const fd = new FormData();
@@ -139,6 +141,7 @@ const FormProduct = (props) => {
     fd.append('SRNum', SRNum);
     fd.append('DetailAddress', dataUser.address);
     fd.append('AddressId', dataUser.province);
+    console.log(Object.fromEntries(fd))
     await axios
       .post(props.gsis_url + 'inserthsisr', fd, {
         headers: {
@@ -240,7 +243,8 @@ const FormProduct = (props) => {
       } else {
         console.log(err.response);
       }
-    });
+      setIsLoading(false)
+    })
   };
 
   const handleSubmit = async (e) => {
