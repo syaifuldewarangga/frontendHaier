@@ -204,7 +204,7 @@ function UserRegisterProduct(props) {
       // console.log(dataUser)
       const postToGSIS = async (dbData) => {
         let formGSIS = new FormData()
-        formGSIS.append('id', dbData.id)
+        formGSIS.append('id', 'AWID' + dbData.id)
         formGSIS.append('country', 'Indonesia')
         formGSIS.append('firstName', dataUser.first_name)
         formGSIS.append('lastName', dataUser.last_name)
