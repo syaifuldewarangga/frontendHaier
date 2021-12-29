@@ -78,11 +78,11 @@ function UserRegisterProduct(props) {
 
   async function fetchDataProduct(gtmToken) {
     await axios.post(
-      props.gtm_url + 'pmtcommondata/GetProductListByCondition',
+      props.gtm_url + 'pmtcommondata/GetProfileUserByCondition',
       {
         Barcode: barcode,
         ProductID: '',
-        ProductName: '',
+        PhoneNumber: '',
       },
       {
         headers: {
@@ -92,6 +92,10 @@ function UserRegisterProduct(props) {
     )
     .then((res) => {
       setData(res.data.data[0]);
+      setUserData({
+          ...userData,
+          date: res.data.data[0].DataOfPurchase.slice(0, 10),
+        })
     })
     .catch((e) => {
       if (e.response) {
@@ -170,9 +174,9 @@ function UserRegisterProduct(props) {
       formdata.append('product_id', data.ProductID);
       formdata.append('brand', data.Brand);
       formdata.append('product_name', data.ProductName);
-      formdata.append('product_model', data.ProductModel);
-      formdata.append('serial_number', data.SerialNumber);
-      formdata.append('category', data.Category);
+      formdata.append('product_model', data.ProductName);
+      formdata.append('serial_number', data.Barcode);
+      formdata.append('category', data.ProductCategoryName);
       formdata.append('date', dateChange);
       formdata.append('store_location', storeStreet);
       formdata.append('store_name', storeValue);
@@ -183,13 +187,13 @@ function UserRegisterProduct(props) {
       formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
       formdata.append('agreements', userData.agreements === 'Y' ? 'Y' : 'N');
 
-      const deleteProduct = async (id) => {
+      const deleteProduct = async (productID) => {
         await axios.delete(props.base_url + 'register-product/product', {
           headers: {
             Authorization: 'Bearer ' + token,
           },
           params: {
-            id: id
+            id: productID
           }
         }).then(() => {
           console.log('success delete')
@@ -212,9 +216,9 @@ function UserRegisterProduct(props) {
         formGSIS.append('State', dataUser.district)
         formGSIS.append('Street', dataUser.sub_district)
         formGSIS.append('brand', data.Brand)
-        formGSIS.append('category', data.Category);
-        formGSIS.append('productModel', data.ProductModel);
-        formGSIS.append('serialNum', dbData.serial_number);
+        formGSIS.append('category', data.ProductCategoryName);
+        formGSIS.append('productModel', data.ProductName);
+        formGSIS.append('serialNum', data.Barcode);
         formGSIS.append('purchaseDate', newPurcaseDate);
         let invoiceURL = props.image_url + dbData.invoice
         formGSIS.append('Invoiceattachment', invoiceURL);
@@ -378,7 +382,7 @@ function UserRegisterProduct(props) {
                     type="text"
                     className="form-control"
                     id="product-model"
-                    value={data.ProductModel}
+                    value={data.ProductName}
                     disabled="disabled"
                   />
                 </div>
@@ -393,7 +397,7 @@ function UserRegisterProduct(props) {
                     type="text"
                     className="form-control"
                     id="serial-number"
-                    value={data.SerialNumber}
+                    value={data.Barcode}
                     disabled="disabled"
                   />
                 </div>
@@ -401,14 +405,14 @@ function UserRegisterProduct(props) {
 
               <div className="col-lg-6">
                 <div className="mb-lg-5 mb-4">
-                  <label htmlFor="serial-number" className="form-label">
+                  <label htmlFor="category" className="form-label">
                     Category
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    id="serial-number"
-                    value={data.Category}
+                    id="category"
+                    value={data.ProductCategoryName}
                     disabled="disabled"
                   />
                 </div>
@@ -420,18 +424,21 @@ function UserRegisterProduct(props) {
                     Date of Purchase
                   </label>
                   <input
+                    disabled
                     type="date"
                     max={maxPurchaseDate}
                     className={`form-control ${
                       errorDate !== '' ? 'is-invalid' : null
                     }`}
+                    value={userData.date}
+                    // value={data !== '' && data.DataOfPurchase.slice(0, 10)}
                     id="date-purchase"
-                    onChange={(e) =>
-                      setUserData({
-                        ...userData,
-                        ['date']: e.target.value,
-                      })
-                    }
+                    // onChange={(e) =>
+                    //   setUserData({
+                    //     ...userData,
+                    //     ['date']: e.target.value,
+                    //   })
+                    // }
                   />
                   <div className="invalid-feedback">{errorDate}</div>
                 </div>

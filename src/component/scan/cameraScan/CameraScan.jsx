@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Quagga from 'quagga';
 import './CameraScan.css';
@@ -13,6 +13,7 @@ const CameraScan = (props) => {
   const [data, setData] = React.useState([]);
   const [barcode, setBarcode] = useState('');
   const [inputBarcodeNumber, setInputBarcodeNumber] = useState(false);
+  const [isLoading, setIsLoading] = useState(false) 
 
   useEffect(() => {
     return () => {
@@ -21,10 +22,10 @@ const CameraScan = (props) => {
   }, []);
 
   const productAPIGTM = async (gtmToken) => {
-    await axios.post(props.gtm_url + 'pmtcommondata/GetProductListByCondition',{
+    await axios.post(props.gtm_url + 'pmtcommondata/GetProfileUserByCondition',{
         Barcode: barcode,
         ProductID: '',
-        ProductName: '',
+        PhoneNumber: '',
       },
       {
         headers: {
@@ -38,6 +39,8 @@ const CameraScan = (props) => {
     })
     .catch((e) => {
       console.log(e.response)
+    }).finally(() => {
+      setIsLoading(false)
     });
   }
 
@@ -57,6 +60,7 @@ const CameraScan = (props) => {
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       if (barcode !== '') {
+        setIsLoading(true)
         fetchDataProductGTM();
       } else {
         setData('')
@@ -309,7 +313,14 @@ const CameraScan = (props) => {
                       className="btn btn-color-primary btn-detail"
                       disabled
                     >
-                      Detail
+                        {
+                          isLoading ? 
+                          <Fragment>
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Loading...
+                          </Fragment> :
+                          'Detail'
+                        }
                     </button>
                     <span 
                       className="text-danger"
