@@ -390,6 +390,11 @@ function ProfileForm(props) {
       })
       .then((res) => {
         alertModal();
+        setMessageAlert({
+          status: 'success',
+          title: 'Success',
+          subTitle: 'your password has been changed successfully',
+        });
         setErrorPassword({
           newPassword: '',
           confirmPassword: ''

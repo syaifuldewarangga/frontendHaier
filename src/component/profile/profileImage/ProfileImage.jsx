@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ProfileImage.css';
 import axios from 'axios';
 import { connect } from 'react-redux';
@@ -11,17 +11,23 @@ function ProfileImage(props) {
   }
   const { t } = useTranslation('common')
 
-  const alertModal = () => {
-    let alertModal = new Modal(document.getElementById('alertModal'));
-    alertModal.show();
+  const alertModalUpload = () => {
+    let alertModalUpload = new Modal(document.getElementById('alertModalUpload'));
+    alertModalUpload.show();
   };
 
   const onHideModal = () => {
-    var alertModal = document.getElementById('alertModal');
-    alertModal.addEventListener('hide.bs.modal', function (event) {
+    var alertModalUpload = document.getElementById('alertModalUpload');
+    alertModalUpload.addEventListener('hide.bs.modal', function (event) {
       window.location.reload();
     });
   };
+
+  const [messageAlert, setMessageAlert] = useState({
+    status: 'success',
+    title: 'Success',
+    subTitle: 'your image profile has been updated',
+  });
 
   const handleChangePicture = async (value) => {
     var id = localStorage.getItem('id');
@@ -38,7 +44,7 @@ function ProfileImage(props) {
     })
     .then((res) => {
       localStorage.setItem('photo', res.data[0].path)
-      alertModal()
+      alertModalUpload()
       onHideModal()
     })
     .catch((e) => {
@@ -78,6 +84,45 @@ function ProfileImage(props) {
           </div>
         </div>
       </div>
+
+      <div className="modal fade" id="alertModalUpload" tabindex="-1" aria-labelledby="alertModalUploadLabel" aria-hidden="true">
+            <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content">
+                    <div className="modal-body">
+                        <div>
+                            {
+                                messageAlert.status === 'success' ? 
+                                <div className="swal2-icon swal2-success swal2-animate-success-icon" style={{ display: "flex" }}>
+                                    <div className="swal2-success-circular-line-left" style={{ backgroundColor: "rgb(255, 255, 255)" }}></div>
+                                    <span className="swal2-success-line-tip"></span>
+                                    <span className="swal2-success-line-long"></span>
+                                    <div className="swal2-success-ring"></div> 
+                                    <div className="swal2-success-fix" style={{ backgroundColor: "rgb(255, 255, 255)" }}></div>
+                                    <div className="swal2-success-circular-line-right" style={{ backgroundColor: "rgb(255, 255, 255)" }}></div>
+                                </div> : 
+
+                                <div class="swal2-icon swal2-error swal2-animate-error-icon" style={{ display: "flex" }}>
+                                    <span class="swal2-x-mark">
+                                        <span class="swal2-x-mark-line-left"></span>
+                                        <span class="swal2-x-mark-line-right"></span>
+                                    </span>
+                                </div>
+                            }
+
+
+                            <div className="text-center">
+                                <span className="modal-question-thanks">{messageAlert.title} </span>
+                                <span className="modal-question-message">{messageAlert.subTitle}</span>
+
+                                <div className="modal-question-button my-3">
+                                    <button className="btn rounded-pill" data-bs-dismiss="modal" aria-label="Close">OK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
   );
 }
