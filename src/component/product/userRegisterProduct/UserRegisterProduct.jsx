@@ -298,6 +298,27 @@ function UserRegisterProduct(props) {
 
   const { t } = useTranslation('common')
 
+  const testAES = () => {
+    // Encrypt
+    var CryptoJS = require("crypto-js");
+    var ciphertext = "fOutoM/pPoW7bY67NYqQcA=="
+    var key = CryptoJS.enc.Utf8.parse('89075EF6029451BD804461802F99EB64')
+    console.log('ciphertext : ' + ciphertext)
+    console.log('base64 : ' + key)
+    
+    // Decrypt
+    var bytes  = CryptoJS.AES.decrypt(ciphertext, key,  { 
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7
+    });
+    var originalText = bytes.toString(CryptoJS.enc.Utf8);
+    console.log("originalText : " + originalText); // 'my message'
+  }
+
+  useEffect(() => {
+    testAES();
+  }, []) 
+ 
   return (
     <div className="user-register-product mb-5">
       <div className="container-fluid">
