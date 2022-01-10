@@ -1,7 +1,6 @@
 import React from 'react'
 
 function ModalOperationalHours(props) {
-    console.log(props.data)
     return (
         <div class="modal fade" id="modalOperationalHours" tabindex="-1" aria-labelledby="modalOperationalHoursLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
