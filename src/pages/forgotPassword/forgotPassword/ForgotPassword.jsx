@@ -26,7 +26,7 @@ const ForgotPassword = (props) => {
         e.preventDefault()
         localStorage.removeItem('countdown')
         var formData = new FormData();
-        formData.append('phone', phoneNumber );
+        formData.append('phone', phoneNumber + 'C' );
 
         await axios.post(props.base_url + 'forgot-password', formData)
         .then((res) => {
