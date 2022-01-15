@@ -10,6 +10,8 @@ import AlertModal from '../../alertModal/AlertModal';
 import { Modal } from 'bootstrap';
 import { client_id, client_secret, grant_type } from '../../../variable';
 import { useTranslation } from 'react-i18next';
+import Resizer from "react-image-file-resizer";
+import { DataURIToBlob } from '../../../variable/DataUriToBlob';
 var X2JS = require('x2js');
 
 function UserRegisterProduct(props) {
@@ -156,6 +158,32 @@ function UserRegisterProduct(props) {
     getTokenGTM();
   }, [])
 
+  const resizeFile = (file) => new Promise((resolve) => {
+    Resizer.imageFileResizer( file, 600, 600, "JPEG", 100, 0,
+      (uri) => {
+        resolve(uri);
+      }, "base64" );
+  });
+
+  const onChangeFile = async (e) => {
+    const name = e.target.name;
+    const file = e.target.files[0];
+    const image = await resizeFile(file);
+    if(name === 'warranty_card') {
+      setShowFile1(image)
+      setUserData({
+        ...userData,
+        ['file1']: DataURIToBlob(image),
+      });
+    } else {
+      setShowFile2(image)
+      setUserData({
+        ...userData,
+        ['file2']: DataURIToBlob(image),
+      });
+    }
+  }
+
   async function handleSubmit(e) {
     e.preventDefault()
     setIsLoadiing(true)
@@ -297,27 +325,6 @@ function UserRegisterProduct(props) {
   }));
 
   const { t } = useTranslation('common')
-
-  const testAES = () => {
-    // Encrypt
-    var CryptoJS = require("crypto-js");
-    var ciphertext = "fOutoM/pPoW7bY67NYqQcA=="
-    var key = CryptoJS.enc.Utf8.parse('89075EF6029451BD804461802F99EB64')
-    console.log('ciphertext : ' + ciphertext)
-    console.log('base64 : ' + key)
-    
-    // Decrypt
-    var bytes  = CryptoJS.AES.decrypt(ciphertext, key,  { 
-      mode: CryptoJS.mode.ECB,
-      padding: CryptoJS.pad.Pkcs7
-    });
-    var originalText = bytes.toString(CryptoJS.enc.Utf8);
-    console.log("originalText : " + originalText); // 'my message'
-  }
-
-  useEffect(() => {
-    testAES();
-  }, []) 
  
   return (
     <div className="user-register-product mb-5">
@@ -520,13 +527,7 @@ function UserRegisterProduct(props) {
                       name="warranty_card"
                       aria-label="file"
                       className="dropzone"
-                      onChange={(e) => {
-                        setShowFile1(URL.createObjectURL(e.target.files[0]));
-                        setUserData({
-                          ...userData,
-                          ['file1']: e.target.files[0],
-                        });
-                      }}
+                      onChange={onChangeFile}
                     />
                     {/* { errorData.file } */}
                   </div>
@@ -552,16 +553,10 @@ function UserRegisterProduct(props) {
                     </div>
                     <input
                       type="file"
-                      name="warranty_card"
+                      name="invoice_card"
                       className="dropzone"
                       aria-label="file"
-                      onChange={(e) => {
-                        setShowFile2(URL.createObjectURL(e.target.files[0]));
-                        setUserData({
-                          ...userData,
-                          ['file2']: e.target.files[0],
-                        });
-                      }}
+                      onChange={onChangeFile}
                     />
                     {/* { errorData.file } */}
                   </div>
