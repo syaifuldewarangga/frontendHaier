@@ -18,6 +18,7 @@ class ListProduct extends Component {
                                 <p className="m-0" style={{ color: "#003D79" }}>{ this.props.data.brand } </p>
                                 <p className="m-0">{this.props.data.barcode}</p>
                             </div>
+                            <span class={`badge ${this.props.data.status_product === true ? 'bg-success' : 'bg-danger'}`}> {this.props.data.status_product === true ? 'complete' : 'not complete'}</span>
                         </div>
                         <hr />
                         <div className="sub-product mb-3">

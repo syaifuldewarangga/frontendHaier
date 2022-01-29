@@ -12,6 +12,7 @@ import { client_id, client_secret, grant_type } from '../../../variable';
 import { useTranslation } from 'react-i18next';
 import Resizer from "react-image-file-resizer";
 import { DataURIToBlob } from '../../../variable/DataUriToBlob';
+import { ModelCheck } from '../../../variable/ModelCheck';
 var X2JS = require('x2js');
 
 function UserRegisterProduct(props) {
@@ -42,6 +43,7 @@ function UserRegisterProduct(props) {
   })
   const [maxPurchaseDate, setMaxPurchaseDate] = useState(format(new Date(), 'yyyy-MM-dd'))
   const [isLoading, setIsLoadiing] = useState(false)
+  const [type, setType] = useState('GTM')
   var email = localStorage.getItem('email');
   var token = localStorage.getItem('access_token');
   const history = useHistory()
@@ -93,11 +95,18 @@ function UserRegisterProduct(props) {
       }
     )
     .then((res) => {
-      setData(res.data.data[0]);
-      setUserData({
+      let count = res.data.data.length
+      if(count > 0) {
+        setType('GTM')
+        setData(res.data.data[0]);
+        setUserData({
           ...userData,
           date: res.data.data[0].DataOfPurchase.slice(0, 10),
         })
+      } else {
+        setType('WMS')
+        fetchDataProductWMS();
+      }
     })
     .catch((e) => {
       if (e.response) {
@@ -108,6 +117,29 @@ function UserRegisterProduct(props) {
         console.log('message : ' + e.message);
       }
     });
+  }
+
+  const fetchDataProductWMS = async () => {
+    await axios.get(props.oapi_url + 'wms-order-out', {
+      params: {
+        barcode: barcode
+      }
+    }).then((res) => {
+      let data = res.data
+      let count = Object.keys(data).length
+      let modelData = ModelCheck(data.PRODUCT_DESC_ZH.substring(0,4))
+      if(count > 0) {
+        setData({
+          Barcode: data.BARCODE,
+          ProductName: data.PRODUCT_DESC_ZH,
+          ProductID: data.PRODUCT_CODE,
+          ProductCategoryName: modelData.category,
+          Brand: modelData.brand
+        })
+      } else {
+        setData('')
+      }
+    })
   }
   
   async function fetchDataStore(gtmToken) {
@@ -205,7 +237,7 @@ function UserRegisterProduct(props) {
       formdata.append('product_model', data.ProductName);
       formdata.append('serial_number', data.Barcode);
       formdata.append('category', data.ProductCategoryName);
-      formdata.append('date', dateChange);
+      formdata.append('date', newPurcaseDate);
       formdata.append('store_location', storeStreet);
       formdata.append('store_name', storeValue);
       formdata.append('email', email);
@@ -264,7 +296,7 @@ function UserRegisterProduct(props) {
             setMessageModal({
               status: 'success',
               title: 'Thanks You',
-              subTitle: 'Your product has been successfully registered'
+              subTitle: 'Your product has been successfully Updated'
             })
             alertModal()
             onHideModal()
@@ -452,7 +484,7 @@ function UserRegisterProduct(props) {
                     Date of Purchase
                   </label>
                   <input
-                    disabled
+                    disabled={type === 'GTM' ? 'disabled' : ''}
                     type="date"
                     max={maxPurchaseDate}
                     className={`form-control ${
@@ -461,12 +493,12 @@ function UserRegisterProduct(props) {
                     value={userData.date}
                     // value={data !== '' && data.DataOfPurchase.slice(0, 10)}
                     id="date-purchase"
-                    // onChange={(e) =>
-                    //   setUserData({
-                    //     ...userData,
-                    //     ['date']: e.target.value,
-                    //   })
-                    // }
+                    onChange={(e) =>
+                      setUserData({
+                        ...userData,
+                        ['date']: e.target.value,
+                      })
+                    }
                   />
                   <div className="invalid-feedback">{errorDate}</div>
                 </div>
@@ -626,7 +658,8 @@ const mapStateToProps = (state) => {
     base_url: state.BASE_URL,
     gsis_url: state.GSIS_URL,
     image_url: state.URL,
-    gtm_token_url: state.GTM_TOKEN_URL
+    gtm_token_url: state.GTM_TOKEN_URL,
+    oapi_url: state.OAPI_URL
   };
 };
 

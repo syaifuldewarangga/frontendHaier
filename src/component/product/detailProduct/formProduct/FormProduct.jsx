@@ -54,8 +54,11 @@ const FormProduct = (props) => {
   let token = localStorage.getItem('access_token');
 
   useEffect(() => {
+    console.log(props.data.date)
     if (props.data.date !== undefined) {
-      setNewDate(props.data.date.replaceAll('/', '-'));
+      let new_date = format(new Date(props.data.date), 'yyy-MM-dd')
+      // setNewDate(props.data.date.replaceAll('/', '-'));
+      setNewDate(new_date);
     }
   }, [props.data.date]);
 
@@ -83,7 +86,6 @@ const FormProduct = (props) => {
       ...data,
       brand: props.data.brand,
       category: props.data.category,
-      // category: "TV",
       product_model: props.data.product_model,
       serial_number: props.data.serial_number,
       purchase_date: props.data.date,
@@ -120,7 +122,6 @@ const FormProduct = (props) => {
   }
 
   const InsertHSISRAPI = async (SRNum) => {
-    console.log(SRNum)
     const newPurchaseDate = format(new Date(data.purchase_date), 'MM/dd/yyyy');
     const newVisitDate = format(new Date(data.visit_date), 'MM/dd/yyyy');
 

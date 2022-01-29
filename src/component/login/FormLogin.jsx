@@ -43,7 +43,7 @@ const FormLogin = (props) => {
     .then((res) => {
       if (res.data.roles === 'CUSTOMER') {
         localStorage.setItem('access_token', token);
-        localStorage.setItem('email', email);
+        localStorage.setItem('email', res.data.email);
         localStorage.setItem('id', res.data.id);
         localStorage.setItem('role', res.data.roles);
         localStorage.setItem(

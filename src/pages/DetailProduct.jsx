@@ -4,6 +4,7 @@ import ProductSlider from "../component/product/detailProduct/productSlider/Prod
 import { withRouter } from "react-router-dom";
 import axios from "axios";
 import { connect } from "react-redux";
+import FormRegisterProduct from "../component/product/detailProduct/formProduct/FormRegisterProduct";
   
 
 class DetailProduct extends Component 
@@ -33,13 +34,20 @@ class DetailProduct extends Component
         const id = this.props.match.params.id;
         this.getDetailProductFromAPI(id)
     }
+
     render () {
         return (
             <div>
                 <ProductSlider />
-                <FormProduct 
-                    data={this.state.product}
-                />
+                {
+                    this.state.product.status_product === true ?
+                    <FormProduct 
+                        data={this.state.product}
+                    /> : 
+                    <FormRegisterProduct 
+                        data={this.state.product}
+                    />
+                }
             </div>
         );
     }

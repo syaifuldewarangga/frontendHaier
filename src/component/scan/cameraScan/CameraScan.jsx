@@ -22,7 +22,7 @@ const CameraScan = (props) => {
   }, []);
 
   const productAPIGTM = async (gtmToken) => {
-    await axios.post(props.gtm_url + 'pmtcommondata/GetProfileUserByCondition',{
+    await axios.post(props.gtm_url + 'pmtcommondata/GetProfileUserByCondition', {
         Barcode: barcode,
         ProductID: '',
         PhoneNumber: '',
@@ -35,13 +35,38 @@ const CameraScan = (props) => {
       }
     )
     .then((res) => {
-      setData(res.data.data);
+      let count = res.data.data.length
+      if(count > 0) {
+        setData(res.data.data[0]);
+      } else {
+        // setData('')
+        fetchDataProductWMS()
+      }
     })
     .catch((e) => {
       console.log(e.response)
     }).finally(() => {
       setIsLoading(false)
     });
+  }
+
+  const fetchDataProductWMS = async () => {
+    await axios.get(props.oapi_url + 'wms-order-out', {
+      params: {
+        barcode: barcode
+      }
+    }).then((res) => {
+      let data = res.data
+      let count = Object.keys(data).length
+      if(count > 0) {
+        setData({
+          Barcode: data.BARCODE,
+          ProductName: data.PRODUCT_DESC_ZH
+        })
+      } else {
+        setData('')
+      }
+    })
   }
 
   const fetchDataProductGTM = async () => {
@@ -286,12 +311,14 @@ const CameraScan = (props) => {
                     className="form-control"
                     id="product_name"
                     placeholder="name@example.com"
-                    value={data.length === 0 ? '' : data[0].ProductName}
+                    value={
+                      data.length === 0 ? '' : data.ProductName
+                    }
                     disabled
                   />
                 </div>
 
-                <div className="mb-4">
+                {/* <div className="mb-4">
                   <label htmlFor="brand" className="form-label">
                     Brand
                   </label>
@@ -300,10 +327,10 @@ const CameraScan = (props) => {
                     className="form-control"
                     id="brand"
                     placeholder="name@example.com"
-                    value={data.length === 0 ? '' : data[0].Brand}
+                    value={data.length === 0 ? '' : data.Brand}
                     disabled
                   />
-                </div>
+                </div> */}
               </div>
 
               <div className="mb-3">
@@ -316,7 +343,7 @@ const CameraScan = (props) => {
                         {
                           isLoading ? 
                           <Fragment>
-                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                             Loading...
                           </Fragment> :
                           'Detail'
@@ -336,7 +363,7 @@ const CameraScan = (props) => {
                     </span>
                   </div>
                 ) : (
-                  <Link to={'/product/register-product/' + data[0].Barcode}>
+                  <Link to={'/product/register-product/' + data.Barcode}>
                     <div className="d-grid gap-2">
                       <button className="btn btn-color-primary btn-detail">
                         Detail
@@ -370,7 +397,8 @@ const CameraScan = (props) => {
 const mapStateToProps = (state) => {
   return {
     gtm_url: state.GTM_URL,
-    gtm_token_url: state.GTM_TOKEN_URL
+    gtm_token_url: state.GTM_TOKEN_URL,
+    oapi_url: state.OAPI_URL
   };
 };
 
