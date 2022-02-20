@@ -56,12 +56,14 @@ const CameraScan = (props) => {
         barcode: barcode
       }
     }).then((res) => {
-      let data = res.data
-      let count = Object.keys(data).length
+      let dataWMS = res.data
+      let count = Object.keys(dataWMS).length
+      console.log(dataWMS)
+      console.log('Count:' + count)
       if(count > 0) {
         setData({
-          Barcode: data.BARCODE,
-          ProductName: data.PRODUCT_DESC_ZH
+          Barcode: dataWMS.BARCODE,
+          ProductName: dataWMS.PRODUCT_DESC_ZH
         })
       } else {
         setData('')

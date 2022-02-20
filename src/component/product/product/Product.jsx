@@ -25,7 +25,6 @@ class Product extends Component {
       })
       .then((res) => {
         let data = res.data;
-        console.log(data)
         this.setState({
           products: data.content,
         });
