@@ -65,8 +65,10 @@ const CameraScan = (props) => {
           Barcode: dataWMS.BARCODE,
           ProductName: dataWMS.PRODUCT_DESC_ZH
         })
+        console.log("ada barcode");
       } else {
         setData('')
+        console.log("Tidak ada barcode");
       }
     })
   }
