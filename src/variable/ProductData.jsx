@@ -1548,10 +1548,11 @@ const productData = [
         description: "Fully Automatic WM"
     },
 
+
     {
-        category: "",
+        category: "Commercial AC",
         model: "AAB1",
-        brand: "",
+        brand: "AQUA",
         description: ""
     },
     {
