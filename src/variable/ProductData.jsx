@@ -468,6 +468,12 @@ const productData = [
         description: "Semi Automatic WM"
     },
     {
+        category: "Washing Machine",
+        model: "QW-2",
+        brand: "AQUA",
+        description: ""
+    },
+    {
         category: "TV",
         model: "LE48",
         brand: "AQUA",
@@ -1540,7 +1546,68 @@ const productData = [
         model: "HWM9",
         brand: "OTHERS",
         description: "Fully Automatic WM"
-    }
+    },
+
+    {
+        category: "",
+        model: "AAB1",
+        brand: "",
+        description: ""
+    },
+    {
+        category: "Drum Washing Machine",
+        model: "FQV-7",
+        brand: "AQUA",
+        description: ""
+    },
+    {
+        category: "TV",
+        model: "LE70",
+        brand: "AQUA",
+        description: ""
+    },
+    {
+        category: "Commercial AC",
+        model: "AD18",
+        brand: "AQUA",
+        description: ""
+    },
+    {
+        category: "Commercial AC",
+        model: "AB18",
+        brand: "AQUA",
+        description: ""
+    },
+    {
+        category: "Commercial AC",
+        model: "AB24",
+        brand: "AQUA",
+        description: ""
+    },
+    {
+        category: "Freezer",
+        model: "SD-7",
+        brand: "AQUA",
+        description: ""
+    },
+    {
+        category: "Commercial AC",
+        model: "1U38",
+        brand: "AQUA",
+        description: ""
+    },
+    {
+        category: "Commercial AC",
+        model: "1U34",
+        brand: "AQUA",
+        description: ""
+    },
+    {
+        category: "Commercial AC",
+        model: "AB34",
+        brand: "AQUA",
+        description: ""
+    },
 ]
 
 export {
