@@ -172,6 +172,7 @@ const FormRegister = (props) => {
     setIsLoading(true)
     localStorage.removeItem('countdown')
     if(data.phone.toString().slice(0, 2) !== '62' && data.phone !== '') {
+      setIsLoading(false)
       setErrorData({
         phone: 'check your phone number, use 62 for phone number code'
       })
@@ -419,7 +420,7 @@ const FormRegister = (props) => {
                         <div className="col-lg-6 mb-3">
                           <div className="form-label color-primary">Gender</div>
                           <select
-                            class={`form-select ${
+                            className={`form-select ${
                               errorData.gender !== '' && errorData.gender !== undefined ? 'is-invalid' : null
                             }`}
                             name="gender"
@@ -493,9 +494,9 @@ const FormRegister = (props) => {
                         </div>
 
                         <div className="col-lg-6 mb-3">
-                          <div class="form-label"> Province </div>
+                          <div className="form-label"> Province </div>
                           <select
-                            class={`form-select ${
+                            className={`form-select ${
                               errorData.province !== '' && errorData.province !== undefined ? 'is-invalid' : null
                             }`}
                             name="province"
@@ -517,9 +518,9 @@ const FormRegister = (props) => {
                         </div>
 
                         <div className="col-lg-6 mb-3">
-                          <div class="form-label"> City</div>
+                          <div className="form-label"> City</div>
                           <select
-                            class={`form-select ${
+                            className={`form-select ${
                               errorData.city !== '' && errorData.city !== undefined ? 'is-invalid' : null
                             }`}
                             name="city"
@@ -547,7 +548,7 @@ const FormRegister = (props) => {
                         <div className="col-lg-6 mb-3">
                           <div className="form-label">District</div>
                           <select
-                            class={`form-select ${
+                            className={`form-select ${
                               errorData.district !== '' && errorData.district !== undefined ? 'is-invalid' : null
                             }`}
                             name="district"
@@ -575,7 +576,7 @@ const FormRegister = (props) => {
                         <div className="col-lg-6 mb-3">
                           <div className="form-label">Sub district</div>
                           <select
-                            class={`form-select ${
+                            className={`form-select ${
                               errorData.sub_district !== '' && errorData.sub_district !== undefined
                                 ? 'is-invalid'
                                 : null
@@ -604,7 +605,7 @@ const FormRegister = (props) => {
                         <div className="col-lg-12 mb-3">
                           <div className="form-label">address</div>
                           <textarea
-                            class={`form-control ${
+                            className={`form-control ${
                               errorData.address !== '' && errorData.address !== undefined? 'is-invalid' : null
                             }`}
                             rows="6"
@@ -612,7 +613,7 @@ const FormRegister = (props) => {
                             onChange={onChangeInput}
                             required
                           ></textarea>
-                          <div class="invalid-feedback">
+                          <div className="invalid-feedback">
                             {errorData.address}
                           </div>
                         </div>
@@ -668,7 +669,7 @@ const FormRegister = (props) => {
                               {
                                 isLoading ?
                                 <Fragment>
-                                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                                   Loading... 
                                 </Fragment>
                                 : 'Sign Up'
