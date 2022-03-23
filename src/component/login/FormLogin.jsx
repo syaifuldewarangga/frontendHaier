@@ -84,7 +84,8 @@ const FormLogin = (props) => {
     });
   };
 
-  const fetchAPI = async () => {
+  const fetchAPI = async (e) => {
+    e.preventDefault()
     setIsLoading(true)
     if(data.phone_number.toString().slice(0, 2) !== '62' && data.phone !== '') {
       setErrorData({
@@ -127,132 +128,135 @@ const FormLogin = (props) => {
         <div className="card-body p-3 p-lg-5  right-content">
           <LoginMenu />
           <div className="d-flex justify-content-center form-content">
+
             <div className="col-11 col-lg-7">
-              <div className="md-3">
-                <div className="position-relative mb-4">
-                  {/* <div className="addon px-2 py-2">
-                    <span className="username-addon">+62</span>
-                    <div className="line-right"></div>
-                  </div> */}
-                  <label
-                    htmlFor="exampleFormControlInput1"
-                    className="form-label color-primary"
-                  >
-                    Phone Number {props.customer_login}
-                  </label>
-                  <input
-                    type="number"
-                    className={`form-control pl-65 ${errorData.phone_number !== '' ? 'is-invalid' : null}`}
-                    placeholder="Phone Number"
-                    aria-label="phone_number"
-                    onChange={onChangeData}
-                    min="0"
-                    value={data.phone_number}
-                    required
-                  />
-                  <div className="invalid-feedback">
-                    {errorData.phone_number}
-                  </div>
-                </div>
-              </div>
-
-              <div className="md-3">
-                <div className="position-relative mb-3">
-                  <label
-                    htmlFor="password"
-                    className="form-label color-primary"
-                  >
-                    Password
-                  </label>
-                  {/* <div className="addon px-3">
-                    <span
-                      className="material-icons md-18"
-                      style={{ padding: '7px 0' }}
+              <form onSubmit={fetchAPI}>
+                <div className="md-3">
+                  <div className="position-relative mb-4">
+                    {/* <div className="addon px-2 py-2">
+                      <span className="username-addon">+62</span>
+                      <div className="line-right"></div>
+                    </div> */}
+                    <label
+                      htmlFor="exampleFormControlInput1"
+                      className="form-label color-primary"
                     >
-                      lock
-                    </span>
-                    <div className="line-right"></div>
-                  </div> */}
-                  <input
-                    type="password"
-                    id="password"
-                    className="form-control pl-65"
-                    placeholder="Password"
-                    aria-label="password"
-                    onChange={onChangeData}
-                    required
-                  />
-                  <i
-                    className="password mdi mdi-eye-off mdi-18px"
-                    data-id="password"
-                  ></i>
-                </div>
-              </div>
-              {data.salah === false ? null : (
-                <p style={{ fontSize: 13, color: '#eb4d4b' }}>
-                  Login Failed! Check Your Phone Number or Password.
-                </p>
-              )}
-              <div>
-                <a href="#">
-                  <div className="forgot-password">
-                    <Link to="/forgot-password">
-                      <p>Forgot Password</p>
-                    </Link>
-                  </div>
-                </a>
-              </div>
-
-              <div className="d-flex justify-content-center">
-                <div className="col-12">
-                  <div className="d-grid gap-2">
-                    <button
-                      className="btn btn-color-primary"
-                      onClick={fetchAPI}
-                      disabled={isLoading && 'disabled'}
-                    >
-                      {
-                        isLoading ?
-                        <Fragment>
-                            <span class="spinner-border spinner-border-sm me-1  " role="status" aria-hidden="true"></span>
-                            Loading...
-                        </Fragment> :
-                            'Sign In'
-                      }
-                    </button>
-                  </div>
-
-                  <div
-                    className="pt-3"
-                    style={{ fontSize: '14px', fontWeight: '600' }}
-                  >
-                    <span>Not registered yet? </span>
-                    <Link to="/register">
-                      <span style={{ color: '#004D8B', cursor: 'pointer' }}>
-                        Create an Account
-                      </span>
-                    </Link>
-                  </div>
-                  <div 
-                      className="text-center mt-3"
-                      style={{ 
-                        fontSize: '12px'
-                      }}
-                    >
-                      <span>Dengan masuk atau mendaftar, Anda Menyetujui Syarat & ketentuan serta </span> 
-                      <span 
-                        style={{ 
-                          color: '#266BAF',
-                          cursor: 'pointer'
-                        }} 
-                        data-bs-toggle="modal" data-bs-target="#privacyModal"
-                      >
-                        Privacy {' '}
-                      </span>
-                      E-warranty
+                      Phone Number {props.customer_login}
+                    </label>
+                    <input
+                      type="number"
+                      className={`form-control pl-65 ${errorData.phone_number !== '' ? 'is-invalid' : null}`}
+                      placeholder="Phone Number"
+                      aria-label="phone_number"
+                      onChange={onChangeData}
+                      min="0"
+                      value={data.phone_number}
+                      required
+                    />
+                    <div className="invalid-feedback">
+                      {errorData.phone_number}
                     </div>
+                  </div>
                 </div>
-              </div>
+
+                <div className="md-3">
+                  <div className="position-relative mb-3">
+                    <label
+                      htmlFor="password"
+                      className="form-label color-primary"
+                    >
+                      Password
+                    </label>
+                    {/* <div className="addon px-3">
+                      <span
+                        className="material-icons md-18"
+                        style={{ padding: '7px 0' }}
+                      >
+                        lock
+                      </span>
+                      <div className="line-right"></div>
+                    </div> */}
+                    <input
+                      type="password"
+                      id="password"
+                      className="form-control pl-65"
+                      placeholder="Password"
+                      aria-label="password"
+                      onChange={onChangeData}
+                      required
+                    />
+                    <i
+                      className="password mdi mdi-eye-off mdi-18px"
+                      data-id="password"
+                    ></i>
+                  </div>
+                </div>
+                {data.salah === false ? null : (
+                  <p style={{ fontSize: 13, color: '#eb4d4b' }}>
+                    Login Failed! Check Your Phone Number or Password.
+                  </p>
+                )}
+                <div>
+                  <a href="#">
+                    <div className="forgot-password">
+                      <Link to="/forgot-password">
+                        <p>Forgot Password</p>
+                      </Link>
+                    </div>
+                  </a>
+                </div>
+
+                <div className="d-flex justify-content-center">
+                  <div className="col-12">
+                    <div className="d-grid gap-2">
+                      <button
+                        className="btn btn-color-primary"
+                        type="submit"
+                        disabled={isLoading && 'disabled'}
+                      >
+                        {
+                          isLoading ?
+                          <Fragment>
+                              <span class="spinner-border spinner-border-sm me-1  " role="status" aria-hidden="true"></span>
+                              Loading...
+                          </Fragment> :
+                              'Sign In'
+                        }
+                      </button>
+                    </div>
+
+                    <div
+                      className="pt-3"
+                      style={{ fontSize: '14px', fontWeight: '600' }}
+                    >
+                      <span>Not registered yet? </span>
+                      <Link to="/register">
+                        <span style={{ color: '#004D8B', cursor: 'pointer' }}>
+                          Create an Account
+                        </span>
+                      </Link>
+                    </div>
+                    <div 
+                        className="text-center mt-3"
+                        style={{ 
+                          fontSize: '12px'
+                        }}
+                      >
+                        <span>Dengan masuk atau mendaftar, Anda Menyetujui Syarat & ketentuan serta </span> 
+                        <span 
+                          style={{ 
+                            color: '#266BAF',
+                            cursor: 'pointer'
+                          }} 
+                          data-bs-toggle="modal" data-bs-target="#privacyModal"
+                        >
+                          Privacy {' '}
+                        </span>
+                        E-warranty
+                      </div>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
