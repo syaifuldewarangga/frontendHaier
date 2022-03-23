@@ -60,7 +60,7 @@ function ProfileImage(props) {
             <div className="d-block text-center">
               <img
                 src={props.user.photo !== '' ? props.image_url +""+ props.user.photo : '/assets/images/user.png'}
-                className="img-fluid rounded-circle"
+                className="img-responsive rounded-circle"
                 width="75px"
                 height="75px"
                 alt="profile"
