@@ -127,8 +127,8 @@ function UserRegisterProduct(props) {
     }).then((res) => {
       let data = res.data
       let count = Object.keys(data).length
-      let modelData = ModelCheck(data.PRODUCT_DESC_ZH.substring(0,4))
       if(count > 0) {
+        let modelData = ModelCheck(data.PRODUCT_DESC_ZH.substring(0,4))
         setData({
           Barcode: data.BARCODE,
           ProductName: data.PRODUCT_DESC_ZH,
