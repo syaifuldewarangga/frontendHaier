@@ -54,7 +54,6 @@ const FormProduct = (props) => {
   let token = localStorage.getItem('access_token');
 
   useEffect(() => {
-    console.log(props.data.date)
     if (props.data.date !== undefined) {
       let new_date = format(new Date(props.data.date), 'yyy-MM-dd')
       // setNewDate(props.data.date.replaceAll('/', '-'));
