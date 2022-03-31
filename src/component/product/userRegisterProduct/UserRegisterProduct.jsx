@@ -175,9 +175,10 @@ function UserRegisterProduct(props) {
         Authorization: 'Bearer ' + token,
       },
       params: {
-        identifier: email,
+        identifier: email + 'C',
       },
     }).then((res) => {
+      console.log(res.data)
       setDataUser(res.data);
     })
     .catch((e) => {

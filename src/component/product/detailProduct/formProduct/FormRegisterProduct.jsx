@@ -132,7 +132,7 @@ function FormRegisterProduct(props) {
                 Authorization: 'Bearer ' + token,
             },
             params: {
-                identifier: email,
+                identifier: email + 'C',
             },
         }).then((res) => {
             setDataUser(res.data);
