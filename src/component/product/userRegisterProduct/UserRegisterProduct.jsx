@@ -178,7 +178,6 @@ function UserRegisterProduct(props) {
         identifier: email + 'C',
       },
     }).then((res) => {
-      console.log(res.data)
       setDataUser(res.data);
     })
     .catch((e) => {
@@ -247,7 +246,7 @@ function UserRegisterProduct(props) {
       formdata.append( 'warranty_card', userData.file1 === '' ? '' : userData.file1 );
       formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
       formdata.append('agreements', userData.agreements === 'Y' ? 'Y' : 'N');
-
+      
       const deleteProduct = async (productID) => {
         await axios.delete(props.base_url + 'register-product/product', {
           headers: {
@@ -265,7 +264,7 @@ function UserRegisterProduct(props) {
       // console.log(dataUser)
       const postToGSIS = async (dbData) => {
         let formGSIS = new FormData()
-        formGSIS.append('id', 'AWID' + dbData.id)
+        formGSIS.append('id', dbData.id)
         formGSIS.append('country', 'Indonesia')
         formGSIS.append('firstName', dataUser.first_name)
         formGSIS.append('lastName', dataUser.last_name)
@@ -313,36 +312,35 @@ function UserRegisterProduct(props) {
         });
       }
 
-      await axios
-        .post(props.base_url + 'register-product', formdata, {
-          headers: {
-            Authorization: 'Bearer ' + token,
-          },
-        })
-        .then((res) => {
-          postToGSIS(res.data);
-        })
-        .catch((e) => {
-          let error = e.response
-          console.log(error)
-          if(error.data.errors) {
-            if(error.data.errors.location === 'barcode' || error.data.errors.location === 'product_id') {
-              setMessageModal({
-                  status: 'error',
-                  title: 'Sorry',
-                  subTitle: 'your product has been registered'
-              })
-              alertModal()
-              onHideModal()
-            }
-            setErrorDate('')
-            setErrorStore('')
-            setErrorFile1('')
-            setErrorFile2('')
-          } else {
-            console.log(error)
+      await axios.post(props.base_url + 'register-product', formdata, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      })
+      .then((res) => {
+        postToGSIS(res.data);
+      })
+      .catch((e) => {
+        let error = e.response
+        console.log(error)
+        if(error.data.errors) {
+          if(error.data.errors.location === 'barcode' || error.data.errors.location === 'product_id') {
+            setMessageModal({
+                status: 'error',
+                title: 'Sorry',
+                subTitle: 'your product has been registered'
+            })
+            alertModal()
+            onHideModal()
           }
-        })
+          setErrorDate('')
+          setErrorStore('')
+          setErrorFile1('')
+          setErrorFile2('')
+        } else {
+          console.log(error)
+        }
+      })
     } else {
       userData.date === '' ? setErrorDate('Date Must be Required') : setErrorDate('')
       storeValue === '' ? setErrorStore('Store Must be Required') : setErrorStore('')

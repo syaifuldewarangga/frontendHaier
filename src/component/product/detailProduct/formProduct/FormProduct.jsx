@@ -55,7 +55,7 @@ const FormProduct = (props) => {
 
   useEffect(() => {
     if (props.data.date !== undefined) {
-      let new_date = format(new Date(props.data.date), 'yyy-MM-dd')
+      let new_date = format(new Date(props.data.date), 'yyyy-MM-dd')
       // setNewDate(props.data.date.replaceAll('/', '-'));
       setNewDate(new_date);
     }
@@ -168,28 +168,30 @@ const FormProduct = (props) => {
   const InsertServiceRegister = async () => {
     const formData = new FormData();
 
-    let newVisiteDate = '';
+    let newVisitDateE = '';
     if (data.visit_date !== '') {
-      newVisiteDate = data.visit_date.replaceAll('-', '/');
+      newVisitDateE = data.visit_date.replaceAll('-', '/');
     }
 
+    let newPostPurchaseDate = format(new Date(data.purchase_date), 'yyyy/MM/dd');
+    
     formData.append('brand', data.brand);
     formData.append('category', data.category);
     formData.append('product_model', data.product_model);
     formData.append('serial_number', data.serial_number);
-    formData.append('purchase_date', data.purchase_date);
+    formData.append('purchase_date', newPostPurchaseDate);
     formData.append('address', data.address);
     formData.append('barcode', data.barcode);
     formData.append('product_id', data.product_id);
     formData.append('product_name', data.product_name);
     formData.append('store_name', data.store_name);
     formData.append('store_location', data.store_location);
-    formData.append('visit_date', newVisiteDate);
+    formData.append('visit_date', newVisitDateE);
     formData.append('visit_hours', data.visit_hours);
     formData.append('description', data.description);
     formData.append('mobile_phone', data.mobile_phone);
     formData.append('status', 1);
-
+    console.log(Object.fromEntries(formData))
     await axios.post(props.base_url + 'register-service', formData, {
       headers: {
         Authorization: 'Bearer ' + token,

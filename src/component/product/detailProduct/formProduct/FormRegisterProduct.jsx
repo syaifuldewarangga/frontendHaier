@@ -152,7 +152,7 @@ function FormRegisterProduct(props) {
             (uri) => {
                 resolve(uri);
             }, "base64" );
-      });
+    });
     
     const onChangeFile = async (e) => {
         const name = e.target.name;
