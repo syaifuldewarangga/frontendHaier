@@ -191,7 +191,6 @@ const FormProduct = (props) => {
     formData.append('description', data.description);
     formData.append('mobile_phone', data.mobile_phone);
     formData.append('status', 1);
-    console.log(Object.fromEntries(formData))
     await axios.post(props.base_url + 'register-service', formData, {
       headers: {
         Authorization: 'Bearer ' + token,
