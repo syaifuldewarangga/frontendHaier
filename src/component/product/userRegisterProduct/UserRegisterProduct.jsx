@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import './UserRegisterProduct.css';
 import { connect } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
 import SelectSearch, { fuzzySearch } from 'react-select-search';
 import './SelectSearch.css';
 import { format } from 'date-fns';
 import AlertModal from '../../alertModal/AlertModal';
-import { Modal } from 'bootstrap';
+import { Button, Modal } from 'bootstrap';
+import { Modal as Modal2, Button as Button2 } from 'react-bootstrap'
 import { client_id, client_secret, grant_type } from '../../../variable';
 import { useTranslation } from 'react-i18next';
 import Resizer from "react-image-file-resizer";
 import { DataURIToBlob } from '../../../variable/DataUriToBlob';
 import { ModelCheck } from '../../../variable/ModelCheck';
+import { ImageFunction } from '../../../variable/ImageFunction';
 var X2JS = require('x2js');
 
 function UserRegisterProduct(props) {
@@ -25,6 +27,8 @@ function UserRegisterProduct(props) {
   const [showFile1, setShowFile1] = useState('');
   const [showFile2, setShowFile2] = useState('');
   const [dataUser, setDataUser] = useState({});
+  const [isPromo, setIsPromo] = useState(false);
+  const [dataPromo, setDataPromo] = useState(false);
   const [userData, setUserData] = useState({
     date: '',
     file1: '',
@@ -47,6 +51,11 @@ function UserRegisterProduct(props) {
   var email = localStorage.getItem('email');
   var token = localStorage.getItem('access_token');
   const history = useHistory()
+
+  const onPromoClose = () => {
+    history.push('/landing-page')
+  }
+
   const alertModal = () => {
     let alertModal = new Modal(document.getElementById('alertModal'));
     alertModal.show();
@@ -55,8 +64,13 @@ function UserRegisterProduct(props) {
   const onHideModal = () => {
     var alertModal = document.getElementById('alertModal');
     alertModal.addEventListener('hide.bs.modal', function (event) {
-      history.push('/landing-page')
+      if(JSON.stringify(dataPromo) != '{}'){
+        setIsPromo(true)
+      }else{
+        history.push('/landing-page')
+      }
     });
+    
   };
 
   useEffect(() => {
@@ -300,6 +314,9 @@ function UserRegisterProduct(props) {
             })
             alertModal()
             onHideModal()
+            if(dbData.promo !== null){
+              setDataPromo(dbData.promo)
+            }
           } else {
             deleteProduct(dbData.id)
             setErrorGSIS(response.Envelope.Body.HESAProdRegResponse.Error_spcMessage)
@@ -646,6 +663,24 @@ function UserRegisterProduct(props) {
         </div>
       </div>
       <AlertModal data={messageModal}/>
+      <Modal2 show={isPromo} onHide={onPromoClose}>
+          <Modal2.Header closeButton>
+              <Modal2.Title>{dataPromo.name}</Modal2.Title>
+          </Modal2.Header>
+          <Modal2.Body>
+              <img src={ImageFunction(dataPromo.thumbnail)} alt="test" className="img-fluid" />
+              {dataPromo.notification_text !== null && <p>{dataPromo.notification_text}</p>}
+              <p>Durasi Promo : {dataPromo.ex_warranty_days} ({dataPromo.ex_warranty_days_text})</p>
+          </Modal2.Body>
+          <Modal2.Footer>
+              <a href={dataPromo.link}>
+                  <Button2 variant="primary">
+                      Lihat
+                  </Button2>
+              
+              </a>
+          </Modal2.Footer>
+      </Modal2>
     </div>
   );
 }

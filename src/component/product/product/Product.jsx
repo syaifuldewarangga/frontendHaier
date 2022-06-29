@@ -25,12 +25,14 @@ class Product extends Component {
       })
       .then((res) => {
         let data = res.data;
+        console.log(data.content)
         this.setState({
           products: data.content,
         });
       });
   }
 
+  
   componentDidMount() {
     this.getProductFromApi();
   }
@@ -50,7 +52,7 @@ class Product extends Component {
         <div className="col-lg-10 mx-auto">
           <div className="row">
             {this.state.products.map((product) => (
-              <ListProduct key={product.id} data={product} />
+              <ListProduct key={product.id} data={product} refresh={this.getProductFromApi}  />
             ))}
           </div>
         </div>
