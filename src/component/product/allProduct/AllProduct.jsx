@@ -39,11 +39,12 @@ class AllProduct extends Component
 
     async searchProductFromApi(search) {
         var token = localStorage.getItem('access_token');
-        await axios.get(this.props.base_url + 'register-product/search', {
+        await axios.get(this.props.base_url + 'register-product/user/search', {
             headers: {
                 Authorization: 'Bearer ' + token,
             },
             params: {
+                id: localStorage.getItem('id'),
                 param: search,
             },
         }).then((res) => {
