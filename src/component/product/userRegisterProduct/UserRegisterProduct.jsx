@@ -28,7 +28,7 @@ function UserRegisterProduct(props) {
   const [showFile2, setShowFile2] = useState('');
   const [dataUser, setDataUser] = useState({});
   const [isPromo, setIsPromo] = useState(false);
-  const [dataPromo, setDataPromo] = useState(false);
+  const [dataPromo, setDataPromo] = useState({});
   const [userData, setUserData] = useState({
     date: '',
     file1: '',
@@ -61,10 +61,11 @@ function UserRegisterProduct(props) {
     alertModal.show();
   }
 
-  const onHideModal = () => {
+  const onHideModal = (dataPromo = null) => {
     var alertModal = document.getElementById('alertModal');
     alertModal.addEventListener('hide.bs.modal', function (event) {
-      if(JSON.stringify(dataPromo) != '{}'){
+      console.log(dataPromo)
+      if(dataPromo !== null){
         setIsPromo(true)
       }else{
         history.push('/landing-page')
@@ -313,9 +314,12 @@ function UserRegisterProduct(props) {
               subTitle: 'Your product has been successfully Updated'
             })
             alertModal()
-            onHideModal()
-            if(dbData.promo !== null){
+            onHideModal(dbData.promo)
+            // console.log(dbData.promo)
+            if(dbData.promo != null){
               setDataPromo(dbData.promo)
+            }else{
+              setDataPromo({})
             }
           } else {
             deleteProduct(dbData.id)

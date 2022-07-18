@@ -56,8 +56,8 @@ class ListProduct extends Component {
                         <div className="card-body">
                             <div className="title-product mb-2">{this.props.data.product_name}</div>
                             <div className="d-xxl-flex justify-content-between">
-                                <p className="m-0" style={{ color: "#003D79" }}>{ this.props.data.brand } </p>
-                                <p className="m-0">{this.props.data.barcode}</p>
+                                <p className="m-0 small" style={{ color: "#003D79" }}>{ this.props.data.brand } </p>
+                                <p className="m-0 small">{this.props.data.barcode}</p>
                             </div>
                             <div className="d-flex">
                             <span class={`badge ${this.props.data.status_product === true ? 'bg-success' : 'bg-danger'}`}> {this.props.data.status_product === true ? 'complete' : 'not complete'}</span>
@@ -107,7 +107,7 @@ class ListProduct extends Component {
                     <Fragment>
                         <span className="badge cursor-pointer my-2 mx-2 btn-secondary" onClick={() => this.setState({...this.state, modal2: true })}>Lihat Promo</span>
 
-                        
+                        {console.log(this.props.data.promo.thumbnail)}
 
                         {/* Modal 2 */}
                         <Modal show={this.state.modal2} onHide={this.closeModal2}>
@@ -115,19 +115,21 @@ class ListProduct extends Component {
                                 <Modal.Title>{this.props.data.promo.name}</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
+                                {this.props.data.promo.thumbnail !== null && 
                                 <img src={ImageFunction(this.props.data.promo.thumbnail)} alt="test" className="img-fluid" />
+                                }
                                 {this.props.data.promo.notification_text !== null && 
-                                <h1>{this.props.data.promo.notification_text}</h1>}
+                                <h1>{this.props.data.promo.notification_text}</h1>
+                                }
                                 
                                 <p>Durasi Promo : {this.props.data.promo.ex_warranty_days} ({this.props.data.promo.ex_warranty_days_text})</p>
                             </Modal.Body>
                             <Modal.Footer>
-                                <Link to={this.props.data.promo.link}>
+                                <a href={`${this.props.data.promo.link}`}>
                                     <Button variant="primary" onClick={this.closeModa2}>
                                         Lihat
                                     </Button>
-                                
-                                </Link>
+                                </a>
                             </Modal.Footer>
                         </Modal>
                     </Fragment>
