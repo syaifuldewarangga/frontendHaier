@@ -67,6 +67,7 @@ class AllProduct extends Component
                 itemPerPage: 8
             }
         }).then((res) => {
+            console.log(res.data)
             let data = res.data
             if(data.last === true) {
                 this.setState({

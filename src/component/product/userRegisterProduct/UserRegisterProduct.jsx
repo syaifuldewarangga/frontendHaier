@@ -672,7 +672,7 @@ function UserRegisterProduct(props) {
               <Modal2.Title>{dataPromo.name}</Modal2.Title>
           </Modal2.Header>
           <Modal2.Body>
-              <img src={ImageFunction(dataPromo.thumbnail)} alt="test" className="img-fluid" />
+              <img src={`${props.image_url}${dataPromo.thumbnail}`} alt="test" className="img-fluid" />
               {dataPromo.notification_text !== null && <p>{dataPromo.notification_text}</p>}
               <p>Durasi Promo : {dataPromo.ex_warranty_days} ({dataPromo.ex_warranty_days_text})</p>
           </Modal2.Body>

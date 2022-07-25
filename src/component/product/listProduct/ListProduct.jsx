@@ -64,18 +64,25 @@ class ListProduct extends Component {
 
                             </div>
                         </div>
+                    </Link>
                         <hr />
                         <div className="sub-product mb-3">
                             <div className="d-flex justify-content-between align-items-center"> 
                                 <div className="d-flex align-items-center">
                                     <span className="material-icons me-2"> date_range </span>
                                     <span>{moment(this.props.data.date).format("DD-MM-YYYY")}</span> 
-                                </div> 
-                                {/* <span> 1 year </span> */}
+                                </div>
+                                {this.props.data.promo !== null &&
+                                <a href={`${this.props.data.promo.link}`}>
+                                    <img style={{ width: '26px', height: '26px' }} src={`${this.props.image_url}${this.props.data.promo.thumbnail}`} alt="test" className="img-fluid rounded-pill" />
+                                </a> 
+                                }
+                                {this.props.data.avail_promo !== null && <span className="badge badge-lg cursor-pointer btn-primary" onClick={() => this.setState({...this.state, modal1: true})}>Aktifasi</span>}
                             </div>
                         </div>
-                    </Link>
-                    {this.props.data.avail_promo !== null && <span className="badge cursor-pointer my-2 mx-2 btn-primary" onClick={() => this.setState({...this.state, modal1: true})}>Aktifasi Promo</span>}
+                    
+                    
+                    
                     {/* Modal 1 */}
                     <Modal show={this.state.modal1} onHide={this.closeModal1}>
                             <Modal.Header closeButton>
@@ -102,15 +109,17 @@ class ListProduct extends Component {
                                 }
                                 
                             </Modal.Footer>
-                        </Modal>
+                    </Modal>
+
+                    {/* not active */}
                     {this.props.data.promo !== null && 
                     <Fragment>
-                        <span className="badge cursor-pointer my-2 mx-2 btn-secondary" onClick={() => this.setState({...this.state, modal2: true })}>Lihat Promo</span>
+                        {/* <span className="badge cursor-pointer my-2 mx-2 btn-secondary" onClick={() => this.setState({...this.state, modal2: true })}>Lihat Promo</span> */}
 
-                        {console.log(this.props.data.promo.thumbnail)}
+                        {/* {console.log(this.props.data.promo)} */}
 
                         {/* Modal 2 */}
-                        <Modal show={this.state.modal2} onHide={this.closeModal2}>
+                        {/* <Modal show={this.state.modal2} onHide={this.closeModal2}>
                             <Modal.Header closeButton>
                                 <Modal.Title>{this.props.data.promo.name}</Modal.Title>
                             </Modal.Header>
@@ -131,36 +140,38 @@ class ListProduct extends Component {
                                     </Button>
                                 </a>
                             </Modal.Footer>
-                        </Modal>
+                        </Modal> */}
                     </Fragment>
                     }
-                    <Modal show={this.state.modal3} onHide={this.closeModal3}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Activation Successfull</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                <div className="d-flex flex-column align-items-center">
-                                    <div className="swal2-icon swal2-success swal2-animate-success-icon" style={{ display: "flex" }}>
-                                        <div className="swal2-success-circular-line-left" style={{ backgroundColor: "rgb(255, 255, 255)" }}></div>
-                                        <span className="swal2-success-line-tip"></span>
-                                        <span className="swal2-success-line-long"></span>
-                                        <div className="swal2-success-ring"></div> 
-                                        <div className="swal2-success-fix" style={{ backgroundColor: "rgb(255, 255, 255)" }}></div>
-                                        <div className="swal2-success-circular-line-right" style={{ backgroundColor: "rgb(255, 255, 255)" }}></div>
-                                    </div>
-                                    <Link to="/landing-page">
-                                        <div className="modal-question-button my-3">
-                                            <button className="btn rounded-pill" data-bs-dismiss="modal" aria-label="Close">OK</button>
-                                        </div>
-                                    </Link>
 
+                    {/* Alert Activation Success  */}
+                    <Modal show={this.state.modal3} onHide={this.closeModal3}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Activation Successfull</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <div className="d-flex flex-column align-items-center">
+                                <div className="swal2-icon swal2-success swal2-animate-success-icon" style={{ display: "flex" }}>
+                                    <div className="swal2-success-circular-line-left" style={{ backgroundColor: "rgb(255, 255, 255)" }}></div>
+                                    <span className="swal2-success-line-tip"></span>
+                                    <span className="swal2-success-line-long"></span>
+                                    <div className="swal2-success-ring"></div> 
+                                    <div className="swal2-success-fix" style={{ backgroundColor: "rgb(255, 255, 255)" }}></div>
+                                    <div className="swal2-success-circular-line-right" style={{ backgroundColor: "rgb(255, 255, 255)" }}></div>
                                 </div>
-                                
-                            </Modal.Body>
-                            <Modal.Footer>
-                                
-                            </Modal.Footer>
-                        </Modal>
+                                <Link to="/landing-page">
+                                    <div className="modal-question-button my-3">
+                                        <button className="btn rounded-pill" data-bs-dismiss="modal" aria-label="Close">OK</button>
+                                    </div>
+                                </Link>
+
+                            </div>
+                            
+                        </Modal.Body>
+                        <Modal.Footer>
+                            
+                        </Modal.Footer>
+                    </Modal>
 
                 </div>
             </div>
@@ -170,6 +181,7 @@ class ListProduct extends Component {
 const mapStatetoProps = (state) => {
     return {
       base_url: state.BASE_URL,
+      image_url: state.URL
     };
 };
 
