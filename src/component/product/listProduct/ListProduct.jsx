@@ -47,8 +47,8 @@ class ListProduct extends Component {
 
     render() {
         return (
-            <div className="list-product col-lg-3 col-6 mb-4 px-lg-4">
-                <div className="card card-product">
+            <div className="list-product col-lg-3 col-6 mb-4 px-lg-4 ">
+                <div className="card card-product h-100">
                     <Link to={`/product/detail/${this.props.data.id}`}>
                         <div className="image-product d-flex justify-content-center">
                             <img src={ImageFunction(this.props.data.category)} className="img-fluid" alt="" />
@@ -66,15 +66,15 @@ class ListProduct extends Component {
                         </div>
                     </Link>
                         <hr />
-                        <div className="sub-product mb-3">
-                            <div className="d-flex justify-content-between align-items-center"> 
+                        <div className="sub-product mb-3 h-100">
+                            <div className="d-flex justify-content-between align-items-center h-100"> 
                                 <div className="d-flex align-items-center">
                                     <span className="material-icons me-2"> date_range </span>
                                     <span>{moment(this.props.data.date).format("DD-MM-YYYY")}</span> 
                                 </div>
                                 {this.props.data.promo !== null &&
                                 <a href={`${this.props.data.promo.link}`}>
-                                    <img style={{ width: '26px', height: '26px' }} src={`${this.props.image_url}${this.props.data.promo.thumbnail}`} alt="test" className="img-fluid rounded-pill" />
+                                    <img style={{ height: '60px', maxWidth: '60px', objectFit: 'cover', objectPosition: 'center' }} src={`${this.props.image_url}${this.props.data.promo.thumbnail}`} alt="test" className="img-fluid" />
                                 </a> 
                                 }
                                 {this.props.data.avail_promo !== null && <span className="badge badge-lg cursor-pointer btn-primary" onClick={() => this.setState({...this.state, modal1: true})}>Aktifasi</span>}
