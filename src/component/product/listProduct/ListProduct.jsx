@@ -73,7 +73,7 @@ class ListProduct extends Component {
                                     <span>{moment(this.props.data.date).format("DD-MM-YYYY")}</span> 
                                 </div>
                                 {this.props.data.promo !== null &&
-                                <a href={`${this.props.data.promo.link}`}>
+                                <a href={`${this.props.data.promo.link}`} target="_blank">
                                     <img style={{ height: '60px', maxWidth: '60px', objectFit: 'cover', objectPosition: 'center' }} src={`${this.props.image_url}${this.props.data.promo.thumbnail}`} alt="test" className="img-fluid" />
                                 </a> 
                                 }
