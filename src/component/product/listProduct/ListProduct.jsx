@@ -73,9 +73,15 @@ class ListProduct extends Component {
                                     <span>{moment(this.props.data.date).format("DD-MM-YYYY")}</span> 
                                 </div>
                                 {this.props.data.promo !== null &&
-                                <a href={`${this.props.data.promo.link}`} target="_blank">
-                                    <img style={{ height: '60px', maxWidth: '60px', objectFit: 'cover', objectPosition: 'center' }} src={`${this.props.image_url}${this.props.data.promo.thumbnail}`} alt="test" className="img-fluid" />
-                                </a> 
+                                <div className="promo-icon-container">
+                                    <a href={`${this.props.data.promo.link}`} target="_blank">
+                                        <img src={`${this.props.image_url}${this.props.data.promo.thumbnail}`} alt="test" className="img-fluid promo-icon" />
+                                        <div class="overlay-promo-icon">
+                                            <div class="promo-icon-text">See Detail</div>
+                                        </div>
+                                    </a> 
+                                </div>
+
                                 }
                                 {this.props.data.avail_promo !== null && <span className="badge badge-lg cursor-pointer btn-primary" onClick={() => this.setState({...this.state, modal1: true})}>Aktifasi</span>}
                             </div>

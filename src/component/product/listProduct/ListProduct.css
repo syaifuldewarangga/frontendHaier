@@ -27,6 +27,51 @@
     padding: 0 15px;
 }
 
+.promo-icon-container {
+    position: relative;
+}
+
+.promo-icon {
+    height: 60px;
+    max-width: 60px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.overlay-promo-icon {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.0);
+    transition: .5s ease;
+}
+
+.promo-icon-container:hover .overlay-promo-icon {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.promo-icon-container:hover .promo-icon-text {
+    opacity: 1;
+    transition: .5s ease;
+}
+
+.promo-icon-text {
+    color: white;
+    font-size: 11px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    text-align: center;
+    opacity: 0;
+  }
+
 @media (max-width:768px) {
     .image-product {
         height: 100px;
