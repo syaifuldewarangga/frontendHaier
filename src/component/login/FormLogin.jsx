@@ -18,7 +18,7 @@ const FormLogin = (props) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const onChangeData = (e) => {
-    if(e.target.ariaLabel === 'phone_number' && data.phone_number.toString().slice(0,1) === '0') {
+    if(e.target.name === 'phone_number' && data.phone_number.toString().slice(0,1) === '0') {
       setData({
         ...data,
         phone_number: '62' + e.target.value.toString().slice(1),
@@ -26,7 +26,7 @@ const FormLogin = (props) => {
     } else {
       setData({
         ...data,
-        [e.target.ariaLabel]: e.target.value,
+        [e.target.name]: e.target.value,
       });
     }
   };
@@ -147,9 +147,8 @@ const FormLogin = (props) => {
                       type="number"
                       className={`form-control pl-65 ${errorData.phone_number !== '' ? 'is-invalid' : null}`}
                       placeholder="Phone Number"
-                      aria-label="phone_number"
+                      name="phone_number"
                       onChange={onChangeData}
-                      min="0"
                       value={data.phone_number}
                       required
                     />
@@ -181,7 +180,7 @@ const FormLogin = (props) => {
                       id="password"
                       className="form-control pl-65"
                       placeholder="Password"
-                      aria-label="password"
+                      name="password"
                       onChange={onChangeData}
                       required
                     />
