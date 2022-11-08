@@ -241,7 +241,7 @@ const FormLogin = (props) => {
                           fontSize: '12px'
                         }}
                       >
-                        <span>Dengan masuk atau mendaftar, Anda Menyetujui Syarat & ketentuan serta </span> 
+                        <span>Dengan masuk atau mendaftar, Anda menyetujui syarat & ketentuan serta </span> 
                         <span 
                           style={{ 
                             color: '#266BAF',
@@ -249,9 +249,8 @@ const FormLogin = (props) => {
                           }} 
                           data-bs-toggle="modal" data-bs-target="#privacyModal"
                         >
-                          Privacy {' '}
+                          Privacy E-Warranty {' '}
                         </span>
-                        E-warranty
                       </div>
                   </div>
                 </div>

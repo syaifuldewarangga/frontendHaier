@@ -603,7 +603,7 @@ const FormRegister = (props) => {
                         </div>
 
                         <div className="col-lg-12 mb-3">
-                          <div className="form-label">address</div>
+                          <div className="form-label">Address</div>
                           <textarea
                             className={`form-control ${
                               errorData.address !== '' && errorData.address !== undefined? 'is-invalid' : null
