@@ -25,6 +25,7 @@ import PrivateRoute from '../component/authentication/PrivateRoute';
 import RegisterOtp from '../component/register/registerOtp/RegisterOtp';
 import NotFound from '../component/errorPage/notFound/Notfound';
 import DetailStatusService from '../component/serviceStatus/detailStatusService/DetailStatusService';
+import UserRegisterProductManual from '../component/product/userRegisterProductManual/UserRegisterProductManual';
 
 const LandingPageRouter = () => {
   return (
@@ -65,6 +66,11 @@ const LandingPageRouter = () => {
           exact
           path="/product/register-product/:barcode"
           component={UserRegisterProduct}
+        ></PrivateRoute>
+        <PrivateRoute
+          exact
+          path="/product/register-product-manual/:barcode"
+          component={UserRegisterProductManual}
         ></PrivateRoute>
         <PrivateRoute
           exact

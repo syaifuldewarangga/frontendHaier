@@ -338,15 +338,22 @@ const CameraScan = (props) => {
                   <div className="d-grid gap-2">
                     <button
                       className="btn btn-color-primary btn-detail"
-                      disabled
+                      disabled={isLoading}
                     >
                         {
                           isLoading ? 
                           <Fragment>
                             <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                             Loading...
-                          </Fragment> :
-                          'Detail'
+                          </Fragment> 
+                          :
+                          <Link to={'/product/register-product-manual/' + barcode}>
+                            <div className="d-grid gap-2">
+                              <button className="btn btn-color-primary btn-detail">
+                                Input Manual Product
+                              </button>
+                            </div>
+                          </Link>
                         }
                     </button>
                     <span 
@@ -366,7 +373,7 @@ const CameraScan = (props) => {
                   <Link to={'/product/register-product/' + data.Barcode}>
                     <div className="d-grid gap-2">
                       <button className="btn btn-color-primary btn-detail">
-                        Detail
+                        Detail Product
                       </button>
                     </div>
                   </Link>
