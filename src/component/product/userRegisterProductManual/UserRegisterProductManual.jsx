@@ -8,7 +8,7 @@ import './SelectSearch.css';
 import { format } from 'date-fns';
 import AlertModal from '../../alertModal/AlertModal';
 import { Button, Modal } from 'bootstrap';
-import { Modal as Modal2, Button as Button2 } from 'react-bootstrap'
+import { Modal as Modal2, Button as Button2, Form } from 'react-bootstrap'
 import { client_id, client_secret, grant_type } from '../../../variable';
 import { useTranslation } from 'react-i18next';
 import Resizer from "react-image-file-resizer";
@@ -16,6 +16,8 @@ import { DataURIToBlob } from '../../../variable/DataUriToBlob';
 import { ModelCheck } from '../../../variable/ModelCheck';
 import { ImageFunction } from '../../../variable/ImageFunction';
 import { useMemo } from 'react';
+import { Hint, Typeahead } from 'react-bootstrap-typeahead';
+import { useRef } from 'react';
 var X2JS = require('x2js');
 
 function UserRegisterProductManual(props) {
@@ -159,6 +161,32 @@ function UserRegisterProductManual(props) {
     alertModal.show();
   }
 
+  const [selected, setSelected] = useState([])
+  const [options, setOptions] = useState([])
+  const getOptions = async () => {
+    const res = await axios.get(`${props.base_url}extended-warranty-promo/wms?product_model=`, {
+      headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('access_token'),
+          'Content-Type': 'application/json',
+      },
+    })
+    setOptions([...res.data])
+  }
+  useEffect(() => {
+    let m = true
+    if(m) getOptions()
+    return () => m = false
+  }, [])
+  const product_model = useMemo(() => {
+    return selected.length === 0 ? form.product_model : selected[0]
+  }, [selected, form.product_model]) 
+  
+  const isValid = useMemo(() => {
+    if(product_model == '') return ' '
+    return options.includes(product_model) ? 'is-valid' : 'is-invalid'
+
+  }, [product_model])
+
   async function handleSubmit(e) {
     e.preventDefault()
     setIsLoadiing(true)
@@ -171,7 +199,7 @@ function UserRegisterProductManual(props) {
       userData.file2 !== '' && 
       storeValue !== ''  &&
       form.brand !== '' &&
-      form.product_model !== '' &&
+      // form.product_model !== '' &&
       form.category !== '' 
     
     ) {
@@ -180,11 +208,12 @@ function UserRegisterProductManual(props) {
       const newPurcaseDate = format(new Date(dateChange), 'MM/dd/yyyy');
       // const newBirthDateDate = format(new Date('1981//09/27'), 'MM/dd/yyyy');
       // const newGender = dataUser.gender === 'Pria' ? 'Mr' : 'Ms';
-      
+      // console.log(product_model)
+
       formdata.append('customer_id', id);
       formdata.append('barcode', barcode);
       formdata.append('brand', form.brand);
-      formdata.append('product_model', form.product_model);
+      formdata.append('product_model', product_model);
       formdata.append('serial_number', barcode);
       formdata.append('category', form.category);
       formdata.append('date', newPurcaseDate);
@@ -196,6 +225,7 @@ function UserRegisterProductManual(props) {
       formdata.append( 'warranty_card', userData.file1 === '' ? '' : userData.file1 );
       formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
       formdata.append('agreements', userData.agreements === 'Y' ? 'Y' : 'N');
+      // setIsLoadiing(false)
       
       console.table(Object.fromEntries(formdata))
       setTimeout(() => {
@@ -212,7 +242,7 @@ function UserRegisterProductManual(props) {
       userData.date === '' ? setErrorDate('Date Must be Required') : setErrorDate('')
       storeValue === '' ? setErrorStore('Store Must be Required') : setErrorStore('')
       form.brand == '' ? setErrorBrand('Brand Must be Required') : setErrorBrand('')
-      form.product_model == '' ? setErrorProductModel('Product Model Must be Required') : setErrorProductModel('')
+      // form.product_model == '' ? setErrorProductModel('Product Model Must be Required') : setErrorProductModel('')
       form.category == '' ? setErrorCategory('Category Must be Required') : setErrorCategory('')
       userData.file1 === '' ? setErrorFile1('Warranty Card Must be Required') : setErrorFile1('');
       userData.file2 === '' ? setErrorFile2('Invoice Must be Required') : setErrorFile2('');
@@ -234,6 +264,7 @@ function UserRegisterProductManual(props) {
               category: data.category,
               product_model: data.product_model,
             })
+            setSelected([data.product_model])
             setStoreValue(data.store)
             setStoreStreet(allStore.find(v => v.StoreName == data.store).Street)
             setUserData({
@@ -264,6 +295,8 @@ function UserRegisterProductManual(props) {
     return () => m = false
   }, [props.idProduct])
  
+  
+
   return (
     <div className="user-register-product mb-5">
       <div className="container-fluid">
@@ -309,7 +342,7 @@ function UserRegisterProductManual(props) {
                 </div>
               </div>
 
-              <div className="col-lg-6">
+              {/* <div className="col-lg-6">
                 <div className="mb-lg-5 mb-4">
                   <label htmlFor="product-model" className="form-label">
                     Product Model
@@ -321,6 +354,30 @@ function UserRegisterProductManual(props) {
                     value={form.product_model}
                     onChange={onChange}
                     name='product_model'
+                  />
+                  <div className="text-danger">{errorProductModel}</div>
+                </div>
+              </div> */}
+
+              <div className="col-lg-6">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="product-model" className="form-label">
+                    Product Model
+                  </label>
+                  <Typeahead
+                    onInputChange={(v) => {
+                      setForm({
+                        ...form,
+                        product_model: v
+                      })
+                    }}
+                    inputProps={{ className: isValid }}
+                    id="basic-typeahead-single"
+                    labelKey="name"
+                    onChange={setSelected}
+                    options={options}
+                    placeholder="Choose a product model..."
+                    selected={selected}
                   />
                   <div className="text-danger">{errorProductModel}</div>
                 </div>
