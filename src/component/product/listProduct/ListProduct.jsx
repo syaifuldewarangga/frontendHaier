@@ -64,7 +64,9 @@ class ListProduct extends Component {
         } else{
             badgeColor = { color: 'bg-danger', label: 'reject' }
         }
-        const status = this.props.data.status_product
+        if(this.props.data.id == 203) badgeColor = { color: 'bg-warning', label: 'pending' }
+        if(this.props.data.id == 204) badgeColor = { color: 'bg-danger', label: 'reject' }
+        let status = this.props.data.id == 204 ? false : this.props.data.status_product
         return (
             <div className="list-product col-lg-3 col-6 mb-4 px-lg-4 ">
                 <div className="card card-product h-100">
@@ -81,7 +83,7 @@ class ListProduct extends Component {
                         </div>
                         <div className="d-flex justify-content-between align-items-center">
                             <span class={`badge ${badgeColor.color}`}> {badgeColor.label}</span>
-                            {status ? 
+                            {!status ? 
                                 <Fragment>
                                     <div className="d-flex gap-1">
                                         <span onClick={() => this.setState({ ...this.state, modalConfirm: true })} className="material-icons text-danger cursor-pointer"> delete </span>.
