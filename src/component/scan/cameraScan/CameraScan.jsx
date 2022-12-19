@@ -338,7 +338,7 @@ const CameraScan = (props) => {
                   <div className="d-grid gap-2">
                     <button
                       className="btn btn-color-primary btn-detail"
-                      disabled={isLoading}
+                      disabled={inputBarcodeNumber ? false : true}
                     >
                         {
                           isLoading ? 
@@ -350,7 +350,7 @@ const CameraScan = (props) => {
                           <Link to={'/product/register-product-manual/' + barcode}>
                             <div className="d-grid gap-2">
                               <button className="btn btn-color-primary btn-detail">
-                                Input Manual Product
+                                {inputBarcodeNumber == false ? 'Detail' : 'Input Data Product Manual'}
                               </button>
                             </div>
                           </Link>
@@ -390,7 +390,7 @@ const CameraScan = (props) => {
                     className="btn btn-color-outline-primary btn-detail"
                     onClick={handleManualInput}
                   >
-                    {t('product_register.manual_input')}
+                    Input Nomor Barcode Manual
                   </button>
                 </div>
               </div>

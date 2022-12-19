@@ -1,7 +1,9 @@
 import React from "react";
+import { useHistory } from "react-router";
 import './AlertModal.css'
 
 const AlertModal = (props) => {
+    const navigate = useHistory()
     return (
         <div className="modal fade" id="alertModal" tabIndex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered">
@@ -33,7 +35,7 @@ const AlertModal = (props) => {
                                 <span className="modal-question-message">{props.data.subTitle}</span>
 
                                 <div className="modal-question-button my-3">
-                                    <button className="btn rounded-pill" data-bs-dismiss="modal" aria-label="Close">OK</button>
+                                    <button onClick={!!props.data.back ? () => navigate.push('/landing-page') : null} className="btn rounded-pill" data-bs-dismiss="modal" aria-label="Close">OK</button>
                                 </div>
                             </div>
                         </div>

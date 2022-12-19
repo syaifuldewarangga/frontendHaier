@@ -15,11 +15,12 @@ import Resizer from "react-image-file-resizer";
 import { DataURIToBlob } from '../../../variable/DataUriToBlob';
 import { ModelCheck } from '../../../variable/ModelCheck';
 import { ImageFunction } from '../../../variable/ImageFunction';
+import { useMemo } from 'react';
 var X2JS = require('x2js');
 
 function UserRegisterProductManual(props) {
   const xtojson = new X2JS();
-  const { barcode } = useParams();
+  const { barcode } = props
   const [data, setData] = useState('');
   const [storeValue, setStoreValue] = useState('');
   const [storeStreet, setStoreStreet] = useState('');
@@ -60,22 +61,22 @@ function UserRegisterProductManual(props) {
   });
 
   async function fetchDataStore(gtmToken) {
-    await axios.post(props.gtm_url + 'pmtcommondata/GetStoreListByCondition',
-        {
-          StoreID: '',
-          StoreName: '',
-          StoreCode: '',
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + gtmToken,
+    try{
+      const res = await axios.post(props.gtm_url + 'pmtcommondata/GetStoreListByCondition',
+          {
+            StoreID: '',
+            StoreName: '',
+            StoreCode: '',
           },
-        }
+          {
+            headers: {
+              Authorization: "Bearer " + gtmToken,
+            },
+          }
       )
-      .then((res) => {
-        setDataStore(res.data.data);
-      })
-      .catch((e) => {
+      setDataStore(res.data.data);
+      return res
+    }catch(e){
         if (e.response) {
           console.log(e.response);
         } else if (e.request) {
@@ -83,32 +84,41 @@ function UserRegisterProductManual(props) {
         } else {
           console.log('message : ' + e.message);
         }
-      });
+    }
   }
 
   const getTokenGTM = async () => {
-    await axios.post(props.gtm_token_url, {
+    const { data: { access_token } } = await axios.post(props.gtm_token_url, {
       client_id: client_id,
       client_secret: client_secret,
       grant_type: grant_type,
-    }).then((res) => {
-      const token = res.data.access_token
-      fetchDataStore(token)
-    }).catch((err) => {
-      console.log(err.response)
     })
+    const temp =  await fetchDataStore(access_token)
+    // console.log(temp)
+    return temp
   }
 
-  useEffect(() => {
-    getTokenGTM()
-  }, [])  
+  let newDataStore = useMemo(() => {
+    return dataStore.map(({ StoreName }) => ({
+      value: StoreName,
+      name: StoreName,
+    }))
+  }, [dataStore]);
 
-  useEffect(() => {
+  const onChangeStore = (storeValue) => {
+    if(dataStore.length === 0 ) return;
     let isi = dataStore.filter((word) => word.StoreName === storeValue);
-    if (storeValue !== '') {
+    if(isi.length > 0){
       setStoreStreet(isi[0].Street);
+      setStoreValue(storeValue)
     }
-  }, [storeValue]);
+  }
+  // useEffect(() => {
+  //   let isi = dataStore.filter((word) => word.StoreName === storeValue);
+  //   if (storeValue !== '') {
+  //     setStoreStreet(isi[0].Street);
+  //   }
+  // }, [storeValue]);
 
   const onChangeFile = async (e) => {
     const name = e.target.name;
@@ -193,7 +203,8 @@ function UserRegisterProductManual(props) {
         setMessageModal({
           status: 'success',
           title: 'Thank you, ',
-          subTitle: 'Data berhasil didaftarkan!'
+          subTitle: 'Data berhasil didaftarkan!',
+          back: true
         })
         alertModal()
       }, 1000);
@@ -209,12 +220,49 @@ function UserRegisterProductManual(props) {
     }
   }
 
-  let newDataStore = dataStore.map(({ StoreName }) => ({
-    value: StoreName,
-    name: StoreName,
-  }));
-
   const { t } = useTranslation('common')
+
+  useEffect(() => {
+    let m = true
+    if(m){
+      getTokenGTM().then(({ data: { data: allStore } })  => {
+        if(props.data){ 
+            const { data } = props
+            setForm({
+              ...form,
+              brand: data.brand,
+              category: data.category,
+              product_model: data.product_model,
+            })
+            setStoreValue(data.store)
+            setStoreStreet(allStore.find(v => v.StoreName == data.store).Street)
+            setUserData({
+              ...userData,
+              agreements: data.agreements,
+              date: data.date,
+            })
+            setShowFile1(data.warranty)
+            setShowFile2(data.invoice)
+        } 
+      })
+    }
+      // formdata.append('customer_id', id);
+      // formdata.append('barcode', barcode);
+      // formdata.append('brand', form.brand);
+      // formdata.append('product_model', form.product_model);
+      // formdata.append('serial_number', barcode);
+      // formdata.append('category', form.category);
+      // formdata.append('date', newPurcaseDate);
+      // formdata.append('store_location', storeStreet);
+      // formdata.append('store_name', storeValue);
+      // formdata.append('email', email);
+      // formdata.append('phone', phone);
+      // formdata.append('status', 1);
+      // formdata.append( 'warranty_card', userData.file1 === '' ? '' : userData.file1 );
+      // formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
+      // formdata.append('agreements', userData.agreements === 'Y' ? 'Y' : 'N');
+    return () => m = false
+  }, [props.idProduct])
  
   return (
     <div className="user-register-product mb-5">
@@ -342,7 +390,7 @@ function UserRegisterProductManual(props) {
                   <SelectSearch
                     options={newDataStore}
                     value={storeValue}
-                    onChange={setStoreValue}
+                    onChange={onChangeStore}
                     search
                     filterOptions={fuzzySearch}
                     placeholder="Search something"

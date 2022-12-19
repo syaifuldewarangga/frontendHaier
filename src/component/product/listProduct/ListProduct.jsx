@@ -10,17 +10,21 @@ import { withRouter } from 'react-router-dom';
 import './AlertCss2.css'
 import moment from 'moment'
 
+import { useHistory } from 'react-router-dom';
 class ListProduct extends Component {
     state = {
         modal1: false,
         modal2: false,
         modal3: false,
+        modalConfirm: false,
         loading: false,
+        loading2: false,
     }
 
     closeModal1 = () => this.setState({ modal1: false });
     closeModal2 = () => this.setState({ modal2: false });
     closeModal3 = () => this.setState({ modal3: false });
+    closeModalConfirm = () => this.setState({ modal3: false });
 
     async setPromo(promo_id, product_id) {
         this.setState({...this.state, loading: true})
@@ -42,10 +46,25 @@ class ListProduct extends Component {
           .then((res) => {
             this.setState({...this.state, loading: false, modal3: true})
           });
-      }
+    }
     
+    async HandleDelete(product_id) {
+        console.log(product_id)
+        this.setState({...this.state, loading2: true})
+        setTimeout(() => {
+            this.setState({...this.state, loading2: false})
+            this.props.history.push("/landing-page");
+        }, 1000);
+    }
 
     render() {
+        let badgeColor = { color: '', label: '' };
+        if(this.props.data.status_product){
+            badgeColor = { color: 'bg-success', label: 'complete' }
+        } else{
+            badgeColor = { color: 'bg-danger', label: 'reject' }
+        }
+        const status = this.props.data.status_product
         return (
             <div className="list-product col-lg-3 col-6 mb-4 px-lg-4 ">
                 <div className="card card-product h-100">
@@ -53,41 +72,89 @@ class ListProduct extends Component {
                         <div className="image-product d-flex justify-content-center">
                             <img src={ImageFunction(this.props.data.category)} className="img-fluid" alt="" />
                         </div>
-                        <div className="card-body">
-                            <div className="title-product mb-2">{this.props.data.product_name}</div>
-                            <div className="d-xxl-flex justify-content-between">
-                                <p className="m-0 small" style={{ color: "#003D79" }}>{ this.props.data.brand } </p>
-                                <p className="m-0 small">{this.props.data.barcode}</p>
-                            </div>
-                            <div className="d-flex">
-                            <span class={`badge ${this.props.data.status_product === true ? 'bg-success' : 'bg-danger'}`}> {this.props.data.status_product === true ? 'complete' : 'not complete'}</span>
-
-                            </div>
-                        </div>
                     </Link>
-                        <hr />
-                        <div className="sub-product mb-3 h-100">
-                            <div className="d-flex justify-content-between align-items-center h-100"> 
+                    <div className="card-body">
+                        <div className="title-product mb-2">{this.props.data.product_name}</div>
+                        <div className="d-xxl-flex justify-content-between">
+                            <p className="m-0 small" style={{ color: "#003D79" }}>{ this.props.data.brand } </p>
+                            <p className="m-0 small">{this.props.data.barcode}</p>
+                        </div>
+                        <div className="d-flex justify-content-between align-items-center">
+                            <span class={`badge ${badgeColor.color}`}> {badgeColor.label}</span>
+                            {status ? 
+                                <Fragment>
+                                    <div className="d-flex gap-1">
+                                        <span onClick={() => this.setState({ ...this.state, modalConfirm: true })} className="material-icons text-danger cursor-pointer"> delete </span>.
+                                        <Link to={`/product/edit-register-product-manual/${this.props.data.id}`}>
+                                            <span className="material-icons text-success cursor-pointer"> edit</span>
+                                        </Link>
+                                        {/* <span class={`badge bg-danger`}>Delete</span> */}
+                                        {/* <span class={`badge bg-success`}>Edit</span> */}
+                                    </div>
+                                </Fragment>
+                            :
+                            null
+                            }
+                        </div>
+                    </div>
+                    <hr />
+                    <div className="sub-product mb-3 h-100">
+                        <div className="d-flex justify-content-between align-items-center h-100"> 
+                            <div className="d-flex flex-column gap-2">
                                 <div className="d-flex align-items-center">
                                     <span className="material-icons me-2"> date_range </span>
                                     <span>{moment(this.props.data.date).format("DD-MM-YYYY")}</span> 
                                 </div>
                                 {this.props.data.promo !== null &&
-                                <div className="promo-icon-container">
-                                    <a href={`${this.props.data.promo.link}`} target="_blank">
-                                        <img src={`${this.props.image_url}${this.props.data.promo.thumbnail}`} alt="test" className="img-fluid promo-icon" />
-                                        <div class="overlay-promo-icon">
-                                            <div class="promo-icon-text">See Detail</div>
-                                        </div>
-                                    </a> 
+                                <div className="d-flex align-items-center">
+                                    <span className="material-icons me-2"> download </span>
+                                    <span className="text-primary"><a href="" target='_blank'><small>Promo Card</small></a></span> 
                                 </div>
-
                                 }
-                                {this.props.data.avail_promo !== null && <span className="badge badge-lg cursor-pointer btn-primary" onClick={() => this.setState({...this.state, modal1: true})}>Aktifasi</span>}
                             </div>
+                            
+                            {this.props.data.promo !== null &&
+                            <div className="promo-icon-container">
+                                <a href={`${this.props.data.promo.link}`} target="_blank">
+                                    <img src={`${this.props.image_url}${this.props.data.promo.thumbnail}`} alt="test" className="img-fluid promo-icon" />
+                                    <div class="overlay-promo-icon">
+                                        <div class="promo-icon-text">See Detail</div>
+                                    </div>
+                                </a> 
+                            </div>
+
+                            }
+                            {this.props.data.avail_promo !== null && <span className="badge badge-lg cursor-pointer btn-primary" onClick={() => this.setState({...this.state, modal1: true})}>Aktifasi</span>}
                         </div>
+                    </div>
                     
-                    
+                    {/* Modal Confirm Delete */}
+                    <Modal show={this.state.modalConfirm} onHide={this.closeModalConfirm}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Delete Product</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <h6>Are you sure ?, this action can't be undo </h6>
+                            <p>Click button below for delete product</p>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            {this.state.loading2 ? 
+                            <Button variant="danger" disabled>
+                            <Spinner
+                                as="span"
+                                animation="grow"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                            />
+                                Loading...
+                            </Button>
+                            :
+                            <Button variant="danger" onClick={() => this.HandleDelete(this.props.data.id)}>Delete</Button>
+                            }
+                            
+                        </Modal.Footer>
+                    </Modal>
                     
                     {/* Modal 1 */}
                     <Modal show={this.state.modal1} onHide={this.closeModal1}>
