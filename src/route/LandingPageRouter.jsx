@@ -29,12 +29,15 @@ import DetailStatusService from '../component/serviceStatus/detailStatusService/
 import AddUserRegisterProductManual from '../component/product/userRegisterProductManual/Add';
 import EditUserRegisterProductManual from '../component/product/userRegisterProductManual/Edit';
 
+import SearchPromo from '../pages/SearchPromo';
+
 const LandingPageRouter = () => {
   return (
     <Router forceRefresh={true}>
       <Switch>
         {/* ROUTER COSTOMER */}
         <Route exact path="/" component={Login}></Route>
+        <Route exact path="/search-promo" component={SearchPromo}></Route>
         <Route
           exact
           path="/forgot-password/"

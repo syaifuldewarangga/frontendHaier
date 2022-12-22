@@ -24,7 +24,7 @@ class ListProduct extends Component {
     closeModal1 = () => this.setState({ modal1: false });
     closeModal2 = () => this.setState({ modal2: false });
     closeModal3 = () => this.setState({ modal3: false });
-    closeModalConfirm = () => this.setState({ modal3: false });
+    closeModalConfirm = () => this.setState({ modalConfirm: false });
 
     async setPromo(promo_id, product_id) {
         this.setState({...this.state, loading: true})
@@ -64,8 +64,8 @@ class ListProduct extends Component {
         } else{
             badgeColor = { color: 'bg-danger', label: 'reject' }
         }
-        if(this.props.data.id == 203) badgeColor = { color: 'bg-warning', label: 'pending' }
-        if(this.props.data.id == 204) badgeColor = { color: 'bg-danger', label: 'reject' }
+        if(this.props.data.id == 203) badgeColor = { color: 'bg-warning', label: 'verification serial number' }
+        if(this.props.data.id == 204) badgeColor = { color: 'bg-danger', label: 'serial number not valid' }
         let status = this.props.data.id == 204 ? false : this.props.data.status_product
         return (
             <div className="list-product col-lg-3 col-6 mb-4 px-lg-4 ">

@@ -29,6 +29,7 @@ function UserRegisterProductManual(props) {
   const [dataStore, setDataStore] = useState([]);
   const [showFile1, setShowFile1] = useState('');
   const [showFile2, setShowFile2] = useState('');
+  const [showFile3, setShowFile3] = useState('');
   const [dataUser, setDataUser] = useState({});
   const [isPromo, setIsPromo] = useState(false);
   const [dataPromo, setDataPromo] = useState({});
@@ -36,11 +37,13 @@ function UserRegisterProductManual(props) {
     date: '',
     file1: '',
     file2: '',
+    file3: '',
     agreements: ''
   });
   const [errorDate, setErrorDate] = useState('');
   const [errorFile1, setErrorFile1] = useState('');
   const [errorFile2, setErrorFile2] = useState('');
+  const [errorFile3, setErrorFile3] = useState('');
   const [errorStore, setErrorStore] = useState('');
   const [errorGSIS, setErrorGSIS] = useState('');
   const [messageModal, setMessageModal] = useState({
@@ -132,11 +135,17 @@ function UserRegisterProductManual(props) {
         ...userData,
         ['file1']: DataURIToBlob(image),
       });
-    } else {
+    } else if(name === 'invoice_card') {
       setShowFile2(image)
       setUserData({
         ...userData,
         ['file2']: DataURIToBlob(image),
+      });
+    } else if(name === 'serial_number') {
+      setShowFile3(image)
+      setUserData({
+        ...userData,
+        ['file3']: DataURIToBlob(image),
       });
     }
   }
@@ -197,6 +206,7 @@ function UserRegisterProductManual(props) {
       userData.date !== '' && 
       userData.file1 !== '' && 
       userData.file2 !== '' && 
+      userData.file3 !== '' && 
       storeValue !== ''  &&
       form.brand !== '' &&
       // form.product_model !== '' &&
@@ -224,6 +234,7 @@ function UserRegisterProductManual(props) {
       formdata.append('status', 1);
       formdata.append( 'warranty_card', userData.file1 === '' ? '' : userData.file1 );
       formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
+      formdata.append('serial_number', userData.file3 === '' ? '' : userData.file3);
       formdata.append('agreements', userData.agreements === 'Y' ? 'Y' : 'N');
       // setIsLoadiing(false)
       
@@ -233,7 +244,7 @@ function UserRegisterProductManual(props) {
         setMessageModal({
           status: 'success',
           title: 'Thank you, ',
-          subTitle: 'Data berhasil didaftarkan!',
+          subTitle: 'Data berhasil diajukan dan sedang dalam proses verifikasi',
           back: true
         })
         alertModal()
@@ -246,6 +257,7 @@ function UserRegisterProductManual(props) {
       form.category == '' ? setErrorCategory('Category Must be Required') : setErrorCategory('')
       userData.file1 === '' ? setErrorFile1('Warranty Card Must be Required') : setErrorFile1('');
       userData.file2 === '' ? setErrorFile2('Invoice Must be Required') : setErrorFile2('');
+      userData.file3 === '' ? setErrorFile2('Serial Number Must be Required') : setErrorFile2('');
       setIsLoadiing(false)
     }
   }
@@ -473,7 +485,7 @@ function UserRegisterProductManual(props) {
                 </div>
               </div>
 
-              <div className="col-lg-6">
+              <div className="col-lg-4">
                 {showFile1 !== '' ? (
                   <div className="col-lg-12 d-flex justify-content-center mb-3">
                     <img src={showFile1} alt="file" className="img-fluid" />
@@ -502,7 +514,7 @@ function UserRegisterProductManual(props) {
                 </div>
               </div>
 
-              <div className="col-lg-6">
+              <div className="col-lg-4">
                 {showFile2 !== '' ? (
                   <div className="col-lg-12 d-flex justify-content-center mb-3">
                     <img src={showFile2} alt="file" className="img-fluid" />
@@ -513,14 +525,43 @@ function UserRegisterProductManual(props) {
                     <div className="dropzone-desc">
                       <span className="material-icons"> cloud_upload </span>
                       {
-                        userData.file1 !== '' ? 
-                        <p>Re-upload Invoice</p> :
-                        <p>Attach Your Invoice Here</p>
+                        userData.file2 !== '' ? 
+                        <p style={{ fontSize: '0.8rem' }}>Re-upload Invoice</p> :
+                        <p style={{ fontSize: '0.8rem' }}>Attach Your Invoice Here</p>
                       }
                     </div>
                     <input
                       type="file"
                       name="invoice_card"
+                      className="dropzone"
+                      aria-label="file"
+                      onChange={onChangeFile}
+                    />
+                    {/* { errorData.file } */}
+                  </div>
+                  <div className="text-danger">{errorFile2}</div>
+                </div>
+              </div>
+
+              <div className="col-lg-4">
+                {showFile3 !== '' ? (
+                  <div className="col-lg-12 d-flex justify-content-center mb-3">
+                    <img src={showFile3} alt="file" className="img-fluid" />
+                  </div>
+                ) : null}
+                <div className="btn-upload-custom mb-4">
+                  <div className="dropzone-wrapper">
+                    <div className="dropzone-desc">
+                      <span className="material-icons"> cloud_upload </span>
+                      {
+                        userData.file3 !== '' ? 
+                        <p style={{ fontSize: '0.8rem' }}>Re-upload Serial Number</p> :
+                        <p style={{ fontSize: '0.8rem' }}>Attach Your Serial Number</p>
+                      }
+                    </div>
+                    <input
+                      type="file"
+                      name="serial_number"
                       className="dropzone"
                       aria-label="file"
                       onChange={onChangeFile}

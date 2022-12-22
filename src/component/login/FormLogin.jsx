@@ -197,9 +197,12 @@ const FormLogin = (props) => {
                 )}
                 <div>
                   <a href="#">
-                    <div className="forgot-password">
+                    <div className="forgot-password d-flex justify-content-end gap-3">
                       <Link to="/forgot-password">
                         <p>Forgot Password</p>
+                      </Link>
+                      <Link to="/search-promo">
+                        <p>Search Promo</p>
                       </Link>
                     </div>
                   </a>
