@@ -11,6 +11,9 @@ import './AlertCss2.css'
 import moment from 'moment'
 
 import { useHistory } from 'react-router-dom';
+import PromoCard from "./PromoCard";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 class ListProduct extends Component {
     state = {
         modal1: false,
@@ -19,12 +22,14 @@ class ListProduct extends Component {
         modalConfirm: false,
         loading: false,
         loading2: false,
+        modalPromo: false,
     }
 
     closeModal1 = () => this.setState({ modal1: false });
     closeModal2 = () => this.setState({ modal2: false });
     closeModal3 = () => this.setState({ modal3: false });
     closeModalConfirm = () => this.setState({ modalConfirm: false });
+    closeModalPromo = () => this.setState({ modalPromo: false });
 
     async setPromo(promo_id, product_id) {
         this.setState({...this.state, loading: true})
@@ -110,7 +115,13 @@ class ListProduct extends Component {
                                 {this.props.data.promo !== null &&
                                 <div className="d-flex align-items-center">
                                     <span className="material-icons me-2"> download </span>
-                                    <span className="text-primary"><a href="" target='_blank'><small>Promo Card</small></a></span> 
+                                    <span 
+                                        onClick={() => this.setState({ ...this.state, modalPromo: true })} 
+                                        // onClick={this.clickDownload} 
+                                        className="text-primary cursor-pointer"
+                                    >
+                                        <small>Promo Card</small>
+                                    </span> 
                                 </div>
                                 }
                             </div>
@@ -128,8 +139,9 @@ class ListProduct extends Component {
                             }
                             {this.props.data.avail_promo !== null && <span className="badge badge-lg cursor-pointer btn-primary" onClick={() => this.setState({...this.state, modal1: true})}>Aktifasi</span>}
                         </div>
-                    </div>
-                    
+                        
+                    </div>     
+
                     {/* Modal Confirm Delete */}
                     <Modal show={this.state.modalConfirm} onHide={this.closeModalConfirm}>
                         <Modal.Header closeButton>
@@ -242,6 +254,18 @@ class ListProduct extends Component {
 
                             </div>
                             
+                        </Modal.Body>
+                        <Modal.Footer>
+                            
+                        </Modal.Footer>
+                    </Modal>
+
+                    <Modal show={this.state.modalPromo} onHide={this.closeModalPromo}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Promo Card</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body className="overflow-hidden">
+                            <PromoCard />
                         </Modal.Body>
                         <Modal.Footer>
                             

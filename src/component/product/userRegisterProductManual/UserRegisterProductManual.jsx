@@ -244,7 +244,7 @@ function UserRegisterProductManual(props) {
         setMessageModal({
           status: 'success',
           title: 'Thank you, ',
-          subTitle: 'Data berhasil diajukan dan sedang dalam proses verifikasi',
+          subTitle: 'product anda berhasil didaftarkan dan dalam tahap verifikasi',
           back: true
         })
         alertModal()
@@ -347,8 +347,6 @@ function UserRegisterProductManual(props) {
                   <select name='brand' onChange={onChange} value={form.brand} className="form-select" aria-label="Default select example" placeholder='choose brand'>
                     <option value='' disabled>Choose One Brand</option>
                     <option value="aqua">Aqua</option>
-                    <option value="sanyo">Sanyo</option>
-                    <option value="candy">Candy</option>
                   </select>
                   <div className="text-danger">{errorBrand}</div>
                 </div>
@@ -417,10 +415,14 @@ function UserRegisterProductManual(props) {
                     Category
                   </label>
                   <select name='category' onChange={onChange} value={form.category} className="form-select" aria-label="Default select example" placeholder='choose brand'>
-                    <option value='' disabled>Choose One Brand</option>
-                    <option value="aqua">Aqua</option>
-                    <option value="sanyo">Sanyo</option>
-                    <option value="candy">Candy</option>
+                    <option value='' disabled>Choose One Category</option>
+                    <option value="kulkas">Kulkas (REF)</option>
+                    <option value="freezer">Freezer (CC)</option>
+                    <option value="mesin_cuci">Mesin Cuci (WM)</option>
+                    <option value="mesin_cuci_pintu_depan">Mesin Cuci Pintu Depan (DWM)</option>
+                    <option value="tv">LED TV (TV)</option>
+                    <option value="ac">Air Conditioner (HAC)</option>
+                    <option value="ka">Kitchen Appliances (SDA)</option>
                   </select>                  
                   <div className="text-danger">{errorCategory}</div>
                 </div>

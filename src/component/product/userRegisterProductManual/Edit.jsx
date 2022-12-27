@@ -14,7 +14,7 @@ const Edit = () => {
             setData({
                 brand: 'aqua',
                 product_model: 'AQ-WEADAW',
-                category: 'aqua',
+                category: 'ac',
                 date: format(new Date(), 'yyyy-MM-dd'),
                 warranty: '',
                 invoice: '',
