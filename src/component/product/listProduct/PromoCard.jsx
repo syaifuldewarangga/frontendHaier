@@ -75,7 +75,10 @@ const PromoCard = () => {
         <div>
             <div>
                 <div className="d-flex mb-2">
-                    <button onClick={createPDF} className='btn btn-primary'>Print</button>
+                    <button onClick={createPDF} className='btn btn-secondary w-100 d-flex align-items-center justify-content-center'>
+                        <span className="material-icons">print</span>
+                        Print
+                    </button>
                 </div>
                 <div ref={reff} id="pdf">
                     {/* modal full screen */}

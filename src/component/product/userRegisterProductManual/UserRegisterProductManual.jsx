@@ -83,11 +83,11 @@ function UserRegisterProductManual(props) {
       return res
     }catch(e){
         if (e.response) {
-          console.log(e.response);
+          // console.log(e.response);
         } else if (e.request) {
-          console.log('request : ' + e.request);
+          // console.log('request : ' + e.request);
         } else {
-          console.log('message : ' + e.message);
+          // console.log('message : ' + e.message);
         }
     }
   }
@@ -154,7 +154,7 @@ function UserRegisterProductManual(props) {
   const [errorProductModel, setErrorProductModel] = useState('');
   const [errorCategory, setErrorCategory] = useState('');
   const [form, setForm] = useState({
-    brand: '',
+    brand: 'AQUA',
     product_model: '',
     category: '',
   })
@@ -196,6 +196,7 @@ function UserRegisterProductManual(props) {
 
   }, [product_model])
 
+  const [errorPost, setErrorPost] = useState('')
   async function handleSubmit(e) {
     e.preventDefault()
     setIsLoadiing(true)
@@ -221,34 +222,57 @@ function UserRegisterProductManual(props) {
       // console.log(product_model)
 
       formdata.append('customer_id', id);
-      formdata.append('barcode', barcode);
-      formdata.append('brand', form.brand);
-      formdata.append('product_model', product_model);
       formdata.append('serial_number', barcode);
-      formdata.append('category', form.category);
+      formdata.append('barcode', barcode);
+      formdata.append('product_name', product_model);
       formdata.append('date', newPurcaseDate);
       formdata.append('store_location', storeStreet);
       formdata.append('store_name', storeValue);
       formdata.append('email', email);
       formdata.append('phone', phone);
-      formdata.append('status', 1);
+      formdata.append('product_model', product_model);
       formdata.append( 'warranty_card', userData.file1 === '' ? '' : userData.file1 );
       formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
-      formdata.append('serial_number', userData.file3 === '' ? '' : userData.file3);
+      formdata.append('brand', form.brand);
+      formdata.append('status', 1);
       formdata.append('agreements', userData.agreements === 'Y' ? 'Y' : 'N');
+      formdata.append('category', form.category);
+      formdata.append('serial', userData.file3 === '' ? '' : userData.file3);
       // setIsLoadiing(false)
       
       console.table(Object.fromEntries(formdata))
-      setTimeout(() => {
+      // setTimeout(() => {
+      //   setIsLoadiing(false)
+      //   setMessageModal({
+      //     status: 'success',
+      //     title: 'Thank you, ',
+      //     subTitle: 'produk anda berhasil didaftarkan dan menunggu tahap verifikasi',
+      //     back: true
+      //   })
+      //   alertModal()
+      // }, 1000);
+      axios.post(props.base_url + 'register-product/plain', formdata, {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+      }).then(res => {
         setIsLoadiing(false)
         setMessageModal({
           status: 'success',
           title: 'Thank you, ',
-          subTitle: 'product anda berhasil didaftarkan dan dalam tahap verifikasi',
+          subTitle: 'produk anda berhasil didaftarkan dan menunggu tahap verifikasi',
           back: true
         })
         alertModal()
-      }, 1000);
+      }).catch(err => {
+        // console.log(err.response)
+        setIsLoadiing(false)
+        if(err.response){
+          if(err.response.data.errors.location === 'barcode'){
+            setErrorPost('Barcode Sudah Terdaftar')
+          }
+        }
+      })
     } else {
       userData.date === '' ? setErrorDate('Date Must be Required') : setErrorDate('')
       storeValue === '' ? setErrorStore('Store Must be Required') : setErrorStore('')
@@ -344,9 +368,9 @@ function UserRegisterProductManual(props) {
                   <label htmlFor="brand" className="form-label">
                     Brand
                   </label>
-                  <select name='brand' onChange={onChange} value={form.brand} className="form-select" aria-label="Default select example" placeholder='choose brand'>
+                  <select name='brand' disabled onChange={onChange} value={form.brand} className="form-select" aria-label="Default select example" placeholder='choose brand'>
                     <option value='' disabled>Choose One Brand</option>
-                    <option value="aqua">Aqua</option>
+                    <option selected value="AQUA">AQUA</option>
                   </select>
                   <div className="text-danger">{errorBrand}</div>
                 </div>
@@ -418,6 +442,7 @@ function UserRegisterProductManual(props) {
                     <option value='' disabled>Choose One Category</option>
                     <option value="kulkas">Kulkas (REF)</option>
                     <option value="freezer">Freezer (CC)</option>
+                    <option value="showcase">Showcase (CC)</option>
                     <option value="mesin_cuci">Mesin Cuci (WM)</option>
                     <option value="mesin_cuci_pintu_depan">Mesin Cuci Pintu Depan (DWM)</option>
                     <option value="tv">LED TV (TV)</option>
@@ -499,8 +524,8 @@ function UserRegisterProductManual(props) {
                       <span className="material-icons"> cloud_upload </span>
                       {
                         userData.file1 !== '' ? 
-                        <p style={{ fontSize: '0.8rem' }}>Re-upload Warranty Card/Serial Number</p> :
-                        <p style={{ fontSize: '0.8rem' }}>Attach Your Warranty Card/Serial Number Here</p>
+                        <p style={{ fontSize: '0.8rem' }}>Re-upload Warranty Card</p> :
+                        <p style={{ fontSize: '0.8rem' }}>Attach Your Warranty Card Here</p>
                       }
                     </div>
                     <input
@@ -599,6 +624,12 @@ function UserRegisterProductManual(props) {
                 errorGSIS !== '' ?
                 <div className="text-danger">
                   {errorGSIS}
+                </div> : null
+              }
+              {
+                errorPost !== '' ?
+                <div className="text-danger">
+                  {errorPost}
                 </div> : null
               }
             </div>
