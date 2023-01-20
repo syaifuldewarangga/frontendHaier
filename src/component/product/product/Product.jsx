@@ -20,7 +20,7 @@ class Product extends Component {
         },
         params: {
           id: localStorage.getItem('id'),
-          // itemPerPage:  8
+          itemPerPage:  8
         },
       })
       .then((res) => {

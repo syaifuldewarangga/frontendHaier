@@ -18,6 +18,7 @@ import { ImageFunction } from '../../../variable/ImageFunction';
 import { useMemo } from 'react';
 import { Hint, Typeahead } from 'react-bootstrap-typeahead';
 import { useRef } from 'react';
+import moment from 'moment/moment';
 var X2JS = require('x2js');
 
 function UserRegisterProductManual(props) {
@@ -128,20 +129,20 @@ function UserRegisterProductManual(props) {
   const onChangeFile = async (e) => {
     const name = e.target.name;
     const file = e.target.files[0];
-    const image = await resizeFile(file);
-    if(name === 'warranty_card') {
+    const image = e.target.files[0] && await resizeFile(file);
+    if(name === 'warranty_card' && image) {
       setShowFile1(image)
       setUserData({
         ...userData,
         ['file1']: DataURIToBlob(image),
       });
-    } else if(name === 'invoice_card') {
+    } else if(name === 'invoice_card' && image) {
       setShowFile2(image)
       setUserData({
         ...userData,
-        ['file2']: DataURIToBlob(image),
+        ['file2']: DataURIToBlob(image ),
       });
-    } else if(name === 'serial_number') {
+    } else if(name === 'serial_number' && image) {
       setShowFile3(image)
       setUserData({
         ...userData,
@@ -181,17 +182,17 @@ function UserRegisterProductManual(props) {
     })
     setOptions([...res.data])
   }
-  useEffect(() => {
-    let m = true
-    if(m) getOptions()
-    return () => m = false
-  }, [])
+  // useEffect(() => {
+  //   let m = true
+  //   if(m) getOptions()
+  //   return () => m = false
+  // }, [])
   const product_model = useMemo(() => {
     return selected.length === 0 ? form.product_model : selected[0]
   }, [selected, form.product_model]) 
   
   const isValid = useMemo(() => {
-    if(product_model == '') return ' '
+    if(product_model == '') return ''
     return options.includes(product_model) ? 'is-valid' : 'is-invalid'
 
   }, [product_model])
@@ -205,12 +206,12 @@ function UserRegisterProductManual(props) {
 
     if ( 
       userData.date !== '' && 
-      userData.file1 !== '' && 
-      userData.file2 !== '' && 
-      userData.file3 !== '' && 
+      showFile1 !== '' && 
+      showFile2 !== '' && 
+      showFile3 !== '' && 
       storeValue !== ''  &&
+      product_model !== '' &&
       form.brand !== '' &&
-      // form.product_model !== '' &&
       form.category !== '' 
     
     ) {
@@ -240,7 +241,7 @@ function UserRegisterProductManual(props) {
       formdata.append('serial', userData.file3 === '' ? '' : userData.file3);
       // setIsLoadiing(false)
       
-      console.table(Object.fromEntries(formdata))
+      // console.table(Object.fromEntries(formdata))
       // setTimeout(() => {
       //   setIsLoadiing(false)
       //   setMessageModal({
@@ -251,37 +252,51 @@ function UserRegisterProductManual(props) {
       //   })
       //   alertModal()
       // }, 1000);
-      axios.post(props.base_url + 'register-product/plain', formdata, {
-          headers: {
-            Authorization: 'Bearer ' + token,
-          },
-      }).then(res => {
-        setIsLoadiing(false)
-        setMessageModal({
-          status: 'success',
-          title: 'Thank you, ',
-          subTitle: 'produk anda berhasil didaftarkan dan menunggu tahap verifikasi',
-          back: true
-        })
-        alertModal()
-      }).catch(err => {
-        // console.log(err.response)
-        setIsLoadiing(false)
-        if(err.response){
-          if(err.response.data.errors.location === 'barcode'){
-            setErrorPost('Barcode Sudah Terdaftar')
+      if(props.title == 'edit'){
+        setTimeout(() => {
+          console.table(Object.fromEntries(formdata))
+          setIsLoadiing(false)
+          setMessageModal({
+            status: 'success',
+            title: 'Thank you, ',
+            subTitle: 'produk anda berhasil didaftarkan ulang dan menunggu tahap verifikasi',
+            back: true
+          })
+          alertModal()
+        }, 1000);
+      }else{
+        axios.post(props.base_url + 'register-product/plain', formdata, {
+            headers: {
+              Authorization: 'Bearer ' + token,
+            },
+        }).then(res => {
+          setIsLoadiing(false)
+          setMessageModal({
+            status: 'success',
+            title: 'Thank you, ',
+            subTitle: 'produk anda berhasil didaftarkan dan menunggu tahap verifikasi',
+            back: true
+          })
+          alertModal()
+        }).catch(err => {
+          // console.log(err.response)
+          setIsLoadiing(false)
+          if(err.response){
+            if(err.response.data.errors.location === 'barcode'){
+              setErrorPost('Barcode Sudah Terdaftar')
+            }
           }
-        }
-      })
+        })
+      }
     } else {
       userData.date === '' ? setErrorDate('Date Must be Required') : setErrorDate('')
       storeValue === '' ? setErrorStore('Store Must be Required') : setErrorStore('')
       form.brand == '' ? setErrorBrand('Brand Must be Required') : setErrorBrand('')
-      // form.product_model == '' ? setErrorProductModel('Product Model Must be Required') : setErrorProductModel('')
+      product_model == '' ? setErrorProductModel('Product Model Must be Required') : setErrorProductModel('')
       form.category == '' ? setErrorCategory('Category Must be Required') : setErrorCategory('')
-      userData.file1 === '' ? setErrorFile1('Warranty Card Must be Required') : setErrorFile1('');
-      userData.file2 === '' ? setErrorFile2('Invoice Must be Required') : setErrorFile2('');
-      userData.file3 === '' ? setErrorFile2('Serial Number Must be Required') : setErrorFile2('');
+      showFile1 === '' ? setErrorFile1('Warranty Card Must be Required') : setErrorFile1('');
+      showFile2 === '' ? setErrorFile2('Invoice Must be Required') : setErrorFile2('');
+      showFile3 === '' ? setErrorFile2('Serial Number Must be Required') : setErrorFile2('');
       setIsLoadiing(false)
     }
   }
@@ -291,25 +306,27 @@ function UserRegisterProductManual(props) {
   useEffect(() => {
     let m = true
     if(m){
-      getTokenGTM().then(({ data: { data: allStore } })  => {
+      Promise.all([getOptions(), getTokenGTM()]).then((res)  => {
         if(props.data){ 
-            const { data } = props
-            setForm({
-              ...form,
-              brand: data.brand,
-              category: data.category,
-              product_model: data.product_model,
-            })
-            setSelected([data.product_model])
-            setStoreValue(data.store)
-            setStoreStreet(allStore.find(v => v.StoreName == data.store).Street)
-            setUserData({
-              ...userData,
-              agreements: data.agreements,
-              date: data.date,
-            })
-            setShowFile1(data.warranty)
-            setShowFile2(data.invoice)
+          const { data } = props
+          const { data: { data: allStore } } = res[1]
+          setSelected([data.product_model])
+          setForm({
+            ...form,
+            brand: data.brand,
+            category: data.category,
+            product_model: data.product_model,
+          })
+          setStoreValue(data.store_name)
+          setStoreStreet(allStore.find(v => v.StoreName == data.store_name)?.Street)
+          setUserData({
+            ...userData,
+            agreements: data.agreements,
+            date: moment(data.date).format('yyyy-MM-DD'),
+          })
+          setShowFile1(props.image_url + data.warranty_card)
+          setShowFile2(props.image_url + data.invoice)
+          setShowFile3(props.image_url + data.serial)
         } 
       })
     }
@@ -523,7 +540,7 @@ function UserRegisterProductManual(props) {
                     <div className="dropzone-desc">
                       <span className="material-icons"> cloud_upload </span>
                       {
-                        userData.file1 !== '' ? 
+                        showFile1 !== '' ? 
                         <p style={{ fontSize: '0.8rem' }}>Re-upload Warranty Card</p> :
                         <p style={{ fontSize: '0.8rem' }}>Attach Your Warranty Card Here</p>
                       }
@@ -552,7 +569,7 @@ function UserRegisterProductManual(props) {
                     <div className="dropzone-desc">
                       <span className="material-icons"> cloud_upload </span>
                       {
-                        userData.file2 !== '' ? 
+                        showFile2 !== '' ? 
                         <p style={{ fontSize: '0.8rem' }}>Re-upload Invoice</p> :
                         <p style={{ fontSize: '0.8rem' }}>Attach Your Invoice Here</p>
                       }
@@ -581,7 +598,7 @@ function UserRegisterProductManual(props) {
                     <div className="dropzone-desc">
                       <span className="material-icons"> cloud_upload </span>
                       {
-                        userData.file3 !== '' ? 
+                        showFile3 !== '' ? 
                         <p style={{ fontSize: '0.8rem' }}>Re-upload Serial Number</p> :
                         <p style={{ fontSize: '0.8rem' }}>Attach Your Serial Number</p>
                       }
@@ -612,6 +629,7 @@ function UserRegisterProductManual(props) {
                           ['agreements']: e.target.value,
                         })
                       }
+                      checked={userData.agreements == 'Y'}
                     />
                     <label className="form-check-label">
                       {t('form_product_register.wa_flag')}

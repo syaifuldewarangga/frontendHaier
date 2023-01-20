@@ -64,14 +64,10 @@ class ListProduct extends Component {
 
     render() {
         let badgeColor = { color: '', label: '' };
-        if(this.props.data.status_product){
-            badgeColor = { color: 'bg-success', label: 'complete' }
-        } else{
-            badgeColor = { color: 'bg-danger', label: 'reject' }
-        }
-        if(this.props.data.id == 203) badgeColor = { color: 'bg-warning', label: 'verification serial number' }
-        if(this.props.data.id == 204) badgeColor = { color: 'bg-danger', label: 'serial number not valid' }
-        let status = this.props.data.id == 204 ? false : this.props.data.status_product
+        if(this.props.data.status_checking == "PENDING") badgeColor = { color: 'bg-warning', label: 'verification serial number' }
+        if(this.props.data.status_checking == "REJECTED") badgeColor = { color: 'bg-danger', label: 'serial number not valid' }
+        if(this.props.data.status_checking == "APPROVED") badgeColor = { color: 'bg-success', label: 'complete' }
+        let status = this.props.data.id == 216 ? false : this.props.data.status_product
         return (
             <div className="list-product col-lg-3 col-6 mb-4 px-lg-4 ">
                 <div className="card card-product h-100">
