@@ -232,13 +232,19 @@ function UserRegisterProductManual(props) {
       formdata.append('email', email);
       formdata.append('phone', phone);
       formdata.append('product_model', product_model);
-      formdata.append( 'warranty_card', userData.file1 === '' ? '' : userData.file1 );
-      formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
+      if(userData.file1 !== ''){
+        formdata.append( 'warranty_card', userData.file1);
+      }
+      if(userData.file2 !== ''){
+        formdata.append('invoice', userData.file2);
+      }
+      if(userData.file3 !== ''){
+        formdata.append('serial', userData.file3);
+      }
       formdata.append('brand', form.brand);
       formdata.append('status', 1);
       formdata.append('agreements', userData.agreements === 'Y' ? 'Y' : 'N');
       formdata.append('category', form.category);
-      formdata.append('serial', userData.file3 === '' ? '' : userData.file3);
       // setIsLoadiing(false)
       
       // console.table(Object.fromEntries(formdata))
@@ -253,8 +259,24 @@ function UserRegisterProductManual(props) {
       //   alertModal()
       // }, 1000);
       if(props.title == 'edit'){
-        setTimeout(() => {
-          console.table(Object.fromEntries(formdata))
+        // setTimeout(() => {
+        //   console.table(Object.fromEntries(formdata))
+        //   setIsLoadiing(false)
+        //   // setMessageModal({
+        //   //   status: 'success',
+        //   //   title: 'Thank you, ',
+        //   //   subTitle: 'produk anda berhasil didaftarkan ulang dan menunggu tahap verifikasi',
+        //   //   back: true
+        //   // })
+        //   // alertModal()
+        // }, 1000);
+        
+        formdata.append('id', props.idProduct);
+        axios.put(props.base_url + 'register-product/plain', formdata, {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        }).then(res => {
           setIsLoadiing(false)
           setMessageModal({
             status: 'success',
@@ -263,7 +285,16 @@ function UserRegisterProductManual(props) {
             back: true
           })
           alertModal()
-        }, 1000);
+        }).catch(err => {
+          console.log(err.response)
+          setIsLoadiing(false)
+          if(err.response){
+            if(err.response.data.errors.location === 'barcode'){
+              setErrorPost('Barcode Sudah Terdaftar')
+            }
+          }
+        })
+
       }else{
         axios.post(props.base_url + 'register-product/plain', formdata, {
             headers: {
@@ -457,13 +488,13 @@ function UserRegisterProductManual(props) {
                   </label>
                   <select name='category' onChange={onChange} value={form.category} className="form-select" aria-label="Default select example" placeholder='choose brand'>
                     <option value='' disabled>Choose One Category</option>
-                    <option value="kulkas">Kulkas (REF)</option>
-                    <option value="freezer">Freezer (CC)</option>
+                    <option value="Refrigerator">Kulkas (REF)</option>
+                    <option value="Freezer">Freezer (CC)</option>
                     <option value="showcase">Showcase (CC)</option>
-                    <option value="mesin_cuci">Mesin Cuci (WM)</option>
-                    <option value="mesin_cuci_pintu_depan">Mesin Cuci Pintu Depan (DWM)</option>
-                    <option value="tv">LED TV (TV)</option>
-                    <option value="ac">Air Conditioner (HAC)</option>
+                    <option value="Washing Machine">Mesin Cuci (WM)</option>
+                    <option value="Drum Washing Machine">Mesin Cuci Pintu Depan (DWM)</option>
+                    <option value="TV">LED TV (TV)</option>
+                    <option value="Home Air Conditioner">Air Conditioner (HAC)</option>
                     <option value="ka">Kitchen Appliances (SDA)</option>
                   </select>                  
                   <div className="text-danger">{errorCategory}</div>

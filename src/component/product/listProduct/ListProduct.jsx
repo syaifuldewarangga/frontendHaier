@@ -54,20 +54,30 @@ class ListProduct extends Component {
     }
     
     async HandleDelete(product_id) {
-        console.log(product_id)
+        let token = localStorage.getItem('access_token');
         this.setState({...this.state, loading2: true})
-        setTimeout(() => {
+        await axios
+          .delete(this.props.base_url + 'register-product/plain/delete', {
+            headers: {
+              Authorization: 'Bearer ' + token,
+            },
+            params: {
+                registered_product_id: product_id
+            }
+          })
+          .then((res) => {
             this.setState({...this.state, loading2: false})
             this.props.history.push("/landing-page");
-        }, 1000);
+          });
     }
 
     render() {
         let badgeColor = { color: '', label: '' };
+        const checkStatus = ['PENDING', 'REJECTED'];
         if(this.props.data.status_checking == "PENDING") badgeColor = { color: 'bg-warning', label: 'verification serial number' }
         if(this.props.data.status_checking == "REJECTED") badgeColor = { color: 'bg-danger', label: 'serial number not valid' }
         if(this.props.data.status_checking == "APPROVED") badgeColor = { color: 'bg-success', label: 'complete' }
-        let status = this.props.data.id == 216 ? false : this.props.data.status_product
+        let status = this.props.data.status_checking == 'REJECTED' ? false : true
         return (
             <div className="list-product col-lg-3 col-6 mb-4 px-lg-4 ">
                 <div className="card card-product h-100">
@@ -108,7 +118,7 @@ class ListProduct extends Component {
                                     <span className="material-icons me-2"> date_range </span>
                                     <span>{moment(this.props.data.date).format("DD-MM-YYYY")}</span> 
                                 </div>
-                                {this.props.data.promo !== null &&
+                                {!checkStatus.includes(this.props.data.status_checking) && this.props.data.promo !== null &&
                                 <div className="d-flex align-items-center">
                                     <span className="material-icons me-2"> download </span>
                                     <span 
@@ -122,7 +132,7 @@ class ListProduct extends Component {
                                 }
                             </div>
                             
-                            {this.props.data.promo !== null &&
+                            {!checkStatus.includes(this.props.data.status_checking) && this.props.data.promo !== null &&
                             <div className="promo-icon-container">
                                 <a href={`${this.props.data.promo.link}`} target="_blank">
                                     <img src={`${this.props.image_url}${this.props.data.promo.thumbnail}`} alt="test" className="img-fluid promo-icon" />
@@ -133,7 +143,7 @@ class ListProduct extends Component {
                             </div>
 
                             }
-                            {this.props.data.avail_promo !== null && <span className="badge badge-lg cursor-pointer btn-primary" onClick={() => this.setState({...this.state, modal1: true})}>Aktifasi</span>}
+                            {!checkStatus.includes(this.props.data.status_checking) && this.props.data.avail_promo !== null && <span className="badge badge-lg cursor-pointer btn-primary" onClick={() => this.setState({...this.state, modal1: true})}>Aktifasi</span>}
                         </div>
                         
                     </div>     
@@ -256,17 +266,21 @@ class ListProduct extends Component {
                         </Modal.Footer>
                     </Modal>
 
+                    {this.props.data.promo !== null && 
                     <Modal show={this.state.modalPromo} onHide={this.closeModalPromo}>
                         <Modal.Header closeButton>
                             <Modal.Title>Promo Card</Modal.Title>
                         </Modal.Header>
                         <Modal.Body className="overflow-hidden">
-                            <PromoCard />
+                        {this.props.data.promo.card.user_promo_code !== null && 
+                            <PromoCard data={this.props.data} image_url={this.props.image_url} />
+                        }
                         </Modal.Body>
                         <Modal.Footer>
                             
                         </Modal.Footer>
                     </Modal>
+                    }
 
                 </div>
             </div>
