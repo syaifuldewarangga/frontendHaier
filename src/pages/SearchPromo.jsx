@@ -13,7 +13,7 @@ import LoginMenu from '../component/loginMenu/LoginMenu';
 import PromoCard from '../component/product/listProduct/PromoCard';
 import { ImageFunction } from '../variable/ImageFunction';
 
-const CardData = ({ data, image_url }) => {
+const CardData = ({ data, image_url, oapi_url }) => {
   const [modal, setModal] = useState(false)
   const handleModalPromo = () => setModal(!modal)
   return (
@@ -40,7 +40,7 @@ const CardData = ({ data, image_url }) => {
             </Modal.Header>
             <Modal.Body className="overflow-hidden">
             {data.promo.user_promo_code !== null && 
-              <PromoCard data={data} image_url={image_url} />
+              <PromoCard data={data} image_url={image_url} oapi_url={oapi_url} />
             }
             </Modal.Body>
         </Modal>
@@ -252,7 +252,7 @@ const SearchPromo = (props) => {
                         {data.map((v, i)=> {
                           return (
                               <div key={i} className="col-6">
-                                <CardData data={v} image_url={props.image_url} />
+                                <CardData data={v} image_url={props.image_url} oapi_url={props.oapi_url} />
                               </div>
                           )
                         })}
