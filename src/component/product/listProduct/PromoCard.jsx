@@ -33,75 +33,84 @@ function ImageConverter({imageUrl}) {
 }
 
 const PromoCard = (props) => {
-    const [display, setDisplay] = useState('none')
     const [data, setData] = useState({})
     const [imageHeader, setImageHeader] = useState('')
     const [imageFooter, setImageFooter] = useState('')
     const [loading, setLoading] = useState(false)
-
     const reff = useRef()
     // const imageTemp = ImageConverter('https://images.tokopedia.net/img/cache/215-square/shops-1/2020/3/19/8061075/8061075_fe845eb0-8faf-47af-ae30-5ff86a035a37.png') 
     const imageHeaderRef = useRef()
     const imageFooterRef = useRef()
-    const toDataUri = async (url) => {
-        // const imageUrl = 'https://res.cloudinary.com/bdonglot/image/upload/v1629976525/xdxe6mktp3lurdpawh5y.jpg';
-        // const imageUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzuY0GyRoqleLRsfRTur4mf6VcREuMGDvwpw&usqp=CAU';
+    // const toDataUri = async (url, type) => {
+    //     // const imageUrl = 'https://res.cloudinary.com/bdonglot/image/upload/v1629976525/xdxe6mktp3lurdpawh5y.jpg';
+    //     const imageUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzuY0GyRoqleLRsfRTur4mf6VcREuMGDvwpw&usqp=CAU';
+    //     // const imageUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQF7lpPszVwxRZwTZP1gEh1bbJsUffnssueqA&usqp=CAU'
+    //     // const imageUrl = 'https://testimages.aquajapanid.com:8180/article/%20Cara%20Menjaga%20Kebersihan%20Udara%20di%20Rumah.jpg'
+    //     // const imageUrl = 'https://testimages.aquajapanid.com:8180/article/%20Cara%20Menjaga%20Kebersihan%20Udara%20di%20Rumah.jpg'
+    //     // const imageUrl = ''
+    //     console.log(imageUrl)
+    //     var img = new Image();
+    //     img.crossOrigin = "anonymous";
+    //     img.src = imageUrl;
+    //     img.style.height = '15vh'
+    //     img.style.objectFit = 'cover'
+    //     img.style.objectPosition = 'center'
+    //     img.onload = function() {
+    //         var canvas = document.createElement('canvas');
+    //         canvas.width = img.width;
+    //         canvas.style.height = '15vh';
+    //         canvas.style.objectFit = 'cover'
+    //         canvas.style.objectPosition = 'center'
 
-        var img = new Image();
-        img.crossOrigin = "anonymous";
-        img.src = url;
-        img.style.height = '18vh'
-        img.onload = function() {
-            var canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.style.height = '20vh';
-            canvas.style.objectFit = 'cover'
-            canvas.style.objectPosition = 'center'
+    //         var ctx = canvas.getContext('2d');
+    //         ctx.drawImage(img, 0, 0);
 
-            var ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
+    //         var dataURL = canvas.toDataURL('image/png');
+    //         console.log(dataURL)
+    //         if(type == 'footer'){
+    //             setImageFooter(dataURL)
+    //         }else{
+    //             setImageHeader(dataURL)
+    //         }
+    //     };
 
-            var dataURL = canvas.toDataURL('image/png');
-            setImageHeader(dataURL)
-        };
+    //     // fetch(imageUrl, {
+    //     //     method: 'GET',
+    //     //     mode: 'cors',
+    //     //     headers: {
+    //     //       'Content-Type': 'application/json'
+    //     //     }
+    //     //   })
+    //     //   .then(response => response.blob())
+    //     //   .then(blob => {
+    //     //     var reader = new FileReader();
+    //     //     reader.onloadend = () => {
+    //     //       setImageHeader(reader.result);
+    //     //       console.log(reader)
+    //     //     }
+    //     //     reader.readAsDataURL(blob);
+    //     //   })
+    //     //   .catch(error => {
+    //     //     console.log(error);
+    //     //   });
 
-        // fetch(imageUrl, {
-        //     method: 'GET',
-        //     mode: 'cors',
-        //     headers: {
-        //       'Content-Type': 'application/json'
-        //     }
-        //   })
-        //   .then(response => response.blob())
-        //   .then(blob => {
-        //     var reader = new FileReader();
-        //     reader.onloadend = () => {
-        //       setImageHeader(reader.result);
-        //       console.log(reader)
-        //     }
-        //     reader.readAsDataURL(blob);
-        //   })
-        //   .catch(error => {
-        //     console.log(error);
-        //   });
-
-        // const xhr = new XMLHttpRequest();
-        // xhr.open('GET', imageUrl, true);
-        // xhr.responseType = 'arraybuffer';
-        // xhr.onload = function(e) {
-        //     var uInt8Array = new Uint8Array(this.response);
-        //     console.log(uInt8Array)
-        //     var i = uInt8Array.length;
-        //     var binaryString = new Array(i);
-        //     while (i--)
-        //         binaryString[i] = String.fromCharCode(uInt8Array[i]);
-        //     var data = binaryString.join('');
-        //     var base64 = window.btoa(data);
-        //     console.log(base64)
-        //     setImageHeader(base64);
-        // };
-        // xhr.send();
-    }
+    //     // const xhr = new XMLHttpRequest();
+    //     // xhr.open('GET', imageUrl, true);
+    //     // xhr.responseType = 'arraybuffer';
+    //     // xhr.onload = function(e) {
+    //     //     var uInt8Array = new Uint8Array(this.response);
+    //     //     console.log(uInt8Array)
+    //     //     var i = uInt8Array.length;
+    //     //     var binaryString = new Array(i);
+    //     //     while (i--)
+    //     //         binaryString[i] = String.fromCharCode(uInt8Array[i]);
+    //     //     var data = binaryString.join('');
+    //     //     var base64 = window.btoa(data);
+    //     //     console.log(base64)
+    //     //     setImageHeader(base64);
+    //     // };
+    //     // xhr.send();
+    // }
     const createPDF = async () => {   
         const pdf = new jsPDF("portrait", "pt", [595 , 842], true);
         const data = await html2canvas(reff.current, {
@@ -170,6 +179,16 @@ const PromoCard = (props) => {
         //   )
         //   .save(`testing.pdf`);
     };
+    const getImage = async (promo_id) => {
+        const res = await axios.get(props.oapi_url + 'extended-warranty-promo/card/images', {
+            params: {
+                promo_id,
+            }
+        })
+        // console.log(res.data)
+        if(res.data.card_header !== null) setImageHeader('data:image/png;base64,' + res.data.card_header)
+        if(res.data.card_footer !== null) setImageFooter('data:image/png;base64,' + res.data.card_footer)
+    }
     useEffect(() => {
         let m = true 
         if(m) {
@@ -178,18 +197,26 @@ const PromoCard = (props) => {
         }
         return () => m = false
     }, [])
+    // useEffect(() => {
+    //     let m = true 
+    //     if(m && loading) {
+    //         setLoading(false)
+    //         if(props.data.promo !== null){
+    //             if(props.data.promo.card.card_header !== null){
+    //                 toDataUri(props.image_url + props.data.promo.card.card_header, 'header')
+    //             }
+    //             if(props.data.promo.card.card_footer !== null){
+    //                 toDataUri(props.image_url + props.data.promo.card.card_footer, 'footer')
+    //             }
+    //         }
+    //     }
+    //     return () => m = false
+    // }, [loading])
     useEffect(() => {
-        let m = true 
-        if(m && loading) {
-            setLoading(false)
-            if(props.data.promo !== null){
-                if(props.data.promo.card.card_header !== null){
-                    toDataUri(props.image_url + props.data.promo.card.card_header)
-                }
-            }
+        if(props.data.promo !== null){
+            getImage(props.data.promo.promo_id)
         }
-        return () => m = false
-    }, [loading])
+    }, [props.data.promo])
     
     return (
         <div>
@@ -286,10 +313,10 @@ const PromoCard = (props) => {
                     {/* modal normal */}
                     <div className='w-100' style={{ backgroundColor: 'white', color: 'black' }}>
                         {props.data.promo !== null && props.data.promo.card.card_header !== null ?
-                            <div style={{ height: '10vh', display: 'flex', alignItems: 'center',  border: '1px solid black', }}>
+                            <div style={{ height: '10vh', display: 'flex', alignItems: 'center'}}>
                                 {/* <div className='w-100' style={{ height: '8vh', backgroundImage: "url(" + 'https://images.tokopedia.net/img/cache/215-square/shops-1/2020/3/19/8061075/8061075_fe845eb0-8faf-47af-ae30-5ff86a035a37.png'+ ")", objectFit: 'cover', objectPosition: 'center', borderRadius: '6px' }} alt="alt" /> */}
                                 {/* <div className='w-100' style={{ height: '8vh', backgroundImage: "url(" + props.image_url + props.data.promo.card.card_header + ")", objectFit: 'cover', objectPosition: 'center', borderRadius: '6px' }} alt="alt" /> */}
-                                <img ref={imageHeaderRef} className='w-100' style={{ height: '10vh', objectFit: 'cover', objectPosition: 'center' }} src={imageHeader} alt="alt" />
+                                <img ref={imageHeaderRef} className='w-100' style={{ height: '10vh', objectFit: 'cover', objectPosition: 'center' }} src={imageHeader} alt="header" />
                                 {/* <img className='w-100' style={{ height: '8vh', objectFit: 'cover', objectPosition: 'center', borderRadius: '6px' }} src={'https://images.tokopedia.net/img/cache/215-square/shops-1/2020/3/19/8061075/8061075_fe845eb0-8faf-47af-ae30-5ff86a035a37.png'} alt="alt" /> */}
                             </div>
                         :
@@ -313,7 +340,7 @@ const PromoCard = (props) => {
                                         }
                                         <div className="">
                                             {props.data.promo !== null && 
-                                                <Barcode width={1.2} height={60} value={props.data.promo.card.user_promo_code} />
+                                                <Barcode format='CODE128' width={1.6} height={60} value={props.data.promo.card.user_promo_code} />
                                             }
                                         </div>
                                     </div>
@@ -357,11 +384,11 @@ const PromoCard = (props) => {
                             </div>
                         </div>
                         {props.data.promo !== null && props.data.promo.card.card_footer !== null ?
-                        <div style={{ height: '15vh', display: 'flex', alignItems: 'center',  border: '1px solid black', }}>
+                        <div style={{ height: '15vh', display: 'flex', alignItems: 'center' }}>
                             {/* <div className='w-100' style={{ height: '8vh', backgroundImage: "url(" + 'https://images.tokopedia.net/img/cache/215-square/shops-1/2020/3/19/8061075/8061075_fe845eb0-8faf-47af-ae30-5ff86a035a37.png'+ ")", objectFit: 'cover', objectPosition: 'center', borderRadius: '6px' }} alt="alt" /> */}
                             {/* <div className='w-100' style={{ height: '8vh', backgroundImage: "url(" + props.image_url + props.data.promo.card.card_footer + ")", objectFit: 'cover', objectPosition: 'center', borderRadius: '6px' }} alt="alt" /> */}
                             {/* <img className='w-100' style={{ height: '15vh', objectFit: 'cover', objectPosition: 'center', borderRadius: '6px' }} src={props.image_url + props.data.promo.card.card_footer} alt="alt" /> */}
-                            <img ref={imageFooterRef} className='w-100' style={{ height: '15vh', objectFit: 'cover', objectPosition: 'center', borderRadius: '6px' }} src={imageHeader} alt="alt" />
+                            <img ref={imageFooterRef} className='w-100' style={{ height: '15vh', objectFit: 'cover', objectPosition: 'center' }} src={imageFooter} alt="footer" />
                         </div>
                         :
                         <footer style={{ backgroundColor: '#013661', color: 'white' }}>

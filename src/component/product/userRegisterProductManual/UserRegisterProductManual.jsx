@@ -174,13 +174,17 @@ function UserRegisterProductManual(props) {
   const [selected, setSelected] = useState([])
   const [options, setOptions] = useState([])
   const getOptions = async () => {
-    const res = await axios.get(`${props.base_url}extended-warranty-promo/wms?product_model=`, {
+    // const url = `${props.base_url}extended-warranty-promo/wms?product_model=`
+    const url = `${props.base_url}product-model-all`
+    const res = await axios.get(url, {
       headers: {
           Authorization: 'Bearer ' + localStorage.getItem('access_token'),
-          'Content-Type': 'application/json',
       },
     })
-    setOptions([...res.data])
+    const { data } = res;
+    // console.log(data.product_model_list)
+    // if(data.product_model_list !== null) setOptions([...data.product_model_list])
+    setOptions(data.product_model_list)
   }
   // useEffect(() => {
   //   let m = true
@@ -286,7 +290,7 @@ function UserRegisterProductManual(props) {
           })
           alertModal()
         }).catch(err => {
-          console.log(err.response)
+          // console.log(err.response)
           setIsLoadiing(false)
           if(err.response){
             if(err.response.data.errors.location === 'barcode'){
@@ -418,7 +422,7 @@ function UserRegisterProductManual(props) {
                   </label>
                   <select name='brand' disabled onChange={onChange} value={form.brand} className="form-select" aria-label="Default select example" placeholder='choose brand'>
                     <option value='' disabled>Choose One Brand</option>
-                    <option selected value="AQUA">AQUA</option>
+                    <option value="AQUA">AQUA</option>
                   </select>
                   <div className="text-danger">{errorBrand}</div>
                 </div>
@@ -440,7 +444,7 @@ function UserRegisterProductManual(props) {
                   <div className="text-danger">{errorProductModel}</div>
                 </div>
               </div> */}
-
+              {/* {console.log(options)} */}
               <div className="col-lg-6">
                 <div className="mb-lg-5 mb-4">
                   <label htmlFor="product-model" className="form-label">
@@ -457,7 +461,7 @@ function UserRegisterProductManual(props) {
                     id="basic-typeahead-single"
                     labelKey="name"
                     onChange={setSelected}
-                    options={options}
+                    options={options.filter(v => v)}
                     placeholder="Choose a product model..."
                     selected={selected}
                   />

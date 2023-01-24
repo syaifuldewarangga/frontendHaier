@@ -273,7 +273,7 @@ class ListProduct extends Component {
                         </Modal.Header>
                         <Modal.Body className="overflow-hidden">
                         {this.props.data.promo.card.user_promo_code !== null && 
-                            <PromoCard data={this.props.data} image_url={this.props.image_url} />
+                            <PromoCard data={this.props.data} image_url={this.props.image_url} oapi_url={this.props.oapi_url} />
                         }
                         </Modal.Body>
                         <Modal.Footer>
@@ -290,7 +290,8 @@ class ListProduct extends Component {
 const mapStatetoProps = (state) => {
     return {
       base_url: state.BASE_URL,
-      image_url: state.URL
+      image_url: state.URL,
+      oapi_url: state.OAPI_URL,
     };
 };
 
