@@ -149,6 +149,7 @@ const SearchPromo = (props) => {
         decoder: {
           readers: [
             'ean_reader',
+            'code_128_reader',
           ],
         },
       },
