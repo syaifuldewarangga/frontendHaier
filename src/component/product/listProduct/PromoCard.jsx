@@ -121,7 +121,6 @@ const PromoCard = (props) => {
             allowTaint: false,
             logging: true,
         });
-        document.body.appendChild(data)
         const img = data.toDataURL("image/jpeg", 1);  
         // html - to - img
         // const img = await toJpeg(reff.current, { quality: 1 })
@@ -313,10 +312,10 @@ const PromoCard = (props) => {
                     {/* modal normal */}
                     <div className='w-100' style={{ backgroundColor: 'white', color: 'black' }}>
                         {props.data.promo !== null && props.data.promo.card.card_header !== null ?
-                            <div style={{ height: '10vh', display: 'flex', alignItems: 'center'}}>
+                            <div style={{ height: '10vh', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                                 {/* <div className='w-100' style={{ height: '8vh', backgroundImage: "url(" + 'https://images.tokopedia.net/img/cache/215-square/shops-1/2020/3/19/8061075/8061075_fe845eb0-8faf-47af-ae30-5ff86a035a37.png'+ ")", objectFit: 'cover', objectPosition: 'center', borderRadius: '6px' }} alt="alt" /> */}
-                                {/* <div className='w-100' style={{ height: '8vh', backgroundImage: "url(" + props.image_url + props.data.promo.card.card_header + ")", objectFit: 'cover', objectPosition: 'center', borderRadius: '6px' }} alt="alt" /> */}
-                                <img ref={imageHeaderRef} className='w-100' style={{ height: '10vh', objectFit: 'cover', objectPosition: 'center' }} src={imageHeader} alt="header" />
+                                <div className='w-100' style={{ height: '10vh', width: '100%', backgroundImage: "url(" + imageHeader + ")", backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }} alt="alt" />
+                                {/* <img ref={imageHeaderRef} className='w-100' style={{ height: '10vh' }} src={imageHeader} alt="header" /> */}
                                 {/* <img className='w-100' style={{ height: '8vh', objectFit: 'cover', objectPosition: 'center', borderRadius: '6px' }} src={'https://images.tokopedia.net/img/cache/215-square/shops-1/2020/3/19/8061075/8061075_fe845eb0-8faf-47af-ae30-5ff86a035a37.png'} alt="alt" /> */}
                             </div>
                         :
@@ -362,19 +361,19 @@ const PromoCard = (props) => {
                                     <ul style={{ lineHeight: '1px' }}>
                                         <li>
                                             <div className="d-flex">
-                                                <p style={{ fontWeight: 'bold', fontSize: '0.6rem', width: '20%' }}>Product</p> 
+                                                <p style={{ fontWeight: 'bold', fontSize: '0.6rem', width: '30%' }}>Product</p> 
                                                 <p style={{ fontWeight: 'bold', fontSize: '0.6rem' }}>{props.data.product_name}</p> 
                                             </div>
                                         </li>
                                         <li>
                                             <div className="d-flex">
-                                                <p style={{ fontWeight: 'bold', fontSize: '0.6rem', width: '20%' }}>Model</p> 
+                                                <p style={{ fontWeight: 'bold', fontSize: '0.6rem', width: '30%' }}>Model</p> 
                                                 <p style={{ fontWeight: 'bold', fontSize: '0.6rem' }}>{props.data.product_model}</p> 
                                             </div>
                                         </li>
                                         <li>
                                             <div className="d-flex">
-                                                <p style={{ fontWeight: 'bold', fontSize: '0.6rem', width: '20%' }}>Serial Number</p> 
+                                                <p style={{ fontWeight: 'bold', fontSize: '0.6rem', width: '30%' }}>Serial Number</p> 
                                                 <p style={{ fontWeight: 'bold', fontSize: '0.6rem' }}>{props.data.serial_number}</p> 
                                             </div>
                                         </li>
@@ -384,11 +383,11 @@ const PromoCard = (props) => {
                             </div>
                         </div>
                         {props.data.promo !== null && props.data.promo.card.card_footer !== null ?
-                        <div style={{ height: '15vh', display: 'flex', alignItems: 'center' }}>
+                        <div style={{ height: '15vh', width: '100%', display: 'flex', alignItems: 'center' }}>
                             {/* <div className='w-100' style={{ height: '8vh', backgroundImage: "url(" + 'https://images.tokopedia.net/img/cache/215-square/shops-1/2020/3/19/8061075/8061075_fe845eb0-8faf-47af-ae30-5ff86a035a37.png'+ ")", objectFit: 'cover', objectPosition: 'center', borderRadius: '6px' }} alt="alt" /> */}
-                            {/* <div className='w-100' style={{ height: '8vh', backgroundImage: "url(" + props.image_url + props.data.promo.card.card_footer + ")", objectFit: 'cover', objectPosition: 'center', borderRadius: '6px' }} alt="alt" /> */}
+                            <div className='w-100' style={{ height: '15vh', width: '100%', backgroundImage: "url(" + imageFooter + ")", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} alt="alt" />
                             {/* <img className='w-100' style={{ height: '15vh', objectFit: 'cover', objectPosition: 'center', borderRadius: '6px' }} src={props.image_url + props.data.promo.card.card_footer} alt="alt" /> */}
-                            <img ref={imageFooterRef} className='w-100' style={{ height: '15vh', objectFit: 'cover', objectPosition: 'center' }} src={imageFooter} alt="footer" />
+                            {/* <img ref={imageFooterRef} className='w-100' style={{ height: '15vh', objectFit: 'cover', objectPosition: 'center' }} src={imageFooter} alt="footer" /> */}
                         </div>
                         :
                         <footer style={{ backgroundColor: '#013661', color: 'white' }}>
