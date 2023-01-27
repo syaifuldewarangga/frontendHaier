@@ -346,12 +346,12 @@ const PromoCard = (props) => {
                                 </div>
                                 <div className="col-12 mt-2" style={{ minHeight: '10vh' }}>
                                     {props.data.promo !== null && props.data.promo.card.content_primary !== null ?
-                                    <p style={{ fontWeight: 'bold', fontSize: '0.7rem' }}>{props.data.promo.card.content_primary}</p>
+                                    <p style={{ fontWeight: 'bold', fontSize: '0.7rem', whiteSpace: 'pre-wrap' }}>{props.data.promo.card.content_primary}</p>
                                     :
                                     <p style={{ fontWeight: 'bold', fontSize: '0.7rem' }}>Garansi Tambahan Meliputi (Extended Warranty Including)</p>
                                     }
                                     {props.data.promo !== null && props.data.promo.card.content_secondary !== null ?
-                                    <p style={{ fontSize: '0.6rem' }}>{props.data.promo.card.content_secondary}</p>
+                                    <p style={{ fontSize: '0.6rem', whiteSpace: 'pre-wrap' }}>{props.data.promo.card.content_secondary}</p>
                                     :
                                     <p style={{ fontSize: '0.6rem' }}> Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore saepe aspernatur asperiores deleniti cupiditate ipsam esse consectetur, ducimus blanditiis, aperiam dolores placeat voluptatibus vel exercitationem consequuntur laboriosam possimus recusandae eligendi accd hic quae et dignissimos architecto? </p>
                                     }
