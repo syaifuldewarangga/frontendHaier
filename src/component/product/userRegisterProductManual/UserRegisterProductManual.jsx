@@ -492,14 +492,25 @@ function UserRegisterProductManual(props) {
                   </label>
                   <select name='category' onChange={onChange} value={form.category} className="form-select" aria-label="Default select example" placeholder='choose brand'>
                     <option value='' disabled>Choose One Category</option>
-                    <option value="Refrigerator">Kulkas (REF)</option>
-                    <option value="Freezer">Freezer (CC)</option>
-                    <option value="showcase">Showcase (CC)</option>
-                    <option value="Washing Machine">Mesin Cuci (WM)</option>
-                    <option value="Drum Washing Machine">Mesin Cuci Pintu Depan (DWM)</option>
-                    <option value="TV">LED TV (TV)</option>
-                    <option value="Home Air Conditioner">Air Conditioner (HAC)</option>
-                    <option value="ka">Kitchen Appliances (SDA)</option>
+                    <option value="Refrigerator">Kulkas</option>
+                    <option value="Freezer">Freezer</option>
+                    <option value="Showcase">Showcase</option>
+                    <option value="Mesin Cuci Twin Tube">Mesin Cuci Twin Tube</option>
+                    <option value="Mesin Cuci Top Load">Mesin Cuci Top Load</option>
+                    <option value="Drum Washing Machine">Mesin Cuci Front Load</option>
+                    <option value="TV">LED TV</option>
+                    <option value="Home Air Conditioner">Air Conditioner</option>
+                    <option value="Blender and Juicer">Blender and Juicer</option>
+                    <option value="Electric Kettle">Electric Kettle</option>
+                    <option value="Microwave">Microwave</option>
+                    <option value="Rice Cooker">Rice Cooker</option>
+                    <option value="Vacuum Cleaner">Vacuum Cleaner</option>
+                    <option value="Travel Cooker">Travel Cooker</option>
+                    <option value="Electric Fan">Electric Fan</option>
+                    <option value="Commercial Air Conditioner">Commercial Air Conditioner</option>
+                    <option value="Water Heater">Water Heater</option>
+                    <option value="Cooker Hood">Cooker Hood</option>
+                    <option value="Kompor">Kompor</option>
                   </select>                  
                   <div className="text-danger">{errorCategory}</div>
                 </div>

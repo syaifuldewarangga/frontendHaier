@@ -64,7 +64,7 @@ function UserRegisterProduct(props) {
   const onHideModal = (dataPromo = null) => {
     var alertModal = document.getElementById('alertModal');
     alertModal.addEventListener('hide.bs.modal', function (event) {
-      console.log(dataPromo)
+      // console.log(dataPromo)
       if(dataPromo !== null){
         setIsPromo(true)
       }else{
@@ -91,7 +91,7 @@ function UserRegisterProduct(props) {
       fetchDataProduct(token)
       fetchDataStore(token)
     }).catch((err) => {
-      console.log(err.response)
+      // console.log(err.response)
     })
   }
 
@@ -125,11 +125,11 @@ function UserRegisterProduct(props) {
     })
     .catch((e) => {
       if (e.response) {
-        console.log(e.response);
+        // console.log(e.response);
       } else if (e.request) {
-        console.log('request : ' + e.request);
+        // console.log('request : ' + e.request);
       } else {
-        console.log('message : ' + e.message);
+        // console.log('message : ' + e.message);
       }
     });
   }
@@ -175,11 +175,11 @@ function UserRegisterProduct(props) {
       })
       .catch((e) => {
         if (e.response) {
-          console.log(e.response);
+          // console.log(e.response);
         } else if (e.request) {
-          console.log('request : ' + e.request);
+          // console.log('request : ' + e.request);
         } else {
-          console.log('message : ' + e.message);
+          // console.log('message : ' + e.message);
         }
       });
   }
@@ -196,7 +196,7 @@ function UserRegisterProduct(props) {
       setDataUser(res.data);
     })
     .catch((e) => {
-      console.log(e.response)
+      // console.log(e.response)
     });
   }
   
@@ -271,9 +271,9 @@ function UserRegisterProduct(props) {
             id: productID
           }
         }).then(() => {
-          console.log('success delete')
+          // console.log('success delete')
         }).catch((error) => {
-          console.log(error.response)
+          // console.log(error.response)
         })
       }
       // console.log(dataUser)
@@ -327,7 +327,7 @@ function UserRegisterProduct(props) {
           } 
         }).catch((err) => {
           deleteProduct(dbData.id)
-          console.log(err.response)
+          // console.log(err.response)
         }).finally(() => {
           setIsLoadiing(false)
         });
@@ -343,7 +343,7 @@ function UserRegisterProduct(props) {
       })
       .catch((e) => {
         let error = e.response
-        console.log(error)
+        // console.log(error)
         if(error.data.errors) {
           if(error.data.errors.location === 'barcode' || error.data.errors.location === 'product_id') {
             setMessageModal({
@@ -359,7 +359,7 @@ function UserRegisterProduct(props) {
           setErrorFile1('')
           setErrorFile2('')
         } else {
-          console.log(error)
+          // console.log(error)
         }
       })
     } else {
