@@ -272,7 +272,7 @@ class ListProduct extends Component {
                             <Modal.Title>Promo Card</Modal.Title>
                         </Modal.Header>
                         <Modal.Body className="overflow-hidden">
-                        {this.props.data.promo.card.user_promo_code !== null && 
+                        {this.props.data.promo.card !== null &&this.props.data.promo.card.user_promo_code !== null && 
                             <PromoCard data={this.props.data} image_url={this.props.image_url} oapi_url={this.props.oapi_url} />
                         }
                         </Modal.Body>
