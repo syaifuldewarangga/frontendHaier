@@ -155,7 +155,7 @@ const FormProduct = (props) => {
           deleteServiceRequest(SRNum)
         } else {
           alertModal();
-          onHideModal();
+          onHideModal('/service-status');
         }
       })
       .catch((err) => {
