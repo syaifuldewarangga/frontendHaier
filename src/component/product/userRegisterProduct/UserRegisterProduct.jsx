@@ -141,6 +141,7 @@ function UserRegisterProduct(props) {
       }
     }).then((res) => {
       let data = res.data
+      // console.log(res.data)
       let count = Object.keys(data).length
       if(count > 0) {
         let modelData = ModelCheck(data.PRODUCT_DESC_ZH.substring(0,4))
@@ -292,7 +293,7 @@ function UserRegisterProduct(props) {
         formGSIS.append('Street', dataUser.sub_district)
         formGSIS.append('brand', data.Brand)
         formGSIS.append('category', data.ProductCategoryName);
-        formGSIS.append('productModel', data.ProductName);
+        formGSIS.append('productModel', data.ProductName.trim());
         formGSIS.append('serialNum', data.Barcode);
         formGSIS.append('purchaseDate', newPurcaseDate);
         let invoiceURL = props.image_url + dbData.invoice
@@ -300,12 +301,14 @@ function UserRegisterProduct(props) {
         let attachmentURL = props.image_url + dbData.warranty_card
         formGSIS.append('Warrantyattachment', attachmentURL);
         formGSIS.append('whatsappflag', userData.agreements === 'Y' ? 'Y' : 'N');
+        // console.table(Object.fromEntries(formGSIS))
         await axios.post(props.gsis_url + 'hatprodreg', formGSIS, {
           headers: {
             Accept: 'application/xml',
           }
         }).then((res) => {
           let response = xtojson.xml2js(res.data)
+          // console.log(response)
           let errorCode = response.Envelope.Body.HESAProdRegResponse.Error_spcCode
           if(errorCode === '0') {
             setMessageModal({
