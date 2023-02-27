@@ -48,7 +48,7 @@ const FormProduct = (props) => {
     title: 'Success',
     subTitle: 'successfully requested service',
   });
-  const [minDateVisitDate, setMinVisitDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const [minDateVisitDate, setMinVisitDate] = useState(format(new Date().setDate(new Date().getDate() + 1), 'yyyy-MM-dd'))
   const [isLoading, setIsLoading] = useState(false)
 
   let token = localStorage.getItem('access_token');
