@@ -52,7 +52,7 @@ function Navbar(props) {
               className="navbar-brand d-block d-xl-none"
               target="_blank"
             >
-              <img src="/assets/images/logo.png" alt="" height="24" />
+              <img src="/assets/images/logo.png" alt="" height="35" />
             </a>
             <div
               className="offcanvas offcanvas-start"
@@ -67,7 +67,7 @@ function Navbar(props) {
                     <img
                       src="/assets/images/logo.png"
                       className="img-responsive logo-menu"
-                      style={{ width: '55px' }}
+                      style={{ width: '65px' }}
                       alt="aqua japan logo"
                     />
                   </div>

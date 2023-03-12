@@ -8,7 +8,7 @@ class LoginMenu extends Component {
             <div className="d-flex justify-content-between align-items-center">
                 <div className="right-menu">
                 <a href="https://aquajapanid.com" target="_blank">
-                        <img src="/assets/images/logo.png" className="img-responsive col-9 col-lg-12" alt="logo-aqua-japan" />
+                        <img src="/assets/images/logo.png" style={{ height: 100 }} className="img-responsive col-9 col-lg-12" alt="logo-aqua-japan" />
                     </a>
                 </div>
             </div>
