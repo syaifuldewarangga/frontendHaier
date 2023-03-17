@@ -69,7 +69,7 @@ const FormRegister = (props) => {
         setProvince(res.data);
       })
       .catch((err) => {
-        console.log(err.response);
+        // console.log(err.response);
       });
   };
 
@@ -97,7 +97,7 @@ const FormRegister = (props) => {
         setDistrict(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   };
 
@@ -182,7 +182,7 @@ const FormRegister = (props) => {
       formData.append('last_name', data.last_name);
       formData.append('email', data.email);
       formData.append('username', data.username);
-      formData.append('nik', data.nik);
+      if(data.nik !== '') formData.append('nik', data.nik);
       formData.append('gender', data.gender);
       formData.append('birth_date', data.birth_date);
       formData.append('age', data.age);
@@ -194,6 +194,7 @@ const FormRegister = (props) => {
       formData.append('address', data.address);
       formData.append('password', data.password);
       formData.append('role', 'CUSTOMER');
+      // console.table(Object.fromEntries(formData))
   
       await axios.post(props.base_url + 'register', formData)
         .then((res) => {
@@ -202,7 +203,7 @@ const FormRegister = (props) => {
         })
         .catch((err) => {
           let error = err.response;
-          console.log(error)
+          // console.log(error)
           if (error !== undefined) {
             let responError = error.data.errors;
             if (responError !== undefined) {
@@ -296,10 +297,10 @@ const FormRegister = (props) => {
                 });
               }
             } else {
-              console.log(err.response);
+              // console.log(err.response);
             }
           } else {
-            console.log(error)
+            // console.log(error)
           }
         }).finally(() => {
           setIsLoading(false)
@@ -325,7 +326,7 @@ const FormRegister = (props) => {
                       <div className="row">
                         <div className="col-lg-6 mb-3">
                           <div className="form-label color-primary">
-                            First Name
+                            First Name*
                           </div>
                           <input
                             type="text"
@@ -344,7 +345,7 @@ const FormRegister = (props) => {
 
                         <div className="col-lg-6 mb-3">
                           <div className="form-label color-primary">
-                            Last Name
+                            Last Name*
                           </div>
                           <input
                             type="text"
@@ -363,7 +364,7 @@ const FormRegister = (props) => {
 
                         <div className="col-lg-12 mb-3">
                           <div className="form-label color-primary">
-                            Email
+                            Email*
                           </div>
                           <input
                             type="email"
@@ -382,7 +383,7 @@ const FormRegister = (props) => {
 
                         <div className="col-lg-6 mb-3">
                           <div className="form-label color-primary">
-                            Username
+                            Username*
                           </div>
                           <input
                             type="text"
@@ -402,15 +403,12 @@ const FormRegister = (props) => {
                         <div className="col-lg-6 mb-3">
                           <div className="form-label color-primary">NIK</div>
                           <input
-                            type="number"
                             name="nik"
-                            min="0"
                             className={`form-control ${
                               errorData.nik !== '' && errorData.nik !== undefined ? 'is-invalid' : null
                             }`}
                             placeholder="nik"
                             onChange={onChangeInput}
-                            required
                           />
                           <div className="invalid-feedback">
                             {errorData.nik}
@@ -418,7 +416,7 @@ const FormRegister = (props) => {
                         </div>
 
                         <div className="col-lg-6 mb-3">
-                          <div className="form-label color-primary">Gender</div>
+                          <div className="form-label color-primary">Gender*</div>
                           <select
                             className={`form-select ${
                               errorData.gender !== '' && errorData.gender !== undefined ? 'is-invalid' : null
@@ -437,7 +435,7 @@ const FormRegister = (props) => {
 
                         <div className="col-lg-6 mb-3">
                           <div className="form-label color-primary">
-                            Date of Birth
+                            Date of Birth*
                           </div>
                           <input
                             type="date"
@@ -455,7 +453,7 @@ const FormRegister = (props) => {
                         </div>
 
                         <div className="col-lg-6 mb-3">
-                          <div className="form-label color-primary">Age</div>
+                          <div className="form-label color-primary">Age*</div>
                           <input
                             type="number"
                             name="age"
@@ -473,7 +471,7 @@ const FormRegister = (props) => {
                         </div>
 
                         <div className="col-lg-6 mb-3">
-                          <div className="form-label color-primary">Phone</div>
+                          <div className="form-label color-primary">Phone*</div>
                           <div className="input-group">
                             <input
                               type="number"
@@ -494,7 +492,7 @@ const FormRegister = (props) => {
                         </div>
 
                         <div className="col-lg-6 mb-3">
-                          <div className="form-label"> Province </div>
+                          <div className="form-label"> Province*</div>
                           <select
                             className={`form-select ${
                               errorData.province !== '' && errorData.province !== undefined ? 'is-invalid' : null
@@ -518,7 +516,7 @@ const FormRegister = (props) => {
                         </div>
 
                         <div className="col-lg-6 mb-3">
-                          <div className="form-label"> City</div>
+                          <div className="form-label"> City*</div>
                           <select
                             className={`form-select ${
                               errorData.city !== '' && errorData.city !== undefined ? 'is-invalid' : null
@@ -546,7 +544,7 @@ const FormRegister = (props) => {
                         </div>
 
                         <div className="col-lg-6 mb-3">
-                          <div className="form-label">District</div>
+                          <div className="form-label">District*</div>
                           <select
                             className={`form-select ${
                               errorData.district !== '' && errorData.district !== undefined ? 'is-invalid' : null
@@ -574,7 +572,7 @@ const FormRegister = (props) => {
                         </div>
 
                         <div className="col-lg-6 mb-3">
-                          <div className="form-label">Sub district</div>
+                          <div className="form-label">Sub district*</div>
                           <select
                             className={`form-select ${
                               errorData.sub_district !== '' && errorData.sub_district !== undefined
@@ -603,7 +601,7 @@ const FormRegister = (props) => {
                         </div>
 
                         <div className="col-lg-12 mb-3">
-                          <div className="form-label">Address</div>
+                          <div className="form-label">Address*</div>
                           <textarea
                             className={`form-control ${
                               errorData.address !== '' && errorData.address !== undefined? 'is-invalid' : null
@@ -620,7 +618,7 @@ const FormRegister = (props) => {
 
                         <div className="col-lg-6 mb-3">
                           <div className="form-label color-primary">
-                            Password
+                            Password*
                           </div>
                           <input
                             type="password"
@@ -639,7 +637,7 @@ const FormRegister = (props) => {
 
                         <div className="col-lg-6 mb-3">
                           <div className="form-label color-primary">
-                            Password Confirmation
+                            Password Confirmation*
                           </div>
                           <input
                             type="password"
