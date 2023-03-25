@@ -114,9 +114,9 @@ const FormProduct = (props) => {
         SRNum: SRNum
       }
     }).then(() => {
-      console.log('success delete')
+      // console.log('success delete')
     }).catch((err) => {
-      console.log(err.response)
+      // console.log(err.response)
     })
   }
 
@@ -159,7 +159,7 @@ const FormProduct = (props) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       }).finally(() => {
         setIsLoading(false)
       });
@@ -196,9 +196,9 @@ const FormProduct = (props) => {
         Authorization: 'Bearer ' + token,
       },
     }).then((res) => {
-      InsertHSISRAPI(res.data);
+      // InsertHSISRAPI(res.data);
     }).catch((err) => {
-      console.log(err.response)
+      // console.log(err.response)
       if (err.response.data.errors !== undefined) {
         let responError = err.response.data.errors;
 
@@ -240,16 +240,111 @@ const FormProduct = (props) => {
           });
         }
       } else {
-        console.log(err.response);
+        // console.log(err.response);
       }
       setIsLoading(false)
     })
   };
 
+  const InsertServiceGcc = async () => {
+    const formData = new FormData()
+    const newPurchaseDate = format(new Date(data.purchase_date), 'yyyy-MM-dd');
+    const newVisitDate = format(new Date(data.visit_date), 'yyyy-MM-dd');
+
+    formData.append('SerialNumber', data.serial_number)
+    formData.append('ProductCategory', data.category)
+    formData.append('ProductModel', data.product_model)
+    formData.append('PurchaseDate', newPurchaseDate)
+    formData.append('PreferredVisitDate', newVisitDate)
+    formData.append('PreferredVisitTime', data.visit_hours)
+    formData.append('IssueDescription', data.description)
+    formData.append('FirstName', dataUser.first_name)
+    formData.append('LastName', dataUser.last_name)
+    formData.append('MobilePhone', dataUser.phone)
+    formData.append('OtherPhone', '')
+    formData.append('Email', dataUser.email)
+    formData.append('LocationPinCode', '')
+    formData.append('LocationStateCode', dataUser.province)
+    formData.append('LocationStateName', dataUser.province)
+    formData.append('LocationCityName', dataUser.city)
+    formData.append('LocationLocalityCode', dataUser.district)
+    formData.append('LocationLocalityName', dataUser.district)
+    formData.append('DetailedAddress', dataUser.address)
+    formData.append('Remark', '')
+    formData.append('Brand', data.brand)
+    formData.append('Barcode', data.barcode)
+    formData.append('ProductId', data.product_id)
+    formData.append('ProductName', data.product_name)
+    formData.append('StoreName', data.store_name)
+    formData.append('StoreLocation', data.store_location)
+
+    // console.table(Object.fromEntries(formData))
+    await axios.post(props.base_url + 'v2/register-service', formData, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    }).then((res) => {
+      // InsertHSISRAPI(res.data);
+      // console.log(res.data)
+      alertModal();
+      onHideModal('/service-status');
+    }).catch((err) => {
+      // console.log(err.response)
+      if (err.response.data.errors !== undefined) {
+        let responError = err.response.data.errors;
+
+        if (responError.location === 'barcode') {
+          setDataAlert({
+            status: 'error',
+            title: 'Sory',
+            subTitle: 'Your product has been registered. please check the service status list',
+          })
+          alertModal();
+          onHideModal('/service-status')
+        }
+        
+        if (responError.location === 'store_name') {
+          setErrorData({
+            ...errorData,
+            store_name: responError.reason,
+          });
+        }
+
+        if (responError.location === 'visit_date') {
+          setErrorData({
+            ...errorData,
+            visit_date: responError.reason,
+          });
+        }
+
+        if (responError.location === 'visit_hours') {
+          setErrorData({
+            ...errorData,
+            visit_hours: responError.reason,
+          });
+        }
+
+        if (responError.location === 'description') {
+          setErrorData({
+            ...errorData,
+            description: responError.reason,
+          });
+        }
+      } else {
+        // console.log(err.response);
+      }
+      setIsLoading(false)
+    }).finally(() => {
+      setIsLoading(false)
+
+    })
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true)
-    InsertServiceRegister();
+    // InsertServiceRegister();
+    InsertServiceGcc()
   };
 
   const alertModal = () => {

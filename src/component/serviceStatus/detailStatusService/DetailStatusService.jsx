@@ -4,11 +4,14 @@ import { format } from 'date-fns';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
+import moment from 'moment';
 var X2JS = require('x2js');
 
 const DetailStatusService = (props) => {
   const { srNumber, phoneNumber } = useParams();
   const xtojson = new X2JS();
+  var token = localStorage.getItem('access_token');
+
   const [data, setData] = React.useState('');
   React.useEffect(() => {
     const getData = async () => {
@@ -27,19 +30,51 @@ const DetailStatusService = (props) => {
           var json = xtojson.xml2js(res.data);
           let cek_error = json.Envelope.Body.CheckHSISRStatus_Output;
           if (cek_error.ErrorCode.__text !== '0') {
-            console.log(cek_error.ErrorMessage.__text);
+            // console.log(cek_error.ErrorMessage.__text);
           } 
           else {
             setData(json.Envelope.Body.CheckHSISRStatus_Output.ListOfServiceRequest.ServiceRequest);
           }
         })
         .catch((err) => {
-          console.log(err);
+          // console.log(err);
         });
     };
-    getData();
+    const getStatusFromGCC = async () => {
+      const formData = new FormData()
+      formData.append('WorkOrderNumber', srNumber)
+      formData.append('ApplyId', srNumber)
+      formData.append('PhoneNumber', phoneNumber)
+      try {
+        const res = await axios.post(props.base_url + 'v2/register-service/status', formData, {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        })
+        if(!!res.data.data.Data){
+          if(res.data.data.Data.WorkOrderNumber !== ""){
+            const formData2 = new FormData()
+            formData2.append('WorkOrderNumber', srNumber)
+            formData2.append('ApplyId', srNumber)
+            formData2.append('PhoneNumber', phoneNumber)
+            const res = await axios.post(props.base_url + 'v2/register-service/status', formData2, {
+              headers: {
+                Authorization: 'Bearer ' + token,
+              },
+            })
+            // console.log(res.data.data)
+            setData({...res.data.data.Data})
+            return;
+          }
+          // console.log(res.data.data)
+          setData({...res.data.data.Data})
+        }
+      } catch (err) {
+        // console.log(err.response)
+      }
+    }
+    getStatusFromGCC()
   }, []);
-  console.log(data.ListOfRepair)
   return (
     <div className="detail-status-service">
       <div className="container-fluid">
@@ -65,7 +100,7 @@ const DetailStatusService = (props) => {
                         <div className="content mt-4">
                           <div>
                             <h6>Request Date : </h6>
-                            <p>{data.RequestDate}</p>
+                            <p>-</p>
                           </div>
                         </div>
                       </div>
@@ -76,19 +111,19 @@ const DetailStatusService = (props) => {
                         <div className="content mt-4">
                           <div>
                             <h6>Product </h6>
-                            <p>{data.Category}</p>
+                            <p>{data.ProductGroup}</p>
                           </div>
                           <div className="mt-4">
-                            <h6>Model </h6>
-                            <p>{data.ProductModel}</p>
+                            <h6>Model</h6>
+                            <p>{data.ModelType}</p>
                           </div>
                           <div className="mt-4">
                             <h6>Serial Number </h6>
-                            <p>{data.serialNumber}</p>
+                            <p>{data.SN}</p>
                           </div>
                           <div className="mt-4">
                             <h6>Date of Purchase </h6>
-                            <p>{data.DOP}</p>
+                            <p>{data.WorkOrderNumber !== "" ? moment(data.PurchaseDate).format('LL') : "-"}</p>
                           </div>
                         </div>
                       </div>
@@ -100,7 +135,8 @@ const DetailStatusService = (props) => {
                                 Status Information
                               </h5>
                             </div>
-                            <div style={{ overflowX: 'auto' }}>
+                            {/* Old */}
+                            {/* <div style={{ overflowX: 'auto' }}>
                               <table className="table table-white mt-3">
                                 <thead>
                                   <tr>
@@ -137,7 +173,7 @@ const DetailStatusService = (props) => {
                                       </td>
                                     </tr>
                                   }
-                                  {/* {data === ''
+                                  {data === ''
                                     ? null
                                     : data.ListOfRepair.Repair.map((item) => {
                                         return (
@@ -153,7 +189,29 @@ const DetailStatusService = (props) => {
                                             </td>
                                           </tr>
                                         );
-                                      })} */}
+                                      })}
+                                </tbody>
+                              </table>
+                            </div> */}
+
+                            {/* New */}
+                            <div style={{ overflowX: 'auto' }}>
+                              <table className="table table-white mt-3">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Date</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td className="text-nowrap">
+                                      {data.StatusDescription}
+                                    </td>
+                                    <td className="text-nowrap">
+                                      {data.WorkOrderNumber !== "" && !!data.ChangeTime ? moment(data.ChangeTime).format('LL')  : '-'}
+                                    </td>
+                                  </tr>
                                 </tbody>
                               </table>
                             </div>
@@ -174,7 +232,8 @@ const DetailStatusService = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    gsis_url: state.GSIS_URL
+    gsis_url: state.GSIS_URL,
+    base_url: state.BASE_URL
   }  
 }
 

@@ -241,130 +241,218 @@ function UserRegisterProduct(props) {
     if ( userData.date !== '' && userData.file1 !== '' && userData.file2 !== '' && storeValue !== '' ) {
       var dateChange = userData.date.replaceAll('-', '/');
       const formdata = new FormData();
-      const newPurcaseDate = format(new Date(dateChange), 'MM/dd/yyyy');
+      const newPurcaseDate = format(new Date(dateChange), 'yyyy-MM-dd');
       // const newBirthDateDate = format(new Date('1981//09/27'), 'MM/dd/yyyy');
       // const newGender = dataUser.gender === 'Pria' ? 'Mr' : 'Ms';
       
-      formdata.append('customer_id', id);
-      formdata.append('barcode', data.Barcode);
-      formdata.append('product_id', data.ProductID);
-      formdata.append('brand', data.Brand);
-      formdata.append('product_name', data.ProductName);
-      formdata.append('product_model', data.ProductName);
-      formdata.append('serial_number', data.Barcode);
-      formdata.append('category', data.ProductCategoryName);
-      formdata.append('date', newPurcaseDate);
-      formdata.append('store_location', storeStreet);
-      formdata.append('store_name', storeValue);
-      formdata.append('email', email);
-      formdata.append('phone', phone);
-      formdata.append('status', 1);
-      formdata.append( 'warranty_card', userData.file1 === '' ? '' : userData.file1 );
-      formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
-      formdata.append('agreements', userData.agreements === 'Y' ? 'Y' : 'N');
-      
-      const deleteProduct = async (productID) => {
-        await axios.delete(props.base_url + 'register-product/product', {
-          headers: {
-            Authorization: 'Bearer ' + token,
-          },
-          params: {
-            id: productID
-          }
-        }).then(() => {
-          // console.log('success delete')
-        }).catch((error) => {
-          // console.log(error.response)
-        })
-      }
-      // console.log(dataUser)
-      const postToGSIS = async (dbData) => {
-        let formGSIS = new FormData()
-        formGSIS.append('id', dbData.id)
-        formGSIS.append('country', 'Indonesia')
-        formGSIS.append('firstName', dataUser.first_name)
-        formGSIS.append('lastName', dataUser.last_name)
-        formGSIS.append('mobilePhone', dataUser.phone)
-        formGSIS.append('email', dataUser.email)
-        formGSIS.append('address', dataUser.address)
-        formGSIS.append('AddressId', "")
-        formGSIS.append('City', dataUser.city)
-        formGSIS.append('State', dataUser.district)
-        formGSIS.append('Street', dataUser.sub_district)
-        formGSIS.append('brand', data.Brand)
-        formGSIS.append('category', data.ProductCategoryName);
-        formGSIS.append('productModel', data.ProductName.trim());
-        formGSIS.append('serialNum', data.Barcode);
-        formGSIS.append('purchaseDate', newPurcaseDate);
-        let invoiceURL = props.image_url + dbData.invoice
-        formGSIS.append('Invoiceattachment', invoiceURL);
-        let attachmentURL = props.image_url + dbData.warranty_card
-        formGSIS.append('Warrantyattachment', attachmentURL);
-        formGSIS.append('whatsappflag', userData.agreements === 'Y' ? 'Y' : 'N');
-        // console.table(Object.fromEntries(formGSIS))
-        await axios.post(props.gsis_url + 'hatprodreg', formGSIS, {
-          headers: {
-            Accept: 'application/xml',
-          }
-        }).then((res) => {
-          let response = xtojson.xml2js(res.data)
-          // console.log(response)
-          let errorCode = response.Envelope.Body.HESAProdRegResponse.Error_spcCode
-          if(errorCode === '0') {
-            setMessageModal({
-              status: 'success',
-              title: 'Thanks You',
-              subTitle: 'Your product has been successfully Updated'
-            })
-            alertModal()
-            onHideModal(dbData.promo)
-            // console.log(dbData.promo)
-            if(dbData.promo != null){
-              setDataPromo(dbData.promo)
-            }else{
-              setDataPromo({})
-            }
-          } else {
-            deleteProduct(dbData.id)
-            setErrorGSIS(response.Envelope.Body.HESAProdRegResponse.Error_spcMessage)
-          } 
-        }).catch((err) => {
-          deleteProduct(dbData.id)
-          // console.log(err.response)
-        }).finally(() => {
-          setIsLoadiing(false)
-        });
-      }
+      // GCC integrating
+      formdata.append('FirstName', dataUser.first_name);
+      formdata.append('LastName', dataUser.last_name);
+      formdata.append('Gender', dataUser.gender == "Perempuan" ? 1 : 0);
+      formdata.append('BirthDate', dataUser.birth_date);
+      formdata.append('LocationStateCode', dataUser.province);
+      formdata.append('LocationStateName', dataUser.province);
+      formdata.append('LocationCityCode', dataUser.city);
+      formdata.append('LocationCityName', dataUser.city);
+      formdata.append('LocationLocalityCode', dataUser.district);
+      formdata.append('LocationLocalityName', dataUser.district);
+      formdata.append('Address', dataUser.address);
+      formdata.append('Email', dataUser.email);
+      formdata.append('MobilePhone', dataUser.phone);
+      formdata.append('Telphone', '');
+      formdata.append('OfficePhone', dataUser.phone_office);
+      formdata.append('BrandCode', data.Brand);
+      formdata.append('ProductCode', data.ProductCategoryName);
+      formdata.append('ModelCode', data.ProductName);
+      formdata.append('SerialNumber', data.Barcode);
+      formdata.append('PurchaseDate', newPurcaseDate);
+      formdata.append('WarrantyCard', userData.file1 === '' ? '' : userData.file1);
+      formdata.append('Invoice', userData.file2 === '' ? '' : userData.file2);
+      formdata.append('CustomerId', dataUser.id);
+      formdata.append('Barcode', data.Barcode);
+      formdata.append('ProductId', data.ProductID);
+      formdata.append('ProductName', data.ProductName);
+      formdata.append('StoreLocation', storeStreet);
+      formdata.append('StoreName', storeValue);
+      formdata.append('DealerName', 'test');
+      formdata.append('WhatsAppFlag', userData.agreements === 'Y' ? 'Y' : 'N');
+      formdata.append('EwarrantyInfo', 'Test Ewarranty Info');
 
-      await axios.post(props.base_url + 'register-product', formdata, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      })
-      .then((res) => {
-        postToGSIS(res.data);
-      })
-      .catch((e) => {
-        let error = e.response
-        // console.log(error)
-        if(error.data.errors) {
-          if(error.data.errors.location === 'barcode' || error.data.errors.location === 'product_id') {
-            setMessageModal({
-                status: 'error',
-                title: 'Sorry',
-                subTitle: 'your product has been registered'
-            })
-            alertModal()
-            onHideModal()
+      const postToGCC = async (formData) => {
+        // console.log(Object.fromEntries(formData))
+        try {
+          const res = await axios.post(props.base_url + 'v2/register-service/product', formData, {
+            headers: {
+              Authorization: 'Bearer ' + token,
+            },
+          })
+          // console.log(res.data)
+          setMessageModal({
+            status: 'success',
+            title: 'Thanks You',
+            subTitle: 'Your product has been successfully Updated'
+          })
+          alertModal()
+          onHideModal(res.data.promo)
+          if(res.data.promo != null){
+            setDataPromo(res.data.promo)
+          }else{
+            setDataPromo({})
           }
-          setErrorDate('')
-          setErrorStore('')
-          setErrorFile1('')
-          setErrorFile2('')
-        } else {
+        } catch (e) {
+          // console.log(e.response)
+          let error = e.response
           // console.log(error)
+          if(error.data.title == 'GCC Error'){
+            setErrorGSIS('Terjadi Kesalahan atau Terdapat Error di GCC')
+          }
+          if(error.data.errors) {
+            if(error.data.errors.location === 'barcode' || error.data.errors.location === 'product_id') {
+              setMessageModal({
+                  status: 'error',
+                  title: 'Sorry',
+                  subTitle: 'your product has been registered'
+              })
+              alertModal()
+              onHideModal()
+            }
+            setErrorDate('')
+            setErrorStore('')
+            setErrorFile1('')
+            setErrorFile2('')
+          } else {
+            // console.log(error)
+          }
+        } finally {
+          setIsLoadiing(false)
         }
-      })
+      }
+      postToGCC(formdata)
+
+      // formdata.append('customer_id', id);
+      // formdata.append('barcode', data.Barcode);
+      // formdata.append('product_id', data.ProductID);
+      // formdata.append('brand', data.Brand);
+      // formdata.append('product_name', data.ProductName);
+      // formdata.append('product_model', data.ProductName);
+      // formdata.append('serial_number', data.Barcode);
+      // formdata.append('category', data.ProductCategoryName);
+      // formdata.append('date', newPurcaseDate);
+      // formdata.append('store_location', storeStreet);
+      // formdata.append('store_name', storeValue);
+      // formdata.append('email', email);
+      // formdata.append('phone', phone);
+      // formdata.append('status', 1);
+      // formdata.append( 'warranty_card', userData.file1 === '' ? '' : userData.file1 );
+      // formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
+      // formdata.append('agreements', userData.agreements === 'Y' ? 'Y' : 'N');
+
+      
+      
+      // const deleteProduct = async (productID) => {
+      //   await axios.delete(props.base_url + 'register-product/product', {
+      //     headers: {
+      //       Authorization: 'Bearer ' + token,
+      //     },
+      //     params: {
+      //       id: productID
+      //     }
+      //   }).then(() => {
+      //     // console.log('success delete')
+      //   }).catch((error) => {
+      //     // console.log(error.response)
+      //   })
+      // }
+      // // console.log(dataUser)
+      // const postToGSIS = async (dbData) => {
+      //   let formGSIS = new FormData()
+      //   formGSIS.append('id', dbData.id)
+      //   formGSIS.append('country', 'Indonesia')
+      //   formGSIS.append('firstName', dataUser.first_name)
+      //   formGSIS.append('lastName', dataUser.last_name)
+      //   formGSIS.append('mobilePhone', dataUser.phone)
+      //   formGSIS.append('email', dataUser.email)
+      //   formGSIS.append('address', dataUser.address)
+      //   formGSIS.append('AddressId', "")
+      //   formGSIS.append('City', dataUser.city)
+      //   formGSIS.append('State', dataUser.district)
+      //   formGSIS.append('Street', dataUser.sub_district)
+      //   formGSIS.append('brand', data.Brand)
+      //   formGSIS.append('category', data.ProductCategoryName);
+      //   formGSIS.append('productModel', data.ProductName.trim());
+      //   formGSIS.append('serialNum', data.Barcode);
+      //   formGSIS.append('purchaseDate', newPurcaseDate);
+      //   let invoiceURL = props.image_url + dbData.invoice
+      //   formGSIS.append('Invoiceattachment', invoiceURL);
+      //   let attachmentURL = props.image_url + dbData.warranty_card
+      //   formGSIS.append('Warrantyattachment', attachmentURL);
+      //   formGSIS.append('whatsappflag', userData.agreements === 'Y' ? 'Y' : 'N');
+      //   // console.table(Object.fromEntries(formGSIS))
+      //   await axios.post(props.gsis_url + 'hatprodreg', formGSIS, {
+      //     headers: {
+      //       Accept: 'application/xml',
+      //     }
+      //   }).then((res) => {
+      //     let response = xtojson.xml2js(res.data)
+      //     // console.log(response)
+      //     let errorCode = response.Envelope.Body.HESAProdRegResponse.Error_spcCode
+      //     if(errorCode === '0') {
+      //       setMessageModal({
+      //         status: 'success',
+      //         title: 'Thanks You',
+      //         subTitle: 'Your product has been successfully Updated'
+      //       })
+      //       alertModal()
+      //       onHideModal(dbData.promo)
+      //       // console.log(dbData.promo)
+      //       if(dbData.promo != null){
+      //         setDataPromo(dbData.promo)
+      //       }else{
+      //         setDataPromo({})
+      //       }
+      //     } else {
+      //       deleteProduct(dbData.id)
+      //       setErrorGSIS(response.Envelope.Body.HESAProdRegResponse.Error_spcMessage)
+      //     } 
+      //   }).catch((err) => {
+      //     deleteProduct(dbData.id)
+      //     // console.log(err.response)
+      //   }).finally(() => {
+      //     setIsLoadiing(false)
+      //   });
+      // }
+
+      
+
+      // await axios.post(props.base_url + 'register-product', formdata, {
+      //   headers: {
+      //     Authorization: 'Bearer ' + token,
+      //   },
+      // })
+      // .then((res) => {
+      //   postToGSIS(res.data);
+      // })
+      // .catch((e) => {
+      //   let error = e.response
+      //   // console.log(error)
+      //   if(error.data.errors) {
+      //     if(error.data.errors.location === 'barcode' || error.data.errors.location === 'product_id') {
+      //       setMessageModal({
+      //           status: 'error',
+      //           title: 'Sorry',
+      //           subTitle: 'your product has been registered'
+      //       })
+      //       alertModal()
+      //       onHideModal()
+      //     }
+      //     setErrorDate('')
+      //     setErrorStore('')
+      //     setErrorFile1('')
+      //     setErrorFile2('')
+      //   } else {
+      //     // console.log(error)
+      //   }
+      // })
     } else {
       userData.date === '' ? setErrorDate('Date Must be Required') : setErrorDate('')
       storeValue === '' ? setErrorStore('Store Must be Required') : setErrorStore('')
