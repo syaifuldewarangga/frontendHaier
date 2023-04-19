@@ -15,6 +15,7 @@ import Resizer from "react-image-file-resizer";
 import { DataURIToBlob } from '../../../variable/DataUriToBlob';
 import { ModelCheck } from '../../../variable/ModelCheck';
 import { ImageFunction } from '../../../variable/ImageFunction';
+import { Typeahead } from 'react-bootstrap-typeahead';
 var X2JS = require('x2js');
 
 function UserRegisterProduct(props) {
@@ -74,6 +75,144 @@ function UserRegisterProduct(props) {
     
   };
 
+  const [dealerInput, setDealerInput] = useState('')
+  const [dealer, setDealer] = useState([])
+  const [selectedDealer, setSelectedDealer] = useState([])
+  async function getDealer() {
+    await axios.get(props.base_url + 'v2/dealers', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+    .then((res) => {
+      setDealer(res.data);
+    })
+    .catch((e) => {
+      if (e.response) {
+        // console.log(e.response);
+      } else if (e.request) {
+        // console.log('request : ' + e.request);
+      } else {
+        // console.log('message : ' + e.message);
+      }
+    });
+  }
+
+  const [address, setAddress] = useState({
+    prov: '',
+    city: '',
+    district: '',
+    street: ''
+  })
+  const [prov, setProv] = useState([])
+  const [selectedProv, setSelectedProv] = useState([])
+  async function getProvinceFromAPI() {
+    await axios.get(props.base_url + 'v2/location/gcc/province?country_code=ID', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+    .then((res) => {
+      setProv(res.data);
+    })
+    .catch((e) => {
+      if (e.response) {
+        // console.log(e.response);
+      } else if (e.request) {
+        // console.log('request : ' + e.request);
+      } else {
+        // console.log('message : ' + e.message);
+      }
+    });
+  }
+
+  const [city, setCity] = useState([])
+  const [selectedCity, setSelectedCity] = useState([])
+  const getCityFromAPI = async (province) => {
+    var token = localStorage.getItem('access_token');
+    await axios
+      .get(props.base_url + 'v2/location/gcc/city', {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+        params: {
+          province_code: province,
+        },
+      })
+      .then((res) => {
+        setCity(res.data);
+      });
+  };
+
+  const [district, setDistrict] = useState([])
+  const [selectedDistrict, setSelectedDistrict] = useState([])
+  const getDisrictFromAPI = async (city) => {
+    await axios.get(props.base_url + 'v2/location/gcc/district', {
+      params: {
+        city_code: city,
+      }
+    })
+    .then((res) => {
+      setDistrict(res.data);
+    })
+    .catch((err) => {
+      // console.log(err);
+    });
+  };
+
+  const [street, setStreet] = useState([])
+  const [selectedStreet, setSelectedStreet] = useState([])
+  const getSubDisrictFromAPI = async (district) => {
+    await axios
+      .get(props.base_url + 'v2/location/gcc/street', {
+        params: {
+          district_code: district,
+        }
+      })
+      .then((res) => {
+        setStreet(res.data);
+      });
+  };
+
+  useEffect(() => {
+    let m = true;
+    if(m){
+      if(selectedProv.length > 0){
+        getCityFromAPI(selectedProv[0].province_code)
+      }else{
+        setCity([])
+        setSelectedCity([])
+      }
+    }
+    return () => m = false
+  }, [selectedProv])
+
+  useEffect(() => {
+    let m = true;
+    if(m){
+      if(selectedCity.length > 0){
+        getDisrictFromAPI(selectedCity[0].cityCode)
+      }else{
+        setDistrict([])
+        setSelectedDistrict([])
+      }
+    }
+    return () => m = false
+  }, [selectedCity])
+
+  useEffect(() => {
+    let m = true;
+    if(m){
+      if(selectedDistrict.length > 0){
+        getSubDisrictFromAPI(selectedDistrict[0].districtCode)
+      }else{
+        setStreet([])
+        setSelectedStreet([])
+      }
+    }
+    return () => m = false
+  }, [selectedDistrict])
+
   useEffect(() => {
     let isi = dataStore.filter((word) => word.StoreName === storeValue);
     if (storeValue !== '') {
@@ -93,6 +232,31 @@ function UserRegisterProduct(props) {
     }).catch((err) => {
       // console.log(err.response)
     })
+  }
+
+  const getProductGcc = async (product_id) => {
+    try {
+      const res = await axios.get(props.base_url + 'v2/product/gcc', {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+        params: {
+          param: product_id,
+        }
+      })
+      if(res.data.length > 0){
+        const data = res.data[0]
+        setData({
+          Barcode: barcode,
+          ProductName: data.productModel,
+          ProductID: data.productCode,
+          ProductCategoryName: data.category,
+          Brand: data.brand
+        })
+      }
+    } catch (err) {
+      // console.log(err.response)
+    }
   }
 
   async function fetchDataProduct(gtmToken) {
@@ -141,17 +305,17 @@ function UserRegisterProduct(props) {
       }
     }).then((res) => {
       let data = res.data
-      // console.log(res.data)
       let count = Object.keys(data).length
       if(count > 0) {
-        let modelData = ModelCheck(data.PRODUCT_DESC_ZH.substring(0,4))
-        setData({
-          Barcode: data.BARCODE,
-          ProductName: data.PRODUCT_DESC_ZH,
-          ProductID: data.PRODUCT_CODE,
-          ProductCategoryName: modelData.category,
-          Brand: modelData.brand
-        })
+        getProductGcc('CA0J30E0300')
+        // let modelData = ModelCheck(data.PRODUCT_DESC_ZH.substring(0,4))
+        // setData({
+        //   Barcode: data.BARCODE,
+        //   ProductName: data.PRODUCT_DESC_ZH,
+        //   ProductID: data.PRODUCT_CODE,
+        //   ProductCategoryName: modelData.category,
+        //   Brand: modelData.brand
+        // })
       } else {
         setData('')
       }
@@ -203,7 +367,15 @@ function UserRegisterProduct(props) {
   
   useEffect(() => {
     fetchDataUser()
-    getTokenGTM();
+    getTokenGTM()
+    getProvinceFromAPI()
+    getDealer()
+
+    //testing edit address
+    // setSelectedProv([{ prov_name: 'ACEH' }])
+    // setSelectedCity([{ city_name: 'SIMEULUE' }])
+    // setSelectedDistrict([{ dis_name: 'SALANG' }])
+    // setSelectedStreet([{ subdis_name: 'BUNGA' }])
   }, [])
 
   const resizeFile = (file) => new Promise((resolve) => {
@@ -238,7 +410,14 @@ function UserRegisterProduct(props) {
     var id = localStorage.getItem('id');
     var phone = localStorage.getItem('phone');
 
-    if ( userData.date !== '' && userData.file1 !== '' && userData.file2 !== '' && storeValue !== '' ) {
+    if ( 
+        userData.date !== '' && 
+        userData.file1 !== '' && 
+        userData.file2 !== '' && 
+        storeValue !== '' && 
+        selectedStreet.length !== 0 &&
+        selectedDistrict.length !== 0
+      ) {
       var dateChange = userData.date.replaceAll('-', '/');
       const formdata = new FormData();
       const newPurcaseDate = format(new Date(dateChange), 'yyyy-MM-dd');
@@ -250,12 +429,13 @@ function UserRegisterProduct(props) {
       formdata.append('LastName', dataUser.last_name);
       formdata.append('Gender', dataUser.gender == "Perempuan" ? 1 : 0);
       formdata.append('BirthDate', dataUser.birth_date);
-      formdata.append('LocationStateCode', dataUser.province);
-      formdata.append('LocationStateName', dataUser.province);
-      formdata.append('LocationCityCode', dataUser.city);
-      formdata.append('LocationCityName', dataUser.city);
-      formdata.append('LocationLocalityCode', dataUser.district);
-      formdata.append('LocationLocalityName', dataUser.district);
+      formdata.append('LocationPinCode', selectedStreet[0].zipCode);
+      formdata.append('LocationStateCode', selectedStreet[0].province_code);
+      formdata.append('LocationStateName', selectedStreet[0].province);
+      formdata.append('LocationCityCode', selectedStreet[0].cityCode);
+      formdata.append('LocationCityName', selectedStreet[0].city);
+      formdata.append('LocationLocalityCode', selectedStreet[0].districtCode);
+      formdata.append('LocationLocalityName', selectedStreet[0].district);
       formdata.append('Address', dataUser.address);
       formdata.append('Email', dataUser.email);
       formdata.append('MobilePhone', dataUser.phone);
@@ -274,7 +454,7 @@ function UserRegisterProduct(props) {
       formdata.append('ProductName', data.ProductName);
       formdata.append('StoreLocation', storeStreet);
       formdata.append('StoreName', storeValue);
-      formdata.append('DealerName', 'test');
+      formdata.append('DealerName', selectedDealer[0].name);
       formdata.append('WhatsAppFlag', userData.agreements === 'Y' ? 'Y' : 'N');
       formdata.append('EwarrantyInfo', 'Test Ewarranty Info');
 
@@ -286,7 +466,7 @@ function UserRegisterProduct(props) {
               Authorization: 'Bearer ' + token,
             },
           })
-          // console.log(res.data)
+          console.log(res.data)
           setMessageModal({
             status: 'success',
             title: 'Thanks You',
@@ -302,7 +482,15 @@ function UserRegisterProduct(props) {
         } catch (e) {
           // console.log(e.response)
           let error = e.response
-          // console.log(error)
+          if(error.data.code == 409){
+            setMessageModal({
+              status: 'error',
+              title: 'Sorry',
+              subTitle: 'your product has been registered'
+            })
+            alertModal()
+            onHideModal()
+          }
           if(error.data.title == 'GCC Error'){
             setErrorGSIS('Terjadi Kesalahan atau Terdapat Error di GCC')
           }
@@ -327,6 +515,8 @@ function UserRegisterProduct(props) {
           setIsLoadiing(false)
         }
       }
+      // console.log(Object.fromEntries(formdata));
+      // setIsLoadiing(false)
       postToGCC(formdata)
 
       // formdata.append('customer_id', id);
@@ -458,6 +648,8 @@ function UserRegisterProduct(props) {
       storeValue === '' ? setErrorStore('Store Must be Required') : setErrorStore('')
       userData.file1 === '' ? setErrorFile1('Warranty Card Must be Required') : setErrorFile1('');
       userData.file2 === '' ? setErrorFile2('Invoice Must be Required') : setErrorFile2('');
+      selectedStreet.length  === 0 ? setErrorGSIS('Make sure address is filled') : setErrorGSIS('');
+
       setIsLoadiing(false)
     }
   }
@@ -612,9 +804,119 @@ function UserRegisterProduct(props) {
                     }
                   />
                   <div className="invalid-feedback">{errorDate}</div>
+                </div> 
+              </div>
+              
+              {/* Adress */}
+              <div className="col-lg-6">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="product-model" className="form-label">
+                    Province
+                  </label>
+                  <Typeahead
+                    onInputChange={(v) => {
+                      setAddress({
+                        ...address,
+                        prov: v
+                      })
+                    }}
+                    id="basic-typeahead-single"
+                    labelKey="province"
+                    onChange={setSelectedProv}
+                    options={prov}
+                    placeholder="Choose province..."
+                    selected={selectedProv}
+                  />
+                </div>
+              </div>
+              <div className="col-lg-6">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="product-model" className="form-label">
+                    City
+                  </label>
+                  <Typeahead
+                    disabled={!selectedProv.length > 0}
+                    onInputChange={(v) => {
+                      setAddress({
+                        ...address,
+                        city: v
+                      })
+                    }}
+                    id="basic-typeahead-single"
+                    labelKey="city"
+                    onChange={setSelectedCity}
+                    options={city}
+                    placeholder="Choose city..."
+                    selected={selectedCity}
+                  />
+                </div>
+              </div>
+              <div className="col-lg-6">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="product-model" className="form-label">
+                    District
+                  </label>
+                  <Typeahead
+                    disabled={!selectedCity.length > 0}
+                    onInputChange={(v) => {
+                      setAddress({
+                        ...address,
+                        district: v
+                      })
+                    }}
+                    id="basic-typeahead-single"
+                    labelKey="district"
+                    onChange={setSelectedDistrict}
+                    options={district}
+                    placeholder="Choose district..."
+                    selected={selectedDistrict}
+                  />
+                </div>
+              </div>
+              <div className="col-lg-6">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="product-model" className="form-label">
+                    Street
+                  </label>
+                  <Typeahead
+                    disabled={!selectedDistrict.length > 0}
+                    onInputChange={(v) => {
+                      setAddress({
+                        ...address,
+                        street: v
+                      })
+                    }}
+                    id="basic-typeahead-single"
+                    labelKey="street"
+                    onChange={setSelectedStreet}
+                    options={street}
+                    placeholder="Choose street..."
+                    selected={selectedStreet}
+                  />
                 </div>
               </div>
 
+              {/* Dealer */}
+              <div className="col-lg-12">
+                <div className="mb-lg-5 mb-4">
+                  <label htmlFor="product-model" className="form-label">
+                    Dealer
+                  </label>
+                  <Typeahead
+                    onInputChange={(v) => {
+                      setDealerInput(v)
+                    }}
+                    id="basic-typeahead-single"
+                    labelKey="name"
+                    onChange={setSelectedDealer}
+                    options={dealer}
+                    placeholder="Choose dealer..."
+                    selected={selectedDealer}
+                  />
+                </div>
+              </div>
+
+              {/* Store */}
               <div className="col-lg-6">
                 <div className="mb-lg-5 mb-4">
                   <label htmlFor="store-location" className="form-label">

@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import AlertModal from '../../../alertModal/AlertModal';
 import { Modal } from 'bootstrap';
 import { useHistory } from 'react-router';
+import { Typeahead } from 'react-bootstrap-typeahead';
 var X2JS = require('x2js');
 
 const visitHoursData = [
@@ -76,8 +77,126 @@ const FormProduct = (props) => {
       });
   };
 
+  const [address, setAddress] = useState({
+    prov: '',
+    city: '',
+    district: '',
+    street: ''
+  })
+  const [prov, setProv] = useState([])
+  const [selectedProv, setSelectedProv] = useState([])
+  async function getProvinceFromAPI() {
+    var token = localStorage.getItem('access_token');
+    await axios.get(props.base_url + 'v2/location/gcc/province?country_code=ID', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+    .then((res) => {
+      setProv(res.data);
+    })
+    .catch((e) => {
+      if (e.response) {
+        // console.log(e.response);
+      } else if (e.request) {
+        // console.log('request : ' + e.request);
+      } else {
+        // console.log('message : ' + e.message);
+      }
+    });
+  }
+
+  const [city, setCity] = useState([])
+  const [selectedCity, setSelectedCity] = useState([])
+  const getCityFromAPI = async (province) => {
+    var token = localStorage.getItem('access_token');
+    await axios
+      .get(props.base_url + 'v2/location/gcc/city', {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+        params: {
+          province_code: province,
+        },
+      })
+      .then((res) => {
+        setCity(res.data);
+      });
+  };
+
+  const [district, setDistrict] = useState([])
+  const [selectedDistrict, setSelectedDistrict] = useState([])
+  const getDisrictFromAPI = async (city) => {
+    await axios.get(props.base_url + 'v2/location/gcc/district', {
+      params: {
+        city_code: city,
+      }
+    })
+    .then((res) => {
+      setDistrict(res.data);
+    })
+    .catch((err) => {
+      // console.log(err);
+    });
+  };
+
+  const [street, setStreet] = useState([])
+  const [selectedStreet, setSelectedStreet] = useState([])
+  const getSubDisrictFromAPI = async (district) => {
+    await axios
+      .get(props.base_url + 'v2/location/gcc/street', {
+        params: {
+          district_code: district,
+        }
+      })
+      .then((res) => {
+        setStreet(res.data);
+      });
+  };
+
+  useEffect(() => {
+    let m = true;
+    if(m){
+      if(selectedProv.length > 0){
+        getCityFromAPI(selectedProv[0].province_code)
+      }else{
+        setCity([])
+        setSelectedCity([])
+      }
+    }
+    return () => m = false
+  }, [selectedProv])
+
+  useEffect(() => {
+    let m = true;
+    if(m){
+      if(selectedCity.length > 0){
+        getDisrictFromAPI(selectedCity[0].cityCode)
+      }else{
+        setDistrict([])
+        setSelectedDistrict([])
+      }
+    }
+    return () => m = false
+  }, [selectedCity])
+
+  useEffect(() => {
+    let m = true;
+    if(m){
+      if(selectedDistrict.length > 0){
+        getSubDisrictFromAPI(selectedDistrict[0].districtCode)
+      }else{
+        setStreet([])
+        setSelectedStreet([])
+      }
+    }
+    return () => m = false
+  }, [selectedDistrict])
+
+
   useEffect(() => {
     getDataUserFromAPI();
+    getProvinceFromAPI()
   }, []);
 
   useEffect(() => {
@@ -263,12 +382,22 @@ const FormProduct = (props) => {
     formData.append('MobilePhone', dataUser.phone)
     formData.append('OtherPhone', '')
     formData.append('Email', dataUser.email)
-    formData.append('LocationPinCode', '')
-    formData.append('LocationStateCode', dataUser.province)
-    formData.append('LocationStateName', dataUser.province)
-    formData.append('LocationCityName', dataUser.city)
-    formData.append('LocationLocalityCode', dataUser.district)
-    formData.append('LocationLocalityName', dataUser.district)
+    formData.append('LocationPinCode', selectedStreet[0].zipCode);
+    formData.append('LocationStateCode', selectedStreet[0].province_code);
+    formData.append('LocationStateName', selectedStreet[0].province);
+    formData.append('LocationCityName', selectedStreet[0].city);
+    // formData.append('LocationCityCode', selectedStreet[0].city);
+    formData.append('LocationLocalityName', selectedStreet[0].district);
+    formData.append('LocationLocalityCode', selectedStreet[0].districtCode);
+
+    // formData.append('LocationPinCode', '11150');
+    // formData.append('LocationStateCode', 'ID105');
+    // formData.append('LocationStateName', 'DKI Jakarta');
+    // formData.append('LocationCityName', 'Jakarta Barat');
+    // // formData.append('LocationCityCode', selectedStreet[0].city);
+    // formData.append('LocationLocalityName', 'Taman Sari');
+    // formData.append('LocationLocalityCode', 'ID16325');
+
     formData.append('DetailedAddress', dataUser.address)
     formData.append('Remark', '')
     formData.append('Brand', data.brand)
@@ -279,6 +408,8 @@ const FormProduct = (props) => {
     formData.append('StoreLocation', data.store_location)
 
     // console.table(Object.fromEntries(formData))
+    // setIsLoading(false)
+
     await axios.post(props.base_url + 'v2/register-service', formData, {
       headers: {
         Authorization: 'Bearer ' + token,
@@ -289,7 +420,15 @@ const FormProduct = (props) => {
       alertModal();
       onHideModal('/service-status');
     }).catch((err) => {
-      // console.log(err.response)
+      if(err.response.data.code == 409) {
+        setDataAlert({
+          status: 'error',
+          title: 'Sory',
+          subTitle: 'Your product has been registered. please check the service status list',
+        })
+        alertModal();
+        onHideModal('/service-status')
+      }
       if (err.response.data.errors !== undefined) {
         let responError = err.response.data.errors;
 
@@ -336,7 +475,6 @@ const FormProduct = (props) => {
       setIsLoading(false)
     }).finally(() => {
       setIsLoading(false)
-
     })
   }
 
@@ -466,6 +604,95 @@ const FormProduct = (props) => {
                   id="date-purchase"
                   disabled
                   value={newDate}
+                />
+              </div>
+            </div>
+
+            {/* Adress */}
+            <div className="col-lg-6">
+              <div className="mb-lg-5 mb-4">
+                <label htmlFor="product-model" className="form-label">
+                  Province
+                </label>
+                <Typeahead
+                  onInputChange={(v) => {
+                    setAddress({
+                      ...address,
+                      prov: v
+                    })
+                  }}
+                  id="basic-typeahead-single"
+                  labelKey="province"
+                  onChange={setSelectedProv}
+                  options={prov}
+                  placeholder="Choose province..."
+                  selected={selectedProv}
+                />
+              </div>
+            </div>
+            <div className="col-lg-6">
+              <div className="mb-lg-5 mb-4">
+                <label htmlFor="product-model" className="form-label">
+                  City
+                </label>
+                <Typeahead
+                  disabled={!selectedProv.length > 0}
+                  onInputChange={(v) => {
+                    setAddress({
+                      ...address,
+                      city: v
+                    })
+                  }}
+                  id="basic-typeahead-single"
+                  labelKey="city"
+                  onChange={setSelectedCity}
+                  options={city}
+                  placeholder="Choose city..."
+                  selected={selectedCity}
+                />
+              </div>
+            </div>
+            <div className="col-lg-6">
+              <div className="mb-lg-5 mb-4">
+                <label htmlFor="product-model" className="form-label">
+                  District
+                </label>
+                <Typeahead
+                  disabled={!selectedCity.length > 0}
+                  onInputChange={(v) => {
+                    setAddress({
+                      ...address,
+                      district: v
+                    })
+                  }}
+                  id="basic-typeahead-single"
+                  labelKey="district"
+                  onChange={setSelectedDistrict}
+                  options={district}
+                  placeholder="Choose district..."
+                  selected={selectedDistrict}
+                />
+              </div>
+            </div>
+            <div className="col-lg-6">
+              <div className="mb-lg-5 mb-4">
+                <label htmlFor="product-model" className="form-label">
+                  Street
+                </label>
+                <Typeahead
+                  disabled={!selectedDistrict.length > 0}
+                  onInputChange={(v) => {
+                    setAddress({
+                      ...address,
+                      street: v
+                    })
+                  }}
+                  id="basic-typeahead-single"
+                  labelKey="street"
+                  onChange={setSelectedStreet}
+                  options={street}
+                  placeholder="Choose street..."
+                  selected={selectedStreet}
                 />
               </div>
             </div>

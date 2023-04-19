@@ -7,6 +7,37 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 var X2JS = require('x2js');
 
+const StatusData = {
+  1: "Created",
+  2: "Dispatched",
+  3: "Allocated",
+  4: "Rejected",
+  5: "In Service",
+  6: "Completed",
+  7: "Closed",
+  8: "Cancelled"
+}
+
+const SubStatusData = {
+  1: "Pending Dispatch",
+  2: "Pending SC Accept",
+  3: "Pending Allocate To Technician",
+  4: "Pending Technician Set Off",
+  5: "Pending Confirm by SC",
+  6: "Pending Confirm by BSM",
+  7: "Pending Confirm by CC",
+  8: "Pending Technician Start Service",
+  9: "Pending Technician Complete",
+  10: "Pending Pending SC Complete",
+  11: "Pending Pending CC Complete",
+  12: "Completed by SC",
+  13: "Completed by CC with code",
+  14: "Completed by CC without code",
+  15: "Closed",
+  16: "WO been reopend",
+  17: "Non-Service WO"
+}
+
 const DetailStatusService = (props) => {
   const { srNumber, phoneNumber } = useParams();
   const xtojson = new X2JS();
@@ -200,13 +231,23 @@ const DetailStatusService = (props) => {
                                 <thead>
                                   <tr>
                                     <th scope="col">Status</th>
+                                    <th scope="col">Sub Status</th>
                                     <th scope="col">Date</th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                   <tr>
                                     <td className="text-nowrap">
-                                      {data.StatusDescription}
+                                      {
+                                        !!data.Status ? StatusData[data.Status] :
+                                        !!data.StatusDescription ? data.StatusDescription : "-"
+                                      }
+                                    </td>
+                                    <td className="text-nowrap">
+                                      {
+                                        !!data.SubStatus ? SubStatusData[data.SubStatus] :
+                                        '-'
+                                      }
                                     </td>
                                     <td className="text-nowrap">
                                       {data.WorkOrderNumber !== "" && !!data.ChangeTime ? moment(data.ChangeTime).format('LL')  : '-'}
