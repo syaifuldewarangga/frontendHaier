@@ -44,13 +44,30 @@ const CameraScan = (props) => {
       }
     })
     .catch((e) => {
-      console.log(e.response)
     }).finally(() => {
       setIsLoading(false)
     });
   }
 
+  const fetchDataProductHGWMS = async () => {
+    try {
+      const formData = new FormData()
+      formData.append('serialNumber', barcode)
+      const res = await axios.post(props.hgwms_url, formData)
+      if(!!res.data.barcodeInfo?.serialNumber){
+        setData({
+          Barcode: res.data.barcodeInfo?.serialNumber,
+          ProductName: res.data.barcodeInfo?.productModel
+        })
+      }
+      setIsLoading(false)
+    } catch (error) {
+      setData([])
+      
+    }
+  }
   const fetchDataProductWMS = async () => {
+    setData([])
     await axios.get(props.oapi_url + 'wms-order-out', {
       params: {
         barcode: barcode
@@ -63,8 +80,13 @@ const CameraScan = (props) => {
           Barcode: data.BARCODE,
           ProductName: data.PRODUCT_DESC_ZH
         })
+        setIsLoading(false)
       } else {
-        setData('')
+        fetchDataProductHGWMS();
+      }
+    }).catch(err => {
+      if(err.response?.status == 404){
+        fetchDataProductHGWMS();
       }
     })
   }
@@ -78,7 +100,6 @@ const CameraScan = (props) => {
       const token = res.data.access_token
       productAPIGTM(token)
     }).catch((err) => {
-      console.log(err.response)
     })
   }
 
@@ -86,7 +107,7 @@ const CameraScan = (props) => {
     const timeOutId = setTimeout(() => {
       if (barcode !== '') {
         setIsLoading(true)
-        fetchDataProductGTM();
+        fetchDataProductWMS()
       } else {
         setData('')
       }
@@ -405,7 +426,8 @@ const mapStateToProps = (state) => {
   return {
     gtm_url: state.GTM_URL,
     gtm_token_url: state.GTM_TOKEN_URL,
-    oapi_url: state.OAPI_URL
+    oapi_url: state.OAPI_URL,
+    hgwms_url: state.HGWMS_URL
   };
 };
 

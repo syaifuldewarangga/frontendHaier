@@ -171,6 +171,151 @@ function UserRegisterProductManual(props) {
     alertModal.show();
   }
 
+  const [dealerInput, setDealerInput] = useState('')
+  const [dealer, setDealer] = useState([])
+  const [selectedDealer, setSelectedDealer] = useState([])
+  async function getDealer() {
+    await axios.get(props.base_url + 'v2/dealers', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+    .then((res) => {
+      setDealer(res.data);
+    })
+    .catch((e) => {
+      if (e.response) {
+        // console.log(e.response);
+      } else if (e.request) {
+        // console.log('request : ' + e.request);
+      } else {
+        // console.log('message : ' + e.message);
+      }
+    });
+  }
+
+  const [address, setAddress] = useState({
+    prov: '',
+    city: '',
+    district: '',
+    street: ''
+  })
+  const [prov, setProv] = useState([])
+  const [selectedProv, setSelectedProv] = useState([])
+  async function getProvinceFromAPI() {
+    await axios.get(props.base_url + 'v2/location/gcc/province?country_code=ID', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+    .then((res) => {
+      setProv(res.data);
+    })
+    .catch((e) => {
+      if (e.response) {
+        // console.log(e.response);
+      } else if (e.request) {
+        // console.log('request : ' + e.request);
+      } else {
+        // console.log('message : ' + e.message);
+      }
+    });
+  }
+
+  const [city, setCity] = useState([])
+  const [selectedCity, setSelectedCity] = useState([])
+  const getCityFromAPI = async (province) => {
+    var token = localStorage.getItem('access_token');
+    await axios
+      .get(props.base_url + 'v2/location/gcc/city', {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+        params: {
+          province_code: province,
+        },
+      })
+      .then((res) => {
+        setCity(res.data);
+      });
+  };
+
+  const [district, setDistrict] = useState([])
+  const [selectedDistrict, setSelectedDistrict] = useState([])
+  const getDisrictFromAPI = async (city) => {
+    await axios.get(props.base_url + 'v2/location/gcc/district', {
+      params: {
+        city_code: city,
+      }
+    })
+    .then((res) => {
+      setDistrict(res.data);
+    })
+    .catch((err) => {
+      // console.log(err);
+    });
+  };
+
+  const [street, setStreet] = useState([])
+  const [selectedStreet, setSelectedStreet] = useState([])
+  const getSubDisrictFromAPI = async (district) => {
+    await axios
+      .get(props.base_url + 'v2/location/gcc/street', {
+        params: {
+          district_code: district,
+        }
+      })
+      .then((res) => {
+        setStreet(res.data);
+      });
+  };
+
+  useEffect(() => {
+    let m = true;
+    if(m){
+      if(selectedProv.length > 0){
+        getCityFromAPI(selectedProv[0].province_code)
+      }else{
+        setCity([])
+        setSelectedCity([])
+      }
+    }
+    return () => m = false
+  }, [selectedProv])
+
+  useEffect(() => {
+    let m = true;
+    if(m){
+      if(selectedCity.length > 0){
+        getDisrictFromAPI(selectedCity[0].cityCode)
+      }else{
+        setDistrict([])
+        setSelectedDistrict([])
+      }
+    }
+    return () => m = false
+  }, [selectedCity])
+
+  useEffect(() => {
+    let m = true;
+    if(m){
+      if(selectedDistrict.length > 0){
+        getSubDisrictFromAPI(selectedDistrict[0].districtCode)
+      }else{
+        setStreet([])
+        setSelectedStreet([])
+      }
+    }
+    return () => m = false
+  }, [selectedDistrict])
+
+  useEffect(() => {
+    let isi = dataStore.filter((word) => word.StoreName === storeValue);
+    if (storeValue !== '') {
+      setStoreStreet(isi[0].Street);
+    }
+  }, [storeValue]);
+
   const [selected, setSelected] = useState([])
   const [options, setOptions] = useState([])
   const getOptions = async () => {
@@ -186,6 +331,52 @@ function UserRegisterProductManual(props) {
     // if(data.product_model_list !== null) setOptions([...data.product_model_list])
     setOptions(data.product_model_list)
   }
+
+  const [brand, setBrand] = useState([])
+  const [selectedBrand, setSelectedBrand] = useState([])
+  const [brandInput, setBrandInput] = useState('')
+  const getBrandFromAPI = async () => {
+    await axios
+      .get(props.base_url + 'v2/product/gcc/brands', {
+        headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('access_token'),
+        },
+      })
+      .then((res) => {
+        setBrand(res.data.data);
+      });
+  };
+
+  const [category, setCategory] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState([])
+  const [categoryInput, setCategoryInput] = useState('')
+  const getCategoryFromAPI = async (brand_value) => {
+    await axios
+      .get(props.base_url + 'v2/product/gcc/categories', {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('access_token'),
+        },
+        params: {
+          brand_value,
+        }
+      })
+      .then((res) => {
+        setCategory(res.data.data);
+      });
+  };
+
+  useEffect(() => {
+    let m = true;
+    if(m){
+      if(selectedBrand.length > 0){
+        getCategoryFromAPI(selectedBrand[0].brandValue)
+      }else{
+        setCategory([])
+        setSelectedCategory([])
+      }
+    }
+    return () => m = false
+  }, [selectedBrand])
   // useEffect(() => {
   //   let m = true
   //   if(m) getOptions()
@@ -207,6 +398,7 @@ function UserRegisterProductManual(props) {
     setIsLoadiing(true)
     var id = localStorage.getItem('id');
     var phone = localStorage.getItem('phone');
+    const formdata = new FormData();
 
     if ( 
       userData.date !== '' && 
@@ -215,12 +407,13 @@ function UserRegisterProductManual(props) {
       showFile3 !== '' && 
       storeValue !== ''  &&
       product_model !== '' &&
-      form.brand !== '' &&
-      form.category !== '' 
-    
+      selectedProv.length !== 0 &&
+      selectedStreet.length !== 0 &&
+      selectedDistrict.length !== 0 &&
+      selectedCategory.length !== 0 &&
+      selectedBrand.length !== 0 
     ) {
       var dateChange = userData.date.replaceAll('-', '/');
-      const formdata = new FormData();
       const newPurcaseDate = format(new Date(dateChange), 'MM/dd/yyyy');
       // const newBirthDateDate = format(new Date('1981//09/27'), 'MM/dd/yyyy');
       // const newGender = dataUser.gender === 'Pria' ? 'Mr' : 'Ms';
@@ -245,10 +438,21 @@ function UserRegisterProductManual(props) {
       if(userData.file3 !== ''){
         formdata.append('serial', userData.file3);
       }
-      formdata.append('brand', form.brand);
+      formdata.append('brand', selectedBrand[0].brandName);
       formdata.append('status', 1);
       formdata.append('agreements', userData.agreements === 'Y' ? 'Y' : 'N');
-      formdata.append('category', form.category);
+      formdata.append('category', selectedCategory[0].categoryName);
+      formdata.append('location_pin_code', selectedStreet[0].zipCode);
+      formdata.append('location_state_code', selectedProv[0].province_code);
+      formdata.append('location_state_name', selectedProv[0].province);
+      formdata.append('location_city_code', selectedCity[0].cityCode);
+      formdata.append('location_city_name', selectedCity[0].city);
+      formdata.append('location_locality_code', selectedDistrict[0].districtCode);
+      formdata.append('location_locality_name', selectedDistrict[0].district);
+      formdata.append('brand_code', selectedBrand[0].brandValue);
+      formdata.append('product_code', selectedCategory[0].categoryValue);
+      formdata.append('dealer_name', selectedDealer[0].name);
+      formdata.append('location_street_name', selectedStreet[0].street);
       // setIsLoadiing(false)
       
       // console.table(Object.fromEntries(formdata))
@@ -314,7 +518,6 @@ function UserRegisterProductManual(props) {
           })
           alertModal()
         }).catch(err => {
-          // console.log(err.response)
           setIsLoadiing(false)
           if(err.response){
             if(err.response.data.errors.location === 'barcode'){
@@ -338,10 +541,17 @@ function UserRegisterProductManual(props) {
 
   const { t } = useTranslation('common')
 
+  const [loadData, setLoadData] = useState(true)
   useEffect(() => {
     let m = true
     if(m){
-      Promise.all([getOptions(), getTokenGTM()]).then((res)  => {
+      Promise.all([
+          getOptions(), 
+          getTokenGTM(), 
+          getProvinceFromAPI(), 
+          getDealer(),
+          getBrandFromAPI()
+      ]).then((res)  => {
         if(props.data){ 
           const { data } = props
           const { data: { data: allStore } } = res[1]
@@ -362,6 +572,42 @@ function UserRegisterProductManual(props) {
           setShowFile1(props.image_url + data.warranty_card)
           setShowFile2(props.image_url + data.invoice)
           setShowFile3(props.image_url + data.serial)
+          setSelectedProv([{
+            province: data.product_pending_information.locationStateName,
+            province_code: data.product_pending_information.locationStateCode,
+          }])
+          setSelectedCity([{
+            city: data.product_pending_information.locationCityName,
+            cityCode: data.product_pending_information.locationCityCode
+          }])
+          setSelectedDistrict([{
+            district: data.product_pending_information.locationLocalityName,
+            districtCode: data.product_pending_information.locationLocalityCode
+          }])
+          setSelectedStreet([{
+            street: data.product_pending_information.locationStreetName,
+            zipCode: data.product_pending_information.locationPinCode,
+            province: data.product_pending_information.locationStateName,
+            province_code: data.product_pending_information.locationStateCode,
+            city: data.product_pending_information.locationCityName,
+            cityCode: data.product_pending_information.locationCityCode,
+            district: data.product_pending_information.locationLocalityName,
+            districtCode: data.product_pending_information.locationLocalityCode
+          }])
+          setSelectedDealer([{
+            name: data.product_pending_information.dealerName
+          }])
+          setSelectedCategory([{
+            categoryName: data.category,
+            categoryValue: data.product_pending_information.productCode
+          }])
+          setSelectedBrand([{
+            brandName: data.brand,
+            brandValue: data.product_pending_information.brandCode
+          }])
+          setLoadData(false)
+        }else{
+          setLoadData(false)
         } 
       })
     }
@@ -398,325 +644,473 @@ function UserRegisterProductManual(props) {
           <div className="title">
             <p>Data Product</p>
           </div>
-          <form onSubmit={handleSubmit}>
-            <div className="row">
-              <div className="col-lg-6">
-                <div className="mb-lg-5 mb-4">
-                  <label htmlFor="barcode" className="form-label">
-                    Barcode
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="barcode"
-                    value={barcode}
-                    disabled="disabled"
-                  />
-                </div>
-              </div>
-
-              <div className="col-lg-6">
-                <div className="mb-lg-5 mb-4">
-                  <label htmlFor="brand" className="form-label">
-                    Brand
-                  </label>
-                  <select name='brand' disabled onChange={onChange} value={form.brand} className="form-select" aria-label="Default select example" placeholder='choose brand'>
-                    <option value='' disabled>Choose One Brand</option>
-                    <option value="AQUA">AQUA</option>
-                  </select>
-                  <div className="text-danger">{errorBrand}</div>
-                </div>
-              </div>
-
-              {/* <div className="col-lg-6">
-                <div className="mb-lg-5 mb-4">
-                  <label htmlFor="product-model" className="form-label">
-                    Product Model
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="product-model"
-                    value={form.product_model}
-                    onChange={onChange}
-                    name='product_model'
-                  />
-                  <div className="text-danger">{errorProductModel}</div>
-                </div>
-              </div> */}
-              {/* {console.log(options)} */}
-              <div className="col-lg-6">
-                <div className="mb-lg-5 mb-4">
-                  <label htmlFor="product-model" className="form-label">
-                    Product Model
-                  </label>
-                  <Typeahead
-                    onInputChange={(v) => {
-                      setForm({
-                        ...form,
-                        product_model: v
-                      })
-                    }}
-                    inputProps={{ className: isValid }}
-                    id="basic-typeahead-single"
-                    labelKey="name"
-                    onChange={setSelected}
-                    options={options.filter(v => v)}
-                    placeholder="Choose a product model..."
-                    selected={selected}
-                  />
-                  <div className="text-danger">{errorProductModel}</div>
-                </div>
-              </div>
-
-              <div className="col-lg-6">
-                <div className="mb-lg-5 mb-4">
-                  <label htmlFor="serial-number" className="form-label">
-                    Serial Number
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="serial-number"
-                    value={barcode}
-                    disabled="disabled"
-                  />
-                </div>
-              </div>
-
-
-              <div className="col-lg-6">
-                <div className="mb-lg-5 mb-4">
-                  <label htmlFor="category" className="form-label">
-                    Category
-                  </label>
-                  <select name='category' onChange={onChange} value={form.category} className="form-select" aria-label="Default select example" placeholder='choose brand'>
-                    <option value='' disabled>Choose One Category</option>
-                    <option value="Refrigerator">Kulkas</option>
-                    <option value="Freezer">Freezer</option>
-                    <option value="Showcase">Showcase</option>
-                    <option value="Mesin Cuci Twin Tube">Mesin Cuci Twin Tube</option>
-                    <option value="Mesin Cuci Top Load">Mesin Cuci Top Load</option>
-                    <option value="Drum Washing Machine">Mesin Cuci Front Load</option>
-                    <option value="TV">LED TV</option>
-                    <option value="Home Air Conditioner">Air Conditioner</option>
-                    <option value="Blender and Juicer">Blender and Juicer</option>
-                    <option value="Electric Kettle">Electric Kettle</option>
-                    <option value="Microwave">Microwave</option>
-                    <option value="Rice Cooker">Rice Cooker</option>
-                    <option value="Vacuum Cleaner">Vacuum Cleaner</option>
-                    <option value="Travel Cooker">Travel Cooker</option>
-                    <option value="Electric Fan">Electric Fan</option>
-                    <option value="Commercial Air Conditioner">Commercial Air Conditioner</option>
-                    <option value="Water Heater">Water Heater</option>
-                    <option value="Cooker Hood">Cooker Hood</option>
-                    <option value="Kompor">Kompor</option>
-                  </select>                  
-                  <div className="text-danger">{errorCategory}</div>
-                </div>
-              </div>
-
-              <div className="col-lg-6">
-                <div className="mb-lg-5 mb-4">
-                  <label htmlFor="date-purchase" className="form-label">
-                    Date of Purchase
-                  </label>
-                  <input
-                    type="date"
-                    max={maxPurchaseDate}
-                    className={`form-control ${
-                      errorDate !== '' ? 'is-invalid' : null
-                    }`}
-                    value={userData.date}
-                    // value={data !== '' && data.DataOfPurchase.slice(0, 10)}
-                    id="date-purchase"
-                    onChange={(e) =>
-                      setUserData({
-                        ...userData,
-                        ['date']: e.target.value,
-                      })
-                    }
-                  />
-                  <div className="invalid-feedback">{errorDate}</div>
-                </div>
-              </div>
-
-              <div className="col-lg-6">
-                <div className="mb-lg-5 mb-4">
-                  <label htmlFor="store-location" className="form-label">
-                    Store Name
-                  </label>
-                  <SelectSearch
-                    options={newDataStore}
-                    value={storeValue}
-                    onChange={onChangeStore}
-                    search
-                    filterOptions={fuzzySearch}
-                    placeholder="Search something"
-                  />
-                  <div className="text-danger" style={{ fontSize: 14 }}>
-                    {errorStore}
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-lg-6">
-                <div className="mb-lg-5 mb-4">
-                  <label htmlFor="store-location" className="form-label">
-                    Store Location
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="store-location"
-                    value={storeStreet}
-                    disabled
-                  />
-                </div>
-              </div>
-
-              <div className="col-lg-4">
-                {showFile1 !== '' ? (
-                  <div className="col-lg-12 d-flex justify-content-center mb-3">
-                    <img src={showFile1} alt="file" className="img-fluid" />
-                  </div>
-                ) : null}
-                <div className="btn-upload-custom mb-4">
-                  <div className="dropzone-wrapper">
-                    <div className="dropzone-desc">
-                      <span className="material-icons"> cloud_upload </span>
-                      {
-                        showFile1 !== '' ? 
-                        <p style={{ fontSize: '0.8rem' }}>Re-upload Warranty Card</p> :
-                        <p style={{ fontSize: '0.8rem' }}>Attach Your Warranty Card Here</p>
-                      }
-                    </div>
+          {!loadData ?
+          <>
+            <form onSubmit={handleSubmit}>
+              <div className="row">
+                <div className="col-lg-6">
+                  <div className="mb-lg-5 mb-4">
+                    <label htmlFor="barcode" className="form-label">
+                      Barcode
+                    </label>
                     <input
-                      type="file"
-                      name="warranty_card"
-                      aria-label="file"
-                      className="dropzone"
-                      onChange={onChangeFile}
+                      type="text"
+                      className="form-control"
+                      id="barcode"
+                      value={barcode}
+                      disabled="disabled"
                     />
-                    {/* { errorData.file } */}
                   </div>
-                  <div className="text-danger">{errorFile1}</div>
                 </div>
-              </div>
 
-              <div className="col-lg-4">
-                {showFile2 !== '' ? (
-                  <div className="col-lg-12 d-flex justify-content-center mb-3">
-                    <img src={showFile2} alt="file" className="img-fluid" />
-                  </div>
-                ) : null}
-                <div className="btn-upload-custom mb-4">
-                  <div className="dropzone-wrapper">
-                    <div className="dropzone-desc">
-                      <span className="material-icons"> cloud_upload </span>
-                      {
-                        showFile2 !== '' ? 
-                        <p style={{ fontSize: '0.8rem' }}>Re-upload Invoice</p> :
-                        <p style={{ fontSize: '0.8rem' }}>Attach Your Invoice Here</p>
-                      }
-                    </div>
-                    <input
-                      type="file"
-                      name="invoice_card"
-                      className="dropzone"
-                      aria-label="file"
-                      onChange={onChangeFile}
+                {/* Brand */}
+                <div className="col-lg-6">
+                  {/* <div className="mb-lg-5 mb-4">
+                    <label htmlFor="brand" className="form-label">
+                      Brand
+                    </label>
+                    <select name='brand' disabled onChange={onChange} value={form.brand} className="form-select" aria-label="Default select example" placeholder='choose brand'>
+                      <option value='' disabled>Choose One Brand</option>
+                      <option value="AQUA">AQUA</option>
+                    </select>
+                    <div className="text-danger">{errorBrand}</div>
+                  </div> */}
+                  <div className="mb-lg-5 mb-4">
+                    <label htmlFor="product-model" className="form-label">
+                      Brand
+                    </label>
+                    <Typeahead
+                      onInputChange={(v) => {
+                        setBrandInput(v)
+                      }}
+                      id="basic-typeahead-single"
+                      labelKey="brandName"
+                      onChange={setSelectedBrand}
+                      options={brand}
+                      placeholder="Choose brand..."
+                      selected={selectedBrand}
                     />
-                    {/* { errorData.file } */}
                   </div>
-                  <div className="text-danger">{errorFile2}</div>
                 </div>
-              </div>
 
-              <div className="col-lg-4">
-                {showFile3 !== '' ? (
-                  <div className="col-lg-12 d-flex justify-content-center mb-3">
-                    <img src={showFile3} alt="file" className="img-fluid" />
-                  </div>
-                ) : null}
-                <div className="btn-upload-custom mb-4">
-                  <div className="dropzone-wrapper">
-                    <div className="dropzone-desc">
-                      <span className="material-icons"> cloud_upload </span>
-                      {
-                        showFile3 !== '' ? 
-                        <p style={{ fontSize: '0.8rem' }}>Re-upload Serial Number</p> :
-                        <p style={{ fontSize: '0.8rem' }}>Attach Your Serial Number</p>
-                      }
-                    </div>
+                {/* <div className="col-lg-6">
+                  <div className="mb-lg-5 mb-4">
+                    <label htmlFor="product-model" className="form-label">
+                      Product Model
+                    </label>
                     <input
-                      type="file"
-                      name="serial_number"
-                      className="dropzone"
-                      aria-label="file"
-                      onChange={onChangeFile}
+                      type="text"
+                      className="form-control"
+                      id="product-model"
+                      value={form.product_model}
+                      onChange={onChange}
+                      name='product_model'
                     />
-                    {/* { errorData.file } */}
+                    <div className="text-danger">{errorProductModel}</div>
                   </div>
-                  <div className="text-danger">{errorFile2}</div>
+                </div> */}
+                <div className="col-lg-6">
+                  <div className="mb-lg-5 mb-4">
+                    <label htmlFor="product-model" className="form-label">
+                      Product Model
+                    </label>
+                    <Typeahead
+                      onInputChange={(v) => {
+                        setForm({
+                          ...form,
+                          product_model: v
+                        })
+                      }}
+                      inputProps={{ className: isValid }}
+                      id="basic-typeahead-single"
+                      labelKey="name"
+                      onChange={setSelected}
+                      options={options.filter(v => v)}
+                      placeholder="Choose a product model..."
+                      selected={selected}
+                    />
+                    <div className="text-danger">{errorProductModel}</div>
+                  </div>
                 </div>
-              </div>
 
-              <div className="col-lg-12">
-                <div className="mb-4">
-                  <div className="form-check">
+                <div className="col-lg-6">
+                  <div className="mb-lg-5 mb-4">
+                    <label htmlFor="serial-number" className="form-label">
+                      Serial Number
+                    </label>
                     <input
-                      className="form-check-input"
-                      type="checkbox"
-                      value="Y"
+                      type="text"
+                      className="form-control"
+                      id="serial-number"
+                      value={barcode}
+                      disabled="disabled"
+                    />
+                  </div>
+                </div>
+
+                {/* Adress */}
+                <div className="col-lg-6">
+                  <div className="mb-lg-5 mb-4">
+                    <label htmlFor="product-model" className="form-label">
+                      Province
+                    </label>
+                    <Typeahead
+                      onInputChange={(v) => {
+                        setAddress({
+                          ...address,
+                          prov: v
+                        })
+                      }}
+                      id="basic-typeahead-single"
+                      labelKey="province"
+                      onChange={setSelectedProv}
+                      options={prov}
+                      placeholder="Choose province..."
+                      selected={selectedProv}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div className="mb-lg-5 mb-4">
+                    <label htmlFor="product-model" className="form-label">
+                      City
+                    </label>
+                    <Typeahead
+                      disabled={!selectedProv.length > 0}
+                      onInputChange={(v) => {
+                        setAddress({
+                          ...address,
+                          city: v
+                        })
+                      }}
+                      id="basic-typeahead-single"
+                      labelKey="city"
+                      onChange={setSelectedCity}
+                      options={city}
+                      placeholder="Choose city..."
+                      selected={selectedCity}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div className="mb-lg-5 mb-4">
+                    <label htmlFor="product-model" className="form-label">
+                      District
+                    </label>
+                    <Typeahead
+                      disabled={!selectedCity.length > 0}
+                      onInputChange={(v) => {
+                        setAddress({
+                          ...address,
+                          district: v
+                        })
+                      }}
+                      id="basic-typeahead-single"
+                      labelKey="district"
+                      onChange={setSelectedDistrict}
+                      options={district}
+                      placeholder="Choose district..."
+                      selected={selectedDistrict}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div className="mb-lg-5 mb-4">
+                    <label htmlFor="product-model" className="form-label">
+                      Street
+                    </label>
+                    <Typeahead
+                      disabled={!selectedDistrict.length > 0}
+                      onInputChange={(v) => {
+                        setAddress({
+                          ...address,
+                          street: v
+                        })
+                      }}
+                      id="basic-typeahead-single"
+                      labelKey="street"
+                      onChange={setSelectedStreet}
+                      options={street}
+                      placeholder="Choose street..."
+                      selected={selectedStreet}
+                    />
+                  </div>
+                </div>
+
+                {/* Dealer */}
+                <div className="col-lg-12">
+                  <div className="mb-lg-5 mb-4">
+                    <label htmlFor="product-model" className="form-label">
+                      Dealer
+                    </label>
+                    <Typeahead
+                      onInputChange={(v) => {
+                        setDealerInput(v)
+                      }}
+                      id="basic-typeahead-single"
+                      labelKey="name"
+                      onChange={setSelectedDealer}
+                      options={dealer}
+                      placeholder="Choose dealer..."
+                      selected={selectedDealer}
+                    />
+                  </div>
+                </div>
+
+                {/* Category */}
+                <div className="col-lg-6">
+                  {/* <div className="mb-lg-5 mb-4">
+                    <label htmlFor="category" className="form-label">
+                      Category
+                    </label>
+                    <select name='category' onChange={onChange} value={form.category} className="form-select" aria-label="Default select example" placeholder='choose brand'>
+                      <option value='' disabled>Choose One Category</option>
+                      <option value="Refrigerator">Kulkas</option>
+                      <option value="Freezer">Freezer</option>
+                      <option value="Showcase">Showcase</option>
+                      <option value="Mesin Cuci Twin Tube">Mesin Cuci Twin Tube</option>
+                      <option value="Mesin Cuci Top Load">Mesin Cuci Top Load</option>
+                      <option value="Drum Washing Machine">Mesin Cuci Front Load</option>
+                      <option value="TV">LED TV</option>
+                      <option value="Home Air Conditioner">Air Conditioner</option>
+                      <option value="Blender and Juicer">Blender and Juicer</option>
+                      <option value="Electric Kettle">Electric Kettle</option>
+                      <option value="Microwave">Microwave</option>
+                      <option value="Rice Cooker">Rice Cooker</option>
+                      <option value="Vacuum Cleaner">Vacuum Cleaner</option>
+                      <option value="Travel Cooker">Travel Cooker</option>
+                      <option value="Electric Fan">Electric Fan</option>
+                      <option value="Commercial Air Conditioner">Commercial Air Conditioner</option>
+                      <option value="Water Heater">Water Heater</option>
+                      <option value="Cooker Hood">Cooker Hood</option>
+                      <option value="Kompor">Kompor</option>
+                    </select>                  
+                    <div className="text-danger">{errorCategory}</div>
+                  </div> */}
+                  <div className="col-lg-12">
+                    <div className="mb-lg-5 mb-4">
+                      <label htmlFor="product-model" className="form-label">
+                        Category
+                      </label>
+                      <Typeahead
+                        onInputChange={(v) => {
+                          setDealerInput(v)
+                        }}
+                        id="basic-typeahead-single"
+                        labelKey="categoryName"
+                        onChange={setSelectedCategory}
+                        options={category}
+                        placeholder="Choose category..."
+                        selected={selectedCategory}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-lg-6">
+                  <div className="mb-lg-5 mb-4">
+                    <label htmlFor="date-purchase" className="form-label">
+                      Date of Purchase
+                    </label>
+                    <input
+                      type="date"
+                      max={maxPurchaseDate}
+                      className={`form-control ${
+                        errorDate !== '' ? 'is-invalid' : null
+                      }`}
+                      value={userData.date}
+                      // value={data !== '' && data.DataOfPurchase.slice(0, 10)}
+                      id="date-purchase"
                       onChange={(e) =>
                         setUserData({
                           ...userData,
-                          ['agreements']: e.target.value,
+                          ['date']: e.target.value,
                         })
                       }
-                      checked={userData.agreements == 'Y'}
                     />
-                    <label className="form-check-label">
-                      {t('form_product_register.wa_flag')}
-                    </label>
+                    <div className="invalid-feedback">{errorDate}</div>
                   </div>
                 </div>
-              </div>
-              
-              {
-                errorGSIS !== '' ?
-                <div className="text-danger">
-                  {errorGSIS}
-                </div> : null
-              }
-              {
-                errorPost !== '' ?
-                <div className="text-danger">
-                  {errorPost}
-                </div> : null
-              }
-            </div>
 
-            <div className="d-grid gap-2">
-              <button
-                className="btn btn-color-primary py-lg-3 btn-submit"
-                disabled={isLoading ? 'disabled' : null}
-              >
-                <div className="d-flex justify-content-center align-items-center">
-                  {
-                    isLoading ?
-                    <div className="spinner-border text-primary me-3" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </div> : null
-                  }
-                  <div>
-                    Product Registration
+                <div className="col-lg-6">
+                  <div className="mb-lg-5 mb-4">
+                    <label htmlFor="store-location" className="form-label">
+                      Store Name
+                    </label>
+                    <SelectSearch
+                      options={newDataStore}
+                      value={storeValue}
+                      onChange={onChangeStore}
+                      search
+                      filterOptions={fuzzySearch}
+                      placeholder="Search something"
+                    />
+                    <div className="text-danger" style={{ fontSize: 14 }}>
+                      {errorStore}
+                    </div>
                   </div>
                 </div>
-              </button>
-            </div>
-          </form>
+
+                <div className="col-lg-6">
+                  <div className="mb-lg-5 mb-4">
+                    <label htmlFor="store-location" className="form-label">
+                      Store Location
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="store-location"
+                      value={storeStreet}
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                <div className="col-lg-4">
+                  {showFile1 !== '' ? (
+                    <div className="col-lg-12 d-flex justify-content-center mb-3">
+                      <img src={showFile1} alt="file" className="img-fluid" />
+                    </div>
+                  ) : null}
+                  <div className="btn-upload-custom mb-4">
+                    <div className="dropzone-wrapper">
+                      <div className="dropzone-desc">
+                        <span className="material-icons"> cloud_upload </span>
+                        {
+                          showFile1 !== '' ? 
+                          <p style={{ fontSize: '0.8rem' }}>Re-upload Warranty Card</p> :
+                          <p style={{ fontSize: '0.8rem' }}>Attach Your Warranty Card Here</p>
+                        }
+                      </div>
+                      <input
+                        type="file"
+                        name="warranty_card"
+                        aria-label="file"
+                        className="dropzone"
+                        onChange={onChangeFile}
+                      />
+                      {/* { errorData.file } */}
+                    </div>
+                    <div className="text-danger">{errorFile1}</div>
+                  </div>
+                </div>
+
+                <div className="col-lg-4">
+                  {showFile2 !== '' ? (
+                    <div className="col-lg-12 d-flex justify-content-center mb-3">
+                      <img src={showFile2} alt="file" className="img-fluid" />
+                    </div>
+                  ) : null}
+                  <div className="btn-upload-custom mb-4">
+                    <div className="dropzone-wrapper">
+                      <div className="dropzone-desc">
+                        <span className="material-icons"> cloud_upload </span>
+                        {
+                          showFile2 !== '' ? 
+                          <p style={{ fontSize: '0.8rem' }}>Re-upload Invoice</p> :
+                          <p style={{ fontSize: '0.8rem' }}>Attach Your Invoice Here</p>
+                        }
+                      </div>
+                      <input
+                        type="file"
+                        name="invoice_card"
+                        className="dropzone"
+                        aria-label="file"
+                        onChange={onChangeFile}
+                      />
+                      {/* { errorData.file } */}
+                    </div>
+                    <div className="text-danger">{errorFile2}</div>
+                  </div>
+                </div>
+
+                <div className="col-lg-4">
+                  {showFile3 !== '' ? (
+                    <div className="col-lg-12 d-flex justify-content-center mb-3">
+                      <img src={showFile3} alt="file" className="img-fluid" />
+                    </div>
+                  ) : null}
+                  <div className="btn-upload-custom mb-4">
+                    <div className="dropzone-wrapper">
+                      <div className="dropzone-desc">
+                        <span className="material-icons"> cloud_upload </span>
+                        {
+                          showFile3 !== '' ? 
+                          <p style={{ fontSize: '0.8rem' }}>Re-upload Serial Number</p> :
+                          <p style={{ fontSize: '0.8rem' }}>Attach Your Serial Number</p>
+                        }
+                      </div>
+                      <input
+                        type="file"
+                        name="serial_number"
+                        className="dropzone"
+                        aria-label="file"
+                        onChange={onChangeFile}
+                      />
+                      {/* { errorData.file } */}
+                    </div>
+                    <div className="text-danger">{errorFile2}</div>
+                  </div>
+                </div>
+
+                <div className="col-lg-12">
+                  <div className="mb-4">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="Y"
+                        onChange={(e) =>
+                          setUserData({
+                            ...userData,
+                            ['agreements']: e.target.value,
+                          })
+                        }
+                        checked={userData.agreements == 'Y'}
+                      />
+                      <label className="form-check-label">
+                        {t('form_product_register.wa_flag')}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                
+                {
+                  errorGSIS !== '' ?
+                  <div className="text-danger">
+                    {errorGSIS}
+                  </div> : null
+                }
+                {
+                  errorPost !== '' ?
+                  <div className="text-danger">
+                    {errorPost}
+                  </div> : null
+                }
+              </div>
+
+              <div className="d-grid gap-2">
+                <button
+                  className="btn btn-color-primary py-lg-3 btn-submit"
+                  disabled={isLoading ? 'disabled' : null}
+                >
+                  <div className="d-flex justify-content-center align-items-center">
+                    {
+                      isLoading ?
+                      <div className="spinner-border text-primary me-3" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </div> : null
+                    }
+                    <div>
+                      Product Registration
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </form>
+          </>
+          : 'Loading..'
+          }
         </div>
       </div> 
       <AlertModal data={messageModal}/>

@@ -251,7 +251,9 @@ function UserRegisterProduct(props) {
           ProductName: data.productModel,
           ProductID: data.productCode,
           ProductCategoryName: data.category,
-          Brand: data.brand
+          Brand: data.brand,
+          BrandValue: data.brandValue,
+          CategoryValue: data.categoryValue
         })
       }
     } catch (err) {
@@ -298,6 +300,18 @@ function UserRegisterProduct(props) {
     });
   }
 
+  const fetchDataProductHGWMS = async () => {
+    try {
+      const formData = new FormData()
+      formData.append('serialNumber', barcode)
+      const res = await axios.post(props.hgwms_url, formData)
+      getProductGcc('BS029NE8A00')
+      // getProductGcc(res.data.barcodeInfo?.productCode)
+    } catch (error) {
+      // console.log(error)
+    }
+  }
+
   const fetchDataProductWMS = async () => {
     await axios.get(props.oapi_url + 'wms-order-out', {
       params: {
@@ -307,7 +321,9 @@ function UserRegisterProduct(props) {
       let data = res.data
       let count = Object.keys(data).length
       if(count > 0) {
-        getProductGcc('CA0J30E0300')
+        getProductGcc(data.PRODUCT_CODE)
+        // getProductGcc('BS029NE8A00')
+        // getProductGcc(data.PRODUCT_DESC_ZH)
         // let modelData = ModelCheck(data.PRODUCT_DESC_ZH.substring(0,4))
         // setData({
         //   Barcode: data.BARCODE,
@@ -319,7 +335,12 @@ function UserRegisterProduct(props) {
       } else {
         setData('')
       }
+    }).catch(err => {
+      if(err.response?.status == 404){
+        fetchDataProductHGWMS();
+      }
     })
+    
   }
   
   async function fetchDataStore(gtmToken) {
@@ -409,7 +430,7 @@ function UserRegisterProduct(props) {
     setIsLoadiing(true)
     var id = localStorage.getItem('id');
     var phone = localStorage.getItem('phone');
-
+    const phoneNumber = `${dataUser.phone}`
     if ( 
         userData.date !== '' && 
         userData.file1 !== '' && 
@@ -427,36 +448,43 @@ function UserRegisterProduct(props) {
       // GCC integrating
       formdata.append('FirstName', dataUser.first_name);
       formdata.append('LastName', dataUser.last_name);
-      formdata.append('Gender', dataUser.gender == "Perempuan" ? 1 : 0);
+      formdata.append('Gender', dataUser.gender == "Pria" ? 0 : 1);
       formdata.append('BirthDate', dataUser.birth_date);
       formdata.append('LocationPinCode', selectedStreet[0].zipCode);
-      formdata.append('LocationStateCode', selectedStreet[0].province_code);
-      formdata.append('LocationStateName', selectedStreet[0].province);
-      formdata.append('LocationCityCode', selectedStreet[0].cityCode);
-      formdata.append('LocationCityName', selectedStreet[0].city);
-      formdata.append('LocationLocalityCode', selectedStreet[0].districtCode);
-      formdata.append('LocationLocalityName', selectedStreet[0].district);
+      formdata.append('LocationStateCode', selectedProv[0].province_code);
+      formdata.append('LocationStateName', selectedProv[0].province);
+      formdata.append('LocationCityCode', selectedCity[0].cityCode);
+      formdata.append('LocationCityName', selectedCity[0].city);
+      formdata.append('LocationLocalityCode', selectedDistrict[0].districtCode);
+      formdata.append('LocationLocalityName', selectedDistrict[0].district);
       formdata.append('Address', dataUser.address);
       formdata.append('Email', dataUser.email);
-      formdata.append('MobilePhone', dataUser.phone);
+      // formdata.append('MobilePhone', phoneNumber.replace(/^62/, "0"));
+      formdata.append('MobilePhone', phoneNumber);
+      // formdata.append('MobilePhone', '0855522658458');
       formdata.append('Telphone', '');
       formdata.append('OfficePhone', dataUser.phone_office);
-      formdata.append('BrandCode', data.Brand);
-      formdata.append('ProductCode', data.ProductCategoryName);
+      formdata.append('BrandCode', data.BrandValue);
+      // formdata.append('BrandCode', '001');
+      formdata.append('ProductCode', data.CategoryValue);
+      // formdata.append('ProductCode', '01');
       formdata.append('ModelCode', data.ProductName);
       formdata.append('SerialNumber', data.Barcode);
+      // formdata.append('SerialNumber', 'AA9WU3E0B00N4K9S0090');
       formdata.append('PurchaseDate', newPurcaseDate);
       formdata.append('WarrantyCard', userData.file1 === '' ? '' : userData.file1);
       formdata.append('Invoice', userData.file2 === '' ? '' : userData.file2);
       formdata.append('CustomerId', dataUser.id);
       formdata.append('Barcode', data.Barcode);
+      // formdata.append('Barcode', 'AA9WU3E0B00N4K9S0090');
       formdata.append('ProductId', data.ProductID);
       formdata.append('ProductName', data.ProductName);
       formdata.append('StoreLocation', storeStreet);
       formdata.append('StoreName', storeValue);
       formdata.append('DealerName', selectedDealer[0].name);
       formdata.append('WhatsAppFlag', userData.agreements === 'Y' ? 'Y' : 'N');
-      formdata.append('EwarrantyInfo', 'Test Ewarranty Info');
+      formdata.append('EwarrantyInfo', '0');
+      formdata.append('BrandName', data.Brand);
 
       const postToGCC = async (formData) => {
         // console.log(Object.fromEntries(formData))
@@ -466,7 +494,6 @@ function UserRegisterProduct(props) {
               Authorization: 'Bearer ' + token,
             },
           })
-          console.log(res.data)
           setMessageModal({
             status: 'success',
             title: 'Thanks You',
@@ -1090,7 +1117,8 @@ const mapStateToProps = (state) => {
     gsis_url: state.GSIS_URL,
     image_url: state.URL,
     gtm_token_url: state.GTM_TOKEN_URL,
-    oapi_url: state.OAPI_URL
+    oapi_url: state.OAPI_URL,
+    hgwms_url: state.HGWMS_URL
   };
 };
 
