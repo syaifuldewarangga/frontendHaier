@@ -14,12 +14,37 @@ const CameraScan = (props) => {
   const [barcode, setBarcode] = useState('');
   const [inputBarcodeNumber, setInputBarcodeNumber] = useState(false);
   const [isLoading, setIsLoading] = useState(false) 
+  var token = localStorage.getItem('access_token');
 
   useEffect(() => {
     return () => {
       if (props.cameraStatus) stopScanner();
     };
   }, []);
+
+  const getProductGcc = async (product_id) => {
+    try {
+      const res = await axios.get(props.base_url + 'v2/product/gcc', {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+        params: {
+          param: product_id,
+        }
+      })
+      if(res.data.length > 0){
+        const data = res.data[0]
+        setData({
+          Barcode: barcode,
+          ProductName: data.productModel,
+        })
+      }
+    } catch (err) {
+      // console.log(err.response)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const productAPIGTM = async (gtmToken) => {
     await axios.post(props.gtm_url + 'pmtcommondata/GetProfileUserByCondition', {
@@ -55,10 +80,7 @@ const CameraScan = (props) => {
       formData.append('serialNumber', barcode)
       const res = await axios.post(props.hgwms_url, formData)
       if(!!res.data.barcodeInfo?.serialNumber){
-        setData({
-          Barcode: res.data.barcodeInfo?.serialNumber,
-          ProductName: res.data.barcodeInfo?.productModel
-        })
+        getProductGcc(res.data.barcodeInfo?.productCode)
       }
       setIsLoading(false)
     } catch (error) {
@@ -76,11 +98,7 @@ const CameraScan = (props) => {
       let data = res.data
       let count = Object.keys(data).length
       if(count > 0) {
-        setData({
-          Barcode: data.BARCODE,
-          ProductName: data.PRODUCT_DESC_ZH
-        })
-        setIsLoading(false)
+        getProductGcc(data.PRODUCT_CODE)
       } else {
         fetchDataProductHGWMS();
       }
@@ -90,6 +108,7 @@ const CameraScan = (props) => {
       }
     })
   }
+  
 
   const fetchDataProductGTM = async () => {
     await axios.post(props.gtm_token_url, {
@@ -427,7 +446,8 @@ const mapStateToProps = (state) => {
     gtm_url: state.GTM_URL,
     gtm_token_url: state.GTM_TOKEN_URL,
     oapi_url: state.OAPI_URL,
-    hgwms_url: state.HGWMS_URL
+    hgwms_url: state.HGWMS_URL,
+    base_url: state.BASE_URL
   };
 };
 

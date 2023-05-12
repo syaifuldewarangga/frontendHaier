@@ -305,8 +305,8 @@ function UserRegisterProduct(props) {
       const formData = new FormData()
       formData.append('serialNumber', barcode)
       const res = await axios.post(props.hgwms_url, formData)
-      getProductGcc('BS029NE8A00')
-      // getProductGcc(res.data.barcodeInfo?.productCode)
+      // getProductGcc('BS029NE8A00')
+      getProductGcc(res.data.barcodeInfo?.productCode)
     } catch (error) {
       // console.log(error)
     }
