@@ -6,7 +6,7 @@ const GSIS_URL = 'https://testewarranty.aquaelektronik.com:9003/oapi/gsis/'
 const OAPI_URL = 'https://testewarranty.aquaelektronik.com:9003/oapi/'
 
 // Development
-const HGWMS_URL = 'http://seawmstest.haier.net/wmsrest/barcodeInfoTrade/barcodeInfo'
+const HGWMS_URL = 'https://seawmstest.haier.net/wmsrest/barcodeInfoTrade/barcodeInfo'
 
 export {
     BASE_URL,
