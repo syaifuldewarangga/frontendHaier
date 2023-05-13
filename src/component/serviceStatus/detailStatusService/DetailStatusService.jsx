@@ -250,7 +250,7 @@ const DetailStatusService = (props) => {
                                       }
                                     </td>
                                     <td className="text-nowrap">
-                                      {data.WorkOrderNumber !== "" && !!data.ChangeTime ? moment(data.ChangeTime).format('LL')  : '-'}
+                                      {data.WorkOrderNumber !== "" && !!data.ChangeTime ? moment.unix(data.ChangeTime).format('LL')  : '-'}
                                     </td>
                                   </tr>
                                 </tbody>
