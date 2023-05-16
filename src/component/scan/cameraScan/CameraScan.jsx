@@ -80,7 +80,13 @@ const CameraScan = (props) => {
       formData.append('serialNumber', barcode)
       const res = await axios.post(props.hgwms_url, formData)
       if(!!res.data.barcodeInfo?.serialNumber){
-        getProductGcc(res.data.barcodeInfo?.productCode)
+        let product_code_length = res.data.barcodeInfo?.productCode.split('').length
+        let product_code =  res.data.barcodeInfo?.productCode
+        if(product_code_length == 9){
+          product_code = `${product_code}00`
+        }
+        getProductGcc(product_code)
+        // getProductGcc('BY0K1FE0000')
       }
       setIsLoading(false)
     } catch (error) {
@@ -98,7 +104,12 @@ const CameraScan = (props) => {
       let data = res.data
       let count = Object.keys(data).length
       if(count > 0) {
-        getProductGcc(data.PRODUCT_CODE)
+        let product_code_length = data.PRODUCT_CODE.split('').length
+        let product_code =  data.PRODUCT_CODE
+        if(product_code_length == 9){
+          product_code = `${data.PRODUCT_CODE}00`
+        }
+        getProductGcc(product_code)
       } else {
         fetchDataProductHGWMS();
       }

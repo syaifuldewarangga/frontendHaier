@@ -306,7 +306,12 @@ function UserRegisterProduct(props) {
       formData.append('serialNumber', barcode)
       const res = await axios.post(props.hgwms_url, formData)
       // getProductGcc('BS029NE8A00')
-      getProductGcc(res.data.barcodeInfo?.productCode)
+      let product_code_length = res.data.barcodeInfo?.productCode.split('').length
+      let product_code =  res.data.barcodeInfo?.productCode
+      if(product_code_length == 9){
+        product_code = `${product_code}00`
+      }
+      getProductGcc(product_code)
     } catch (error) {
       // console.log(error)
     }
@@ -321,7 +326,12 @@ function UserRegisterProduct(props) {
       let data = res.data
       let count = Object.keys(data).length
       if(count > 0) {
-        getProductGcc(data.PRODUCT_CODE)
+        let product_code_length = data.PRODUCT_CODE.split('').length
+        let product_code =  data.PRODUCT_CODE
+        if(product_code_length == 9){
+          product_code = `${data.PRODUCT_CODE}00`
+        }
+        getProductGcc(product_code)
         // getProductGcc('BS029NE8A00')
         // getProductGcc(data.PRODUCT_DESC_ZH)
         // let modelData = ModelCheck(data.PRODUCT_DESC_ZH.substring(0,4))
