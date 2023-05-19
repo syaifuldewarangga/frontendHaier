@@ -31,6 +31,22 @@ const FormLogin = (props) => {
     }
   };
 
+  const onPastePhoneNumber = (e) => {
+    e.preventDefault();
+    const pastedValue = e.clipboardData.getData('text/plain');
+    // Remove any non-digit characters
+    let value = pastedValue.replace(/\D/g, '');
+
+    // Replace leading 0 with 62
+    if (value.startsWith('0')) {
+      value = `62${value.slice(1)}`;
+    }
+    setData({
+      ...data,
+      phone_number: value
+    });
+  }
+
   const getProfile = async (token, email) => {
     await axios.get(props.base_url + 'user/get', {
       headers: {
@@ -75,11 +91,11 @@ const FormLogin = (props) => {
           ...data,
           ['salah']: true,
         });
-        console.log(e.response);
+        // console.log(e.response);
       } else if (e.request) {
-        console.log('request : ' + e.request);
+        // console.log('request : ' + e.request);
       } else {
-        console.log('message : ' + e.message);
+        // console.log('message : ' + e.message);
       }
     });
   };
@@ -110,11 +126,11 @@ const FormLogin = (props) => {
             ...data,
             ['salah']: true,
           });
-          console.log(e.response);
+          // console.log(e.response);
         } else if (e.request) {
-          console.log('request : ' + e.request);
+          // console.log('request : ' + e.request);
         } else {
-          console.log('message : ' + e.message);
+          // console.log('message : ' + e.message);
         }
       }).finally(() => {
         setIsLoading(false)
@@ -150,6 +166,7 @@ const FormLogin = (props) => {
                       name="phone_number"
                       onChange={onChangeData}
                       value={data.phone_number}
+                      onPaste={onPastePhoneNumber}
                       required
                     />
                     <div className="invalid-feedback">

@@ -119,6 +119,22 @@ const FormRegister = (props) => {
     getProvinceFromAPI();
   }, []);
 
+  const onPastePhoneNumber = (e) => {
+    e.preventDefault();
+    const pastedValue = e.clipboardData.getData('text/plain');
+    // Remove any non-digit characters
+    let value = pastedValue.replace(/\D/g, '');
+
+    // Replace leading 0 with 62
+    if (value.startsWith('0')) {
+      value = `62${value.slice(1)}`;
+    }
+    setData({
+      ...data,
+      phone: value
+    });
+  }
+
   const onChangeInput = (e) => {
     if (e.target.name === 'province') {
       setDistrict([])
@@ -187,11 +203,15 @@ const FormRegister = (props) => {
       formData.append('birth_date', data.birth_date);
       formData.append('age', data.age);
       formData.append('phone', data.phone);
-      formData.append('province', data.province);
-      formData.append('city', data.city);
-      formData.append('district', data.district);
-      formData.append('sub_district', data.sub_district);
-      formData.append('address', data.address);
+      // formData.append('province', data.province);
+      // formData.append('province', 'SUMATERA BARAT');
+      // formData.append('city', data.city);
+      // formData.append('city', 'PASAMAN BARAT');
+      // formData.append('district', data.district);
+      // formData.append('district', 'PASAMAN');
+      // formData.append('sub_district', data.sub_district);
+      // formData.append('sub_district', 'AUA KUNIANG');
+      // formData.append('address', 'Hardcoded');
       formData.append('password', data.password);
       formData.append('role', 'CUSTOMER');
       // console.table(Object.fromEntries(formData))
@@ -483,6 +503,7 @@ const FormRegister = (props) => {
                               placeholder="Phone"
                               value={data.phone}
                               onChange={onChangeInput}
+                              onPaste={onPastePhoneNumber}
                               required
                             />
                             <div className="invalid-feedback">
@@ -490,8 +511,9 @@ const FormRegister = (props) => {
                             </div>
                           </div>
                         </div>
-
-                        <div className="col-lg-6 mb-3">
+                        
+                        {/* Address */}
+                        {/* <div className="col-lg-6 mb-3">
                           <div className="form-label"> Province*</div>
                           <select
                             className={`form-select ${
@@ -614,7 +636,7 @@ const FormRegister = (props) => {
                           <div className="invalid-feedback">
                             {errorData.address}
                           </div>
-                        </div>
+                        </div> */}
 
                         <div className="col-lg-6 mb-3">
                           <div className="form-label color-primary">

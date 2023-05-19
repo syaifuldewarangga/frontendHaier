@@ -451,7 +451,8 @@ function UserRegisterProductManual(props) {
       formdata.append('location_locality_name', selectedDistrict[0].district);
       formdata.append('brand_code', selectedBrand[0].brandValue);
       formdata.append('product_code', selectedCategory[0].categoryValue);
-      formdata.append('dealer_name', selectedDealer[0].name);
+      // formdata.append('dealer_name', selectedDealer[0].name);
+      formdata.append('dealer_name', 'blank');
       formdata.append('location_street_name', selectedStreet[0].street);
       // setIsLoadiing(false)
       
@@ -518,6 +519,7 @@ function UserRegisterProductManual(props) {
           })
           alertModal()
         }).catch(err => {
+          // console.log(err.response)
           setIsLoadiing(false)
           if(err.response){
             if(err.response.data.errors.location === 'barcode'){
@@ -594,9 +596,9 @@ function UserRegisterProductManual(props) {
             district: data.product_pending_information.locationLocalityName,
             districtCode: data.product_pending_information.locationLocalityCode
           }])
-          setSelectedDealer([{
-            name: data.product_pending_information.dealerName
-          }])
+          // setSelectedDealer([{
+          //   name: data.product_pending_information.dealerName
+          // }])
           setSelectedCategory([{
             categoryName: data.category,
             categoryValue: data.product_pending_information.productCode
@@ -838,7 +840,7 @@ function UserRegisterProductManual(props) {
                 </div>
 
                 {/* Dealer */}
-                <div className="col-lg-12">
+                {/* <div className="col-lg-12">
                   <div className="mb-lg-5 mb-4">
                     <label htmlFor="product-model" className="form-label">
                       Dealer
@@ -855,7 +857,7 @@ function UserRegisterProductManual(props) {
                       selected={selectedDealer}
                     />
                   </div>
-                </div>
+                </div> */}
 
                 {/* Category */}
                 <div className="col-lg-6">

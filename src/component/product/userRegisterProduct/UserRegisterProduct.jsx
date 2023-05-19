@@ -491,7 +491,7 @@ function UserRegisterProduct(props) {
       formdata.append('ProductName', data.ProductName);
       formdata.append('StoreLocation', storeStreet);
       formdata.append('StoreName', storeValue);
-      formdata.append('DealerName', selectedDealer[0].name);
+      formdata.append('DealerName', 'blank');
       formdata.append('WhatsAppFlag', userData.agreements === 'Y' ? 'Y' : 'N');
       formdata.append('EwarrantyInfo', '0');
       formdata.append('BrandName', data.Brand);
@@ -934,7 +934,7 @@ function UserRegisterProduct(props) {
               </div>
 
               {/* Dealer */}
-              <div className="col-lg-12">
+              {/* <div className="col-lg-12">
                 <div className="mb-lg-5 mb-4">
                   <label htmlFor="product-model" className="form-label">
                     Dealer
@@ -951,7 +951,7 @@ function UserRegisterProduct(props) {
                     selected={selectedDealer}
                   />
                 </div>
-              </div>
+              </div> */}
 
               {/* Store */}
               <div className="col-lg-6">

@@ -72,11 +72,11 @@ function ProfileForm(props) {
     })
     .catch((e) => {
       if (e.response) {
-        console.log(e.response);
+        // console.log(e.response);
       } else if (e.request) {
-        console.log('request : ' + e.request);
+        // console.log('request : ' + e.request);
       } else {
-        console.log('message : ' + e.message);
+        // console.log('message : ' + e.message);
       }
     });
   }
@@ -108,7 +108,7 @@ function ProfileForm(props) {
       setDistrict(res.data);
     })
     .catch((err) => {
-      console.log(err);
+      // console.log(err);
     });
   };
 
@@ -214,7 +214,7 @@ function ProfileForm(props) {
       },
     })
     .then((res) => {
-      console.log(res.data)
+      // console.log(res.data)
       localStorage.setItem('phone', dataPonsel);
       alertModal();
       setMessageAlert({
@@ -225,7 +225,7 @@ function ProfileForm(props) {
       onHideModal();
     })
     .catch((e) => {
-      console.log(e.request.response);
+      // console.log(e.request.response);
       if (e.response.data) {
         let responError = e.response.data.errors;
         if (responError.location === 'first_name') {
@@ -333,7 +333,7 @@ function ProfileForm(props) {
           });
         }
       } else {
-        console.log(e.response);
+        // console.log(e.response);
       }
     }).finally(() => {
       setIsLoading(false)
@@ -404,7 +404,7 @@ function ProfileForm(props) {
       })
       .catch((err) => {
         let data = err.response;
-        console.log(err.response);
+        // console.log(err.response);
         if (data !== undefined) {
           let responError = err.response.data;
           if (responError.errors.location === 'password') {
@@ -656,7 +656,7 @@ function ProfileForm(props) {
                     </div>
                   </div>
 
-                  <div className="col-lg-6">
+                  {/* <div className="col-lg-6">
                     <div className="px-lg-5">
                       <div class="mb-4">
                         <label class="form-label">
@@ -841,7 +841,7 @@ function ProfileForm(props) {
                         <div class="invalid-feedback">{errorData.address}</div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="d-flex justify-content-center">
                     <div className="col-lg-3 col-12">

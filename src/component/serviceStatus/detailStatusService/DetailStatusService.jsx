@@ -74,7 +74,7 @@ const DetailStatusService = (props) => {
     const getStatusFromGCC = async () => {
       const formData = new FormData()
       formData.append('WorkOrderNumber', srNumber)
-      formData.append('ApplyId', srNumber)
+      // formData.append('ApplyId', srNumber)
       formData.append('PhoneNumber', phoneNumber)
       try {
         const res = await axios.post(props.base_url + 'v2/register-service/status', formData, {
@@ -86,7 +86,7 @@ const DetailStatusService = (props) => {
           if(res.data.data.Data.WorkOrderNumber !== ""){
             const formData2 = new FormData()
             formData2.append('WorkOrderNumber', srNumber)
-            formData2.append('ApplyId', srNumber)
+            // formData2.append('ApplyId', srNumber)
             formData2.append('PhoneNumber', phoneNumber)
             const res = await axios.post(props.base_url + 'v2/register-service/status', formData2, {
               headers: {
