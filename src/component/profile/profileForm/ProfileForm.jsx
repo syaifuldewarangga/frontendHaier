@@ -188,16 +188,18 @@ function ProfileForm(props) {
     formData.append('email', data.email);
     formData.append('username', data.username);
     formData.append('phone', '62' + dataPonsel);
-    formData.append('nik', data.nik);
+    if(data.nik !== null){
+      formData.append('nik', data.nik);
+    }
     formData.append('status', data.status);
     formData.append('gender', data.gender);
     formData.append('birth_date', data.birth_date);
-    formData.append('province', data.province);
-    formData.append('city', data.city);
-    formData.append('district', data.district);
-    formData.append('sub_district', data.sub_district);
-    formData.append('postal_code', data.postal_code);
-    formData.append('address', data.address);
+    // formData.append('province', data.province);
+    // formData.append('city', data.city);
+    // formData.append('district', data.district);
+    // formData.append('sub_district', data.sub_district);
+    // formData.append('postal_code', data.postal_code);
+    // formData.append('address', data.address);
     if (data.age !== null) {
       formData.append('age', data.age);
     }
@@ -214,7 +216,6 @@ function ProfileForm(props) {
       },
     })
     .then((res) => {
-      // console.log(res.data)
       localStorage.setItem('phone', dataPonsel);
       alertModal();
       setMessageAlert({
@@ -225,7 +226,6 @@ function ProfileForm(props) {
       onHideModal();
     })
     .catch((e) => {
-      // console.log(e.request.response);
       if (e.response.data) {
         let responError = e.response.data.errors;
         if (responError.location === 'first_name') {
