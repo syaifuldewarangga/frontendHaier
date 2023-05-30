@@ -47,8 +47,8 @@ class Footer extends Component
                                 </div>
                                 <div className="text-center text-lg-start">
                                     <div className="pb-lg-4 pt-2 mb-4">
-                                        <p className="m-0">PT.Haier Sales Indonesia</p>
-                                        <p className="m-0">Copyright @ 2021 AQUA JAPAN</p>
+                                        <p className="m-0">PT. Haier Sales Indonesia</p>
+                                        <p className="m-0">Copyright @ 2023 AQUA ELEKTRONIK</p>
                                         <p className="m-0">All Right Reserved</p>
                                     </div>
                                 </div>
@@ -66,7 +66,7 @@ class Footer extends Component
 
                             <div className="col-lg-3 col-12 text-center text-lg-start">
                                 <div>
-                                    <p className="fw-bold pb-lg-2 pb-1 pt-4 m-0"> AQUA JAPAN </p>
+                                    <p className="fw-bold pb-lg-2 pb-1 pt-4 m-0"> AQUA ELEKTRONIK </p>
                                     <div className="footer-menu m-0">
                                         <ul>
                                             <li>
@@ -144,18 +144,20 @@ class Footer extends Component
                                     <div className="mb-lg-5 mb-3 sosmed-position">
                                         <p className="fw-bold m-0 pt-3 mb-2 text-uppercase">{t('footer.follow_us')}</p>
                                         <div className="footer-sosmed">
-                                            <a href="https://www.instagram.com/aquajapanid/" target="_blank">
+                                            <a href="https://www.instagram.com/aqua.elektronik/" target="_blank">
                                                 <img src="/assets/icon/instagram.svg" alt="instagram"/>
                                             </a>
-                                            <a href="https://www.facebook.com/aquajapanid/?_rdc=2&_rdr" target="_blank">
+                                            <a href="https://web.facebook.com/aquaelektronik?_rdc=1&_rdr" target="_blank">
                                                 <img src="/assets/icon/facebook.svg" alt="facebook"/>
                                             </a>
-
                                             <a href="https://www.youtube.com/channel/UC8FuwvMchOEHIpqyyLV5EWg" target="_blank">
                                                 <img src="/assets/icon/youtube.svg" alt="youtube"/>
                                             </a>
-                                            <a href="https://twitter.com/aquajapan_id" target="_blank">
-                                                <img src="/assets/icon/twitter.svg" className="rm-margin" alt="twitter" />
+                                            <a href="https://twitter.com/aquaelektronik" target="_blank">
+                                                <img src="/assets/icon/twitter.svg" alt="twitter" />
+                                            </a>
+                                            <a href="https://www.tiktok.com/@aquaelektronik" target="_blank">
+                                                <img src="/assets/icon/tiktok.svg" className="rm-margin" alt="tiktok"/>
                                             </a>
                                         </div>
                                     </div>
@@ -164,27 +166,30 @@ class Footer extends Component
                                 <div>
                                     <p className="fw-bold pb-lg-3 pb-3 pt-4 m-0 text-uppercase"> {t('footer.online_shop')}</p>
                                     <div className="shop-logo">
-                                        <a href="https://www.tokopedia.com/aquajapanofficia" target="_blank">
-                                            <img src="/assets/images/shop/tokped.png" className="img-fluid px-2"/>
-                                        </a>
-                                        <a href="https://shopee.co.id/aquajapanofficial" target="_blank">
-                                            <img src="/assets/images/shop/shopee.png" className="img-fluid px-2"/>
-                                        </a>
-                                        <a href="#">
+                                        <a href="https://ec-mall.akulaku.com/ec-basic/merchant/main?vendorId=24889842&shopId=24889842&hideTopBar=1"  target="_blank">
                                             <img src="/assets/images/shop/akulaku.png" className="img-fluid px-2"/>
                                         </a>
-                                        <a href="https://www.bukalapak.com/aqua-japan-official" target="_blank">
-                                            <img src="/assets/images/shop/bukalapak.png" className="img-fluid px-2"/>
+                                        <a href="https://www.blibli.com/brand/aqua-elektronik-indonesia" target="_blank">
+                                            <img src="/assets/images/shop/blibli.png" className="img-fluid px-2"/>
+                                        </a>
+                                        <a href="https://shopee.co.id/aquajapanid" target="_blank">
+                                            <img src="/assets/images/shop/shopee.png" className="img-fluid px-2"/>
+                                        </a>
+                                        <a href="https://www.tokopedia.com/aquaelektronik" target="_blank">
+                                            <img src="/assets/images/shop/tokped.png" className="img-fluid px-2"/>
                                         </a>
                                         <a href="https://www.lazada.co.id/shop/aqua-japan" target="_blank">
                                             <img src="/assets/images/shop/lazada.png" className="img-fluid px-2"/>
                                         </a>
+                                        
+                                        
+                                        {/* <a href="https://www.bukalapak.com/aqua-japan-official" target="_blank">
+                                            <img src="/assets/images/shop/bukalapak.png" className="img-fluid px-2"/>
+                                        </a>
                                         <a href="https://www.jd.id/promotion/Aqua-Official-Store/3Xh4T8GkjKxgCsadDkgFHQnDi25m.html" target="_blank">
                                             <img src="/assets/images/shop/jdid.png" className="img-fluid px-2"/>
-                                        </a>
-                                        <a href="https://www.blibli.com/brand/aqua-japan-official-store" target="_blank">
-                                            <img src="/assets/images/shop/blibli.png" className="img-fluid px-2"/>
-                                        </a>
+                                        </a> */}
+                                        
                                     </div>
                                 </div>
                             </div>
