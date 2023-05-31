@@ -63,7 +63,7 @@ const ServiceStatusMenu = (props) => {
     e.preventDefault()
     setLoading(true)
     const formData = new FormData()
-    formData.append('WorkOrderNumber', data.srNumber)
+    formData.append('SRNum', data.srNumber)
     // formData.append('ApplyId', data.srNumber)
     formData.append('PhoneNumber', data.phone_number)
     try {
@@ -72,20 +72,20 @@ const ServiceStatusMenu = (props) => {
           Authorization: 'Bearer ' + token,
         },
       })
-      if(!!res.data.data.Data.WorkOrderNumber){
-        if(res.data.data.Data.WorkOrderNumber !== ""){
-          const formData2 = new FormData()
-          formData2.append('WorkOrderNumber', data.srNumber)
-          // formData2.append('ApplyId', data.srNumber)
-          formData2.append('PhoneNumber', data.phone_number)
-          const res = await axios.post(props.base_url + 'v2/register-service/status', formData2, {
-            headers: {
-              Authorization: 'Bearer ' + token,
-            },
-          })
-          history.push(`/service-status/detail/${data.srNumber}/${data.phone_number}`);
-        }
-        // console.log(res.data.data)
+      if(!!res.data.data.Data.CustomerName){
+        // if(res.data.data.Data.WorkOrderNumber !== ""){
+        //   const formData2 = new FormData()
+        //   formData2.append('SRNum', data.srNumber)
+        //   // formData2.append('ApplyId', data.srNumber)
+        //   formData2.append('PhoneNumber', data.phone_number)
+        //   const res = await axios.post(props.base_url + 'v2/register-service/status', formData2, {
+        //     headers: {
+        //       Authorization: 'Bearer ' + token,
+        //     },
+        //   })
+        //   history.push(`/service-status/detail/${data.srNumber}/${data.phone_number}`);
+        // }
+        history.push(`/service-status/detail/${data.srNumber}/${data.phone_number}`);
       }else{
         alert('Barang Tidak di Temukan!');
       }

@@ -423,6 +423,7 @@ const FormProduct = (props) => {
       alertModal();
       onHideModal('/service-status');
     }).catch((err) => {
+      // console.log(err.response)
       if(err.response.data.code == 409) {
         setDataAlert({
           status: 'error',
