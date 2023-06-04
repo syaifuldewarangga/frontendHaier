@@ -41,7 +41,7 @@ const ProductCard = (props) => {
               <tr>
                 <td>Service Number</td>
                 <td> &nbsp; : &nbsp;</td>
-                <td>{props.data.srnum}</td>
+                <td>{!!props.data.work_order_number ? props.data.work_order_number : props.data.srnum}</td>
               </tr>
               <tr>
                 <td>Barcode</td>
