@@ -435,6 +435,7 @@ function UserRegisterProduct(props) {
     }
   }
 
+  const [detailAddress, setDetailAddress] = useState('')
   async function handleSubmit(e) {
     e.preventDefault()
     setIsLoadiing(true)
@@ -447,7 +448,8 @@ function UserRegisterProduct(props) {
         userData.file2 !== '' && 
         storeValue !== '' && 
         selectedStreet.length !== 0 &&
-        selectedDistrict.length !== 0
+        selectedDistrict.length !== 0 &&
+        detailAddress == ''
       ) {
       var dateChange = userData.date.replaceAll('-', '/');
       const formdata = new FormData();
@@ -467,7 +469,8 @@ function UserRegisterProduct(props) {
       formdata.append('LocationCityName', selectedCity[0].city);
       formdata.append('LocationLocalityCode', selectedDistrict[0].districtCode);
       formdata.append('LocationLocalityName', selectedDistrict[0].district);
-      formdata.append('Address', dataUser.address);
+      // formdata.append('Address', dataUser.address);
+      formdata.append('Address', detailAddress);
       formdata.append('Email', dataUser.email);
       // formdata.append('MobilePhone', phoneNumber.replace(/^62/, "0"));
       formdata.append('MobilePhone', phoneNumber);
@@ -686,6 +689,7 @@ function UserRegisterProduct(props) {
       userData.file1 === '' ? setErrorFile1('Warranty Card Must be Required') : setErrorFile1('');
       userData.file2 === '' ? setErrorFile2('Invoice Must be Required') : setErrorFile2('');
       selectedStreet.length  === 0 ? setErrorGSIS('Make sure address is filled') : setErrorGSIS('');
+      detailAddress == '' ? setErrorGSIS('Detail Address Must be Required') : setErrorGSIS(''); 
 
       setIsLoadiing(false)
     }
@@ -933,6 +937,22 @@ function UserRegisterProduct(props) {
                 </div>
               </div>
 
+              <div className="col-lg-12">
+                <div className="mb-lg-5 mb-4">
+                    <label className="form-label">Detail Address</label>
+                    <textarea required value={detailAddress} className='form-control' name='detailAddress' 
+                      onChange={(e) => {
+                          if(e.target.value.length > 100){
+                            setDetailAddress(e.target.value.substring(0, 100))
+                          }else{
+                            setDetailAddress(e.target.value)
+                          }
+                      }} 
+                    >
+                    </textarea>
+                    <small>{`${detailAddress.length}/100`}</small>
+                </div>      
+              </div>
               {/* Dealer */}
               {/* <div className="col-lg-12">
                 <div className="mb-lg-5 mb-4">

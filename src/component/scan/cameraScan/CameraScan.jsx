@@ -344,9 +344,10 @@ const CameraScan = (props) => {
                     type="text"
                     className="form-control"
                     id="barcode-number"
-                    onChange={(e) =>
-                      setBarcode(e.target.value)
-                    }
+                    onChange={(e) => { 
+                      const value = e.target.value
+                      setBarcode(value.toUpperCase())
+                    }}
                     placeholder="name@example.com"
                     disabled={inputBarcodeNumber ? '' : 'disabled'}
                     value={barcode}

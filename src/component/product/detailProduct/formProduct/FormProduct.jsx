@@ -368,6 +368,7 @@ const FormProduct = (props) => {
     })
   };
 
+  const [detailAddress, setDetailAddress] = useState('')
   const InsertServiceGcc = async () => {
     const formData = new FormData()
     const newPurchaseDate = format(new Date(data.purchase_date), 'yyyy-MM-dd');
@@ -383,7 +384,7 @@ const FormProduct = (props) => {
     formData.append('FirstName', dataUser.first_name)
     formData.append('LastName', dataUser.last_name)
     formData.append('MobilePhone', dataUser.phone)
-    formData.append('OtherPhone', '')
+    formData.append('OtherPhone', !!dataUser.phone_office ? dataUser.phone_office : '')
     formData.append('Email', dataUser.email)
     formData.append('LocationPinCode', selectedStreet[0].zipCode);
     formData.append('LocationStateCode', selectedStreet[0].province_code);
@@ -401,7 +402,8 @@ const FormProduct = (props) => {
     // formData.append('LocationLocalityName', 'Taman Sari');
     // formData.append('LocationLocalityCode', 'ID16325');
 
-    formData.append('DetailedAddress', dataUser.address)
+    // formData.append('DetailedAddress', dataUser.address)
+    formData.append('DetailedAddress', detailAddress)
     formData.append('Remark', '')
     formData.append('Brand', data.brand)
     formData.append('Barcode', data.barcode)
@@ -699,6 +701,23 @@ const FormProduct = (props) => {
                   selected={selectedStreet}
                 />
               </div>
+            </div>
+
+            <div className="col-lg-12">
+              <div className="mb-lg-5 mb-4">
+                  <label className="form-label">Detail Address</label>
+                  <textarea required value={detailAddress} className='form-control' name='detailAddress' 
+                    onChange={(e) => {
+                        if(e.target.value.length > 100){
+                          setDetailAddress(e.target.value.substring(0, 100))
+                        }else{
+                          setDetailAddress(e.target.value)
+                        }
+                    }} 
+                  >
+                  </textarea>
+                  <small>{`${detailAddress.length}/100`}</small>
+              </div>      
             </div>
 
             <div className="row mb-4">
