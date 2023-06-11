@@ -393,6 +393,7 @@ function UserRegisterProductManual(props) {
   }, [product_model])
 
   const [errorPost, setErrorPost] = useState('')
+  const [detailAddress, setDetailAddress] = useState('')
   async function handleSubmit(e) {
     e.preventDefault()
     setIsLoadiing(true)
@@ -411,7 +412,8 @@ function UserRegisterProductManual(props) {
       selectedStreet.length !== 0 &&
       selectedDistrict.length !== 0 &&
       selectedCategory.length !== 0 &&
-      selectedBrand.length !== 0 
+      selectedBrand.length !== 0 &&
+      detailAddress !== ''
     ) {
       var dateChange = userData.date.replaceAll('-', '/');
       const newPurcaseDate = format(new Date(dateChange), 'MM/dd/yyyy');
@@ -454,6 +456,7 @@ function UserRegisterProductManual(props) {
       // formdata.append('dealer_name', selectedDealer[0].name);
       formdata.append('dealer_name', 'blank');
       formdata.append('location_street_name', selectedStreet[0].street);
+      formdata.append('location_address', detailAddress);
       // setIsLoadiing(false)
       
       // console.table(Object.fromEntries(formdata))
@@ -607,6 +610,7 @@ function UserRegisterProductManual(props) {
             brandName: data.brand,
             brandValue: data.product_pending_information.brandCode
           }])
+          setDetailAddress(data.product_pending_information.locationAddress)
           setLoadData(false)
         }else{
           setLoadData(false)
@@ -839,6 +843,22 @@ function UserRegisterProductManual(props) {
                   </div>
                 </div>
 
+                <div className="col-lg-12">
+                  <div className="mb-lg-5 mb-4">
+                    <label className="form-label">Detail Address</label>
+                    <textarea required value={detailAddress} className='form-control' name='detailAddress' 
+                      onChange={(e) => {
+                          if(e.target.value.length > 100){
+                            setDetailAddress(e.target.value.substring(0, 100))
+                          }else{
+                            setDetailAddress(e.target.value)
+                          }
+                      }} 
+                    >
+                    </textarea>
+                    <small>{`${detailAddress.length}/100`}</small>
+                </div>      
+                </div>
                 {/* Dealer */}
                 {/* <div className="col-lg-12">
                   <div className="mb-lg-5 mb-4">
