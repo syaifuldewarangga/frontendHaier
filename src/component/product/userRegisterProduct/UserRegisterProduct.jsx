@@ -449,7 +449,7 @@ function UserRegisterProduct(props) {
         storeValue !== '' && 
         selectedStreet.length !== 0 &&
         selectedDistrict.length !== 0 &&
-        detailAddress == ''
+        detailAddress !== ''
       ) {
       var dateChange = userData.date.replaceAll('-', '/');
       const formdata = new FormData();
