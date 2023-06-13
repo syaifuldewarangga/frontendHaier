@@ -610,7 +610,15 @@ function UserRegisterProductManual(props) {
             brandName: data.brand,
             brandValue: data.product_pending_information.brandCode
           }])
-          setDetailAddress(data.product_pending_information.locationAddress)
+          setDetailAddress(
+            data.product_pending_information.locationAddress !== null ? 
+              data.product_pending_information.locationAddress 
+              : 
+              data.customer.address !== null ? 
+                  data.customer.address
+                  :
+                  ''
+          )
           setLoadData(false)
         }else{
           setLoadData(false)
