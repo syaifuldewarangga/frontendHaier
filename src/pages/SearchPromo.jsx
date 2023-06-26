@@ -148,8 +148,8 @@ const SearchPromo = (props) => {
         },
         decoder: {
           readers: [
-            'ean_reader',
             'code_128_reader',
+            'ean_reader',
           ],
         },
       },
@@ -173,12 +173,12 @@ const SearchPromo = (props) => {
             parseInt(drawingCanvas.getAttribute('width')),
             parseInt(drawingCanvas.getAttribute('height'))
           );
-          // result.boxes.filter(box => box !== result.box).forEach(box => {
-          //     Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
-          //         color: 'green',
-          //         lineWidth: 2
-          //     });
-          // });
+          result.boxes.filter(box => box !== result.box).forEach(box => {
+              Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
+                  color: 'green',
+                  lineWidth: 2
+              });
+          });
         }
 
         if (result.box) {
@@ -206,16 +206,14 @@ const SearchPromo = (props) => {
     Quagga.stop();
     setIsScan(false)
     const scan = document.querySelector('#scanner-container')
-    const temp = document.querySelector('.backgroundScan')
     while (scan.hasChildNodes()) {
-        scan.removeChild(scan.firstChild);
+          scan.removeChild(scan.firstChild);
     }
-    scan.appendChild(temp)
   };
   return (
     <div className='row'>
         <LoginCover />
-        <div className="col-md-6">
+        <div className="col-lg-6 col-md-12">
             <div className="card border-0">
                 <div className="card-body p3 p-lg-5 right-content">
                     <div className="d-flex justify-content-between align-items-center">
@@ -266,15 +264,7 @@ const SearchPromo = (props) => {
                             <form onSubmit={onSubmit}>
                                 <div className="md-3">
                                     <div id="scanner-container">
-                                        <div className="backgroundScan">
-                                            <marquee
-                                                className="background-line-scan"
-                                                direction="up"
-                                                behavior="ALTERNATE"
-                                            >
-                                            <div className="line-scan"></div>
-                                            </marquee>
-                                        </div>
+                                        
                                     </div>
                                 </div>
                                 <div className="md-3">
