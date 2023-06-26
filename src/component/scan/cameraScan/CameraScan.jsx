@@ -240,12 +240,12 @@ const CameraScan = (props) => {
             parseInt(drawingCanvas.getAttribute('width')),
             parseInt(drawingCanvas.getAttribute('height'))
           );
-          // result.boxes.filter(box => box !== result.box).forEach(box => {
-          //     Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
-          //         color: 'green',
-          //         lineWidth: 2
-          //     });
-          // });
+          result.boxes.filter(box => box !== result.box).forEach(box => {
+              Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
+                  color: 'green',
+                  lineWidth: 2
+              });
+          });
         }
 
         if (result.box) {
@@ -319,15 +319,6 @@ const CameraScan = (props) => {
                     <div className="col-lg-12">
                       <div className="d-flex justify-content-center">
                         <div id="scanner-container">
-                          <div className="backgroundScan">
-                            <marquee
-                              className="background-line-scan"
-                              direction="up"
-                              behavior="ALTERNATE"
-                            >
-                              <div className="line-scan"></div>
-                            </marquee>
-                          </div>
                         </div>
                       </div>
                     </div>
