@@ -74,10 +74,14 @@ class ListProduct extends Component {
     render() {
         let badgeColor = { color: '', label: '' };
         const checkStatus = ['PENDING', 'REJECTED'];
+        const dataNotComplete = !!!this.props.data.category
         if(this.props.data.status_checking == "PENDING") badgeColor = { color: 'bg-warning', label: 'verification serial number' }
         if(this.props.data.status_checking == "REJECTED") badgeColor = { color: 'bg-danger', label: 'serial number not valid' }
         if(this.props.data.status_checking == "APPROVED") badgeColor = { color: 'bg-success', label: 'complete' }
         let status = this.props.data.status_checking == 'REJECTED' ? false : true
+        if(dataNotComplete){
+            badgeColor = { color: 'bg-info', label: 'Data Incomplete' }
+        }
         return (
             <div className="list-product col-lg-3 col-6 mb-4 px-lg-4 ">
                 <div className="card card-product h-100">
@@ -89,15 +93,18 @@ class ListProduct extends Component {
                     <div className="card-body">
                         <div className="title-product mb-2">{this.props.data.product_name}</div>
                         <div className="d-xxl-flex justify-content-between">
-                            <p className="m-0 small" style={{ color: "#003D79" }}>{ this.props.data.brand } </p>
+                            <p className="m-0 small" style={{ color: "#003D79" }}>{ dataNotComplete ? "-" : this.props.data.brand } </p>
                             <p className="m-0 small">{this.props.data.barcode}</p>
                         </div>
                         <div className="d-flex justify-content-between align-items-center">
                             <span class={`badge ${badgeColor.color}`}> {badgeColor.label}</span>
-                            {!status ? 
+                            {!status || dataNotComplete ? 
                                 <Fragment>
                                     <div className="d-flex gap-1">
-                                        <span onClick={() => this.setState({ ...this.state, modalConfirm: true })} className="material-icons text-danger cursor-pointer"> delete </span>.
+                                        {!dataNotComplete ?
+                                         <span onClick={() => this.setState({ ...this.state, modalConfirm: true })} className="material-icons text-danger cursor-pointer"> delete </span>   
+                                        : null
+                                        }
                                         <Link to={`/product/edit-register-product-manual/${this.props.data.id}`}>
                                             <span className="material-icons text-success cursor-pointer"> edit</span>
                                         </Link>

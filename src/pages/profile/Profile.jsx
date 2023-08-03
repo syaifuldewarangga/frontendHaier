@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 
 function Profile(props) {
   const [data, setData] = React.useState('');
+  const username = localStorage.getItem('username');
+  const token = localStorage.getItem('access_token');
 
   React.useEffect(() => {
     async function fetchData() {
@@ -25,11 +27,26 @@ function Profile(props) {
           setData(res.data);
         })
         .catch((e) => {
-          console.log(e.response);
+          // console.log(e.response);
         });
     }
+    const getDataUserByUserName = async () => {
+      try {
+          const res = await axios.get(props.base_url + 'user', {
+              headers: {
+                  Authorization: "Bearer " + token,
+              },
+              params: {
+                  username,
+              },
+          })
+          setData(res.data)
+      } catch (err) {
+          // console.log(err.response)
+      }
+  }
 
-    fetchData();
+    getDataUserByUserName();
   }, [props.base_url]);
 
   return (

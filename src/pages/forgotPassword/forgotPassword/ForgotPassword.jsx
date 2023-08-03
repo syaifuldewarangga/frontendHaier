@@ -2,12 +2,13 @@ import axios from "axios";
 import { encode } from "base-64";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import './ForgotPassword.css'
 
 const ForgotPassword = (props) => {
     const history = useHistory()
-    const [phoneNumber, setPhoneNumber] = useState('')
+    const { phoneNumber: phoneNumberFromParam } = useParams()
+    const [phoneNumber, setPhoneNumber] = useState(!!phoneNumberFromParam ? phoneNumberFromParam : '')
     const [errorData, setErrorData] = useState({
         phone_number: '',
         anyError: ''

@@ -43,6 +43,11 @@ const LandingPageRouter = () => {
           path="/forgot-password/"
           component={ForgotPassword}
         ></Route>
+        <Route
+          exact
+          path="/forgot-password/:phoneNumber"
+          component={ForgotPassword}
+        ></Route>
         <Route exact path="/otp/:userID/:createdAt" component={FormOtp}></Route>
         <Route
           exact

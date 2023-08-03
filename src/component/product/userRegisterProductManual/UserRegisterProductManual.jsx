@@ -392,6 +392,29 @@ function UserRegisterProductManual(props) {
 
   }, [product_model])
 
+  const PostToGCC = async (id) => {
+    try {
+      const params = {
+        RegisterProductId: id,
+        Status: 'APPROVED',
+      }
+      const res = await axios.patch(props.base_url + 'v2/register-service/product/status', {}, {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+          params
+      })
+      console.log(res.data)
+      return res.data
+      // hideModal()
+      // fetchData()
+ 
+    } catch (err) {
+      console.log(err.response)
+    } finally {
+    }
+  }
+
   const [errorPost, setErrorPost] = useState('')
   const [detailAddress, setDetailAddress] = useState('')
   async function handleSubmit(e) {
@@ -428,7 +451,7 @@ function UserRegisterProductManual(props) {
       formdata.append('date', newPurcaseDate);
       formdata.append('store_location', storeStreet);
       formdata.append('store_name', storeValue);
-      formdata.append('email', email);
+      if(email !== 'null') formdata.append('email', email)
       formdata.append('phone', phone);
       formdata.append('product_model', product_model);
       if(userData.file1 !== ''){
@@ -484,21 +507,39 @@ function UserRegisterProductManual(props) {
         // }, 1000);
         
         formdata.append('id', props.idProduct);
+        // console.log(Object.fromEntries(formdata));
         axios.put(props.base_url + 'register-product/plain', formdata, {
           headers: {
             Authorization: 'Bearer ' + token,
           },
         }).then(res => {
-          setIsLoadiing(false)
-          setMessageModal({
-            status: 'success',
-            title: 'Thank you, ',
-            subTitle: 'produk anda berhasil didaftarkan ulang dan menunggu tahap verifikasi',
-            back: true
-          })
-          alertModal()
+          if(!!!props.data.category && !!props.detailProductBySerialNumber){
+            PostToGCC(props.idProduct)
+              .then(v => {
+                setIsLoadiing(false)
+                setMessageModal({
+                  status: 'success',
+                  title: 'Thank you, ',
+                  subTitle: 'produk anda berhasil didaftarkan ulang dan menunggu tahap verifikasi',
+                  back: true
+                })
+                alertModal()
+              })
+              .catch(err => {
+                console.log(err.response)
+              })
+          }else{
+            setIsLoadiing(false)
+            setMessageModal({
+              status: 'success',
+              title: 'Thank you, ',
+              subTitle: 'produk anda berhasil didaftarkan ulang dan menunggu tahap verifikasi',
+              back: true
+            })
+            alertModal()
+          }
         }).catch(err => {
-          // console.log(err.response)
+          console.log(err.response)
           setIsLoadiing(false)
           if(err.response){
             if(err.response.data.errors.location === 'barcode'){
@@ -557,91 +598,101 @@ function UserRegisterProductManual(props) {
           getDealer(),
           getBrandFromAPI()
       ]).then((res)  => {
-        if(props.data){ 
-          const { data } = props
+        if(!!props.data){ 
+          const { data, detailProductBySerialNumber } = props
           const { data: { data: allStore } } = res[1]
-          setSelected([data.product_model])
-          setForm({
-            ...form,
-            brand: data.brand,
-            category: data.category,
-            product_model: data.product_model,
-          })
-          setStoreValue(data.store_name)
-          setStoreStreet(allStore.find(v => v.StoreName == data.store_name)?.Street)
-          setUserData({
-            ...userData,
-            agreements: data.agreements,
-            date: moment(data.date).format('yyyy-MM-DD'),
-          })
-          setShowFile1(props.image_url + data.warranty_card)
-          setShowFile2(props.image_url + data.invoice)
-          setShowFile3(props.image_url + data.serial)
-          setSelectedProv([{
-            province: data.product_pending_information.locationStateName,
-            province_code: data.product_pending_information.locationStateCode,
-          }])
-          setSelectedCity([{
-            city: data.product_pending_information.locationCityName,
-            cityCode: data.product_pending_information.locationCityCode
-          }])
-          setSelectedDistrict([{
-            district: data.product_pending_information.locationLocalityName,
-            districtCode: data.product_pending_information.locationLocalityCode
-          }])
-          setSelectedStreet([{
-            street: data.product_pending_information.locationStreetName,
-            zipCode: data.product_pending_information.locationPinCode,
-            province: data.product_pending_information.locationStateName,
-            province_code: data.product_pending_information.locationStateCode,
-            city: data.product_pending_information.locationCityName,
-            cityCode: data.product_pending_information.locationCityCode,
-            district: data.product_pending_information.locationLocalityName,
-            districtCode: data.product_pending_information.locationLocalityCode
-          }])
-          // setSelectedDealer([{
-          //   name: data.product_pending_information.dealerName
-          // }])
-          setSelectedCategory([{
-            categoryName: data.category,
-            categoryValue: data.product_pending_information.productCode
-          }])
-          setSelectedBrand([{
-            brandName: data.brand,
-            brandValue: data.product_pending_information.brandCode
-          }])
-          setDetailAddress(
-            data.product_pending_information.locationAddress !== null ? 
-              data.product_pending_information.locationAddress 
-              : 
-              data.customer.address !== null ? 
-                  data.customer.address
-                  :
-                  ''
-          )
-          setLoadData(false)
+          if(!!!data.category){
+            if(!!detailProductBySerialNumber){
+              setSelectedCategory([{
+                categoryName: detailProductBySerialNumber.ProductCategoryName,
+                categoryValue: detailProductBySerialNumber.CategoryValue
+              }])
+              setSelectedBrand([{
+                brandName: detailProductBySerialNumber.Brand,
+                brandValue: detailProductBySerialNumber.BrandValue
+              }])
+              setForm({
+                ...form,
+                brand: detailProductBySerialNumber.Brand,
+                category: detailProductBySerialNumber.ProductCategoryName,
+                product_model: detailProductBySerialNumber.ProductName,
+              })
+              setSelected([detailProductBySerialNumber.ProductName])
+              setShowFile2(props.image_url + data.invoice)
+              setLoadData(false)
+            }else{
+              setShowFile2(props.image_url + data.invoice)
+              setLoadData(false)
+            }
+          }else{
+            setSelected([data.product_model])
+            setForm({
+              ...form,
+              brand: data.brand,
+              category: data.category,
+              product_model: data.product_model,
+            })
+            setStoreValue(data.store_name)
+            setStoreStreet(allStore.find(v => v.StoreName == data.store_name)?.Street)
+            setUserData({
+              ...userData,
+              agreements: data.agreements,
+              date: moment(data.date).format('yyyy-MM-DD'),
+            })
+            setShowFile1(props.image_url + data.warranty_card)
+            setShowFile2(props.image_url + data.invoice)
+            setShowFile3(props.image_url + data.serial)
+            setSelectedProv([{
+              province: data.product_pending_information.locationStateName,
+              province_code: data.product_pending_information.locationStateCode,
+            }])
+            setSelectedCity([{
+              city: data.product_pending_information.locationCityName,
+              cityCode: data.product_pending_information.locationCityCode
+            }])
+            setSelectedDistrict([{
+              district: data.product_pending_information.locationLocalityName,
+              districtCode: data.product_pending_information.locationLocalityCode
+            }])
+            setSelectedStreet([{
+              street: data.product_pending_information.locationStreetName,
+              zipCode: data.product_pending_information.locationPinCode,
+              province: data.product_pending_information.locationStateName,
+              province_code: data.product_pending_information.locationStateCode,
+              city: data.product_pending_information.locationCityName,
+              cityCode: data.product_pending_information.locationCityCode,
+              district: data.product_pending_information.locationLocalityName,
+              districtCode: data.product_pending_information.locationLocalityCode
+            }])
+            // setSelectedDealer([{
+            //   name: data.product_pending_information.dealerName
+            // }])
+            setSelectedCategory([{
+              categoryName: data.category,
+              categoryValue: data.product_pending_information.productCode
+            }])
+            setSelectedBrand([{
+              brandName: data.brand,
+              brandValue: data.product_pending_information.brandCode
+            }])
+            setDetailAddress(
+              data.product_pending_information.locationAddress !== null ? 
+                data.product_pending_information.locationAddress 
+                : 
+                data.customer.address !== null ? 
+                    data.customer.address
+                    :
+                    ''
+            )
+            setLoadData(false)
+          }
         }else{
           setLoadData(false)
         } 
       })
     }
-      // formdata.append('customer_id', id);
-      // formdata.append('barcode', barcode);
-      // formdata.append('brand', form.brand);
-      // formdata.append('product_model', form.product_model);
-      // formdata.append('serial_number', barcode);
-      // formdata.append('category', form.category);
-      // formdata.append('date', newPurcaseDate);
-      // formdata.append('store_location', storeStreet);
-      // formdata.append('store_name', storeValue);
-      // formdata.append('email', email);
-      // formdata.append('phone', phone);
-      // formdata.append('status', 1);
-      // formdata.append( 'warranty_card', userData.file1 === '' ? '' : userData.file1 );
-      // formdata.append('invoice', userData.file2 === '' ? '' : userData.file2);
-      // formdata.append('agreements', userData.agreements === 'Y' ? 'Y' : 'N');
     return () => m = false
-  }, [props.idProduct])
+  }, [props])
  
   
 

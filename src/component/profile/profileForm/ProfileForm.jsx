@@ -216,7 +216,7 @@ function ProfileForm(props) {
       },
     })
     .then((res) => {
-      localStorage.setItem('phone', dataPonsel);
+      localStorage.setItem('phone', '62' + dataPonsel);
       alertModal();
       setMessageAlert({
         status: 'success',

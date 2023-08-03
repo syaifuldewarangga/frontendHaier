@@ -429,6 +429,7 @@ const FormRegister = (props) => {
                             }`}
                             placeholder="nik"
                             onChange={onChangeInput}
+                            required
                           />
                           <div className="invalid-feedback">
                             {errorData.nik}
