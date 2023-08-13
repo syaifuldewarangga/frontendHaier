@@ -510,6 +510,7 @@ function ProfileForm(props) {
                           <span className="text-danger">*</span>
                         </label>
                         <input
+                          required
                           type="number"
                           min="0"
                           class={`form-control ${
@@ -535,7 +536,9 @@ function ProfileForm(props) {
                           class={`form-select ${ errorData.gender !== '' ? 'is-invalid' : null }`}
                           aria-label="gender"
                           onChange={onChangeData}
+                          required
                         >
+                          <option value='' selected disabled>Choose One</option>
                           <option
                             value="Pria"
                             selected={data.gender === 'Pria' ? 'selected' : ''}
@@ -564,6 +567,7 @@ function ProfileForm(props) {
                           <span className="text-danger">*</span>
                         </label>
                         <input
+                          required
                           type="date"
                           class={`form-control ${ errorData.birth_date !== '' ? 'is-invalid' : null }`}
                           value={data.birth_date}
@@ -601,7 +605,9 @@ function ProfileForm(props) {
                   <div className="col-lg-6">
                     <div className="px-lg-5">
                       <div class="mb-4">
-                        <label class="form-label">{t('profile.email')}</label>
+                        <label class="form-label">{t('profile.email')}
+                          <span className="text-danger">*</span>
+                        </label>
                         <input
                           required
                           type="email"

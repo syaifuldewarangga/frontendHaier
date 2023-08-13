@@ -421,7 +421,7 @@ const FormRegister = (props) => {
                         </div>
 
                         <div className="col-lg-6 mb-3">
-                          <div className="form-label color-primary">NIK</div>
+                          <div className="form-label color-primary">NIK*</div>
                           <input
                             name="nik"
                             className={`form-control ${
