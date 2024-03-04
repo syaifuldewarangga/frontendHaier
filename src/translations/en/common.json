@@ -79,7 +79,7 @@
   },
   "product_register": {
     "search_barcode": "Search Your Product",
-    "barcode_number": "Barcode Number",
+    "barcode_number": "Barcode Number / Serial Number",
     "product_name": "Product Name",
     "or": "or", 
     "alert": "If your product is not found, please contact us at",

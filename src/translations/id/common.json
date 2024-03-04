@@ -79,7 +79,7 @@
   },
   "product_register": {
     "search_barcode": "Cari Product Anda",
-    "barcode_number": "Nomor Barcode",
+    "barcode_number": "Nomor Barcode / Nomor Seri",
     "product_name": "Nama Product",
     "or": "atau", 
     "alert": "Jika product anda tidak di temukan silahkan menghubungi kami di",
