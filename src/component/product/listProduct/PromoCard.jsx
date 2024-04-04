@@ -122,61 +122,9 @@ const PromoCard = (props) => {
             logging: true,
         });
         const img = data.toDataURL("image/jpeg", 1);  
-        // html - to - img
-        // const img = await toJpeg(reff.current, { quality: 1 })
-        // const img = await toJpeg(reff.current, { quality: 1 })
-        // if (window.saveAs) {
-        //     window.saveAs(img, 'my-node.png');
-        // } else {
-
-        // }
-        // const imgProperties = pdf.getImageProperties(img);
-        // const pdfWidth = pdf.internal.pageSize.getWidth();
-        // const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
-        // pdf.addImage(img, "PNG", 140, 0, 595, 842 );
+        
         pdf.addImage(img, "JPEG", 0, 0, 595 , 842);
         pdf.save("promo_card.pdf");
-        // download("data:image/png;"+base64image, "qr-code-event" + eventName+".png")
-
-        // var link = document.createElement('a');
-        // link.download = 'my-image-name.jpeg';
-        // link.href = img;
-        // link.click();
-
-        // const pdf = new jsPDF("portrait", "pt", "a4");
-        // const data = document.querySelector("#pdf");
-        // pdf.html(data).then(() => {
-        //   pdf.save("shipping_label.pdf");
-        // });
-
-
-
-        // const pdf = new jsPDF("portrait", "pt", "a4");
-        // pdf.setFontSize(16).text('Extended Warranty Letter', 0.5, 1.0);
-
-        // // create a line under heading 
-        // pdf.setLineWidth(0.01).line(0.5, 1.1, 8.0, 1.1);
-        // // Using autoTable plugin
-        // // pdf.autoTable({
-        // //   columns,
-        // //   body: this.items,
-        // //   margin: { left: 0.5, top: 1.25 }
-        // // });
-        // // Using array of sentences
-        // pdf
-        //   .setFont("helvetica")
-        //   .setFontSize(12)
-        //   .text('Extended Warranty Letter', 0.5, 3.5, { align: "left", maxWidth: "7.5" });
-        
-        // // Creating footer and saving file
-        // pdf
-        //   .setTextColor(0, 0, 255)
-        //   .text(
-        //     "This is a simple footer located .5 inches from page bottom",
-        //     0.5,
-        //     pdf.internal.pageSize.height - 0.5
-        //   )
-        //   .save(`testing.pdf`);
     };
     const getImage = async (promo_id) => {
         const res = await axios.get(props.oapi_url + 'extended-warranty-promo/card/images', {

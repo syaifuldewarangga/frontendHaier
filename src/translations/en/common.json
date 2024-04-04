@@ -5,6 +5,7 @@
     "service_center": "Service Center",
     "customer_voice": "Customer Voice",
     "status_service": "Status Service",
+    "exchange_ticket": "Exchange Ticket",
     "promo_news_article": "Promo, News, Artikel",
     "about": "About",
     "contact": "Contact",
@@ -88,5 +89,16 @@
   },
   "form_product_register": {
     "wa_flag": "Can we contact you using WhatsApp in the future."
+  },
+  "exchange_ticket": {
+    "current_ticket": "Current Ticket : ",
+    "info": "you will get 1 ticket for each premium product",
+    "claim_as": "You can claim ticket as ",
+    "as": "Claim",
+    "confirm": "Confirmation",
+    "confirm_description": "Are you sure want to exchange ticket to ",
+    "yes": "Yes",
+    "no": "No",
+    "history": "History"
   }
 }

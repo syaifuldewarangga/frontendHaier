@@ -5,6 +5,7 @@
     "service_center": "Pusat Servis",
     "customer_voice": "Suara Pelanggan",
     "status_service": "Status Servis",
+    "exchange_ticket": "Tukar Tiket",
     "promo_news_article": "Promo, Berita & Artikel",
     "about": "Tentang",
     "contact": "Kontak",
@@ -88,5 +89,16 @@
   },
   "form_product_register": {
     "wa_flag": "Dapatkah kami menghubungi Anda menggunakan WhatsApp kedepannya."
+  },
+  "exchange_ticket": {
+    "current_ticket": "Tiket Saat ini : ",
+    "info": "kamu akan mendapatkan tiket setiap pembelian product premium",
+    "claim_as": "Kamu bisa tukar tiket dengan ",
+    "as": "Tukar",
+    "confirm": "Konfirmasi",
+    "confirm_description": "Apakah anda yakin ingin menukar tiket dengan ",
+    "yes": "Ya",
+    "no": "Tidak",
+    "history": "Riwayat"
   }
 }

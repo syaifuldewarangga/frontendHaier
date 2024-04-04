@@ -30,6 +30,7 @@ import AddUserRegisterProductManual from '../component/product/userRegisterProdu
 import EditUserRegisterProductManual from '../component/product/userRegisterProductManual/Edit';
 
 import SearchPromo from '../pages/SearchPromo';
+import ExchangeTicket from '../pages/exchange-ticket/ExchangeTicket'
 
 const LandingPageRouter = () => {
   return (
@@ -65,6 +66,13 @@ const LandingPageRouter = () => {
           exact
           path="/landing-page"
           component={LandingPage}
+        ></PrivateRoute>
+
+        {/* Exchange ticket */}
+        <PrivateRoute
+          exact
+          path="/exchange-ticket"
+          component={ExchangeTicket}
         ></PrivateRoute>
 
         <PrivateRoute

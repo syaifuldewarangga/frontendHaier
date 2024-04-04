@@ -110,6 +110,11 @@ function Navbar(props) {
                       {(t('navbar.status_service'))}
                     </Link>
                   </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/exchange-ticket">
+                      {(t('navbar.exchange_ticket'))}
+                    </Link>
+                  </li>
                 </ul>
                 <a href="https://aquajapanid.com/" target="_blank">
                   <div className="d-none d-xl-block navbar-logo">
