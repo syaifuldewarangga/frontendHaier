@@ -96,11 +96,11 @@ class ListProduct extends Component {
                             <p className="m-0 small" style={{ color: "#003D79" }}>{ dataNotComplete ? "-" : this.props.data.brand } </p>
                             <p className="m-0 small">{this.props.data.barcode}</p>
                         </div>
-                        <div className="d-flex justify-content-between align-items-center">
+                        <div className="d-flex justify-content-between align-items-center flex-wrap">
                             <span class={`badge ${badgeColor.color}`}> {badgeColor.label}</span>
                             {!status || dataNotComplete ? 
                                 <Fragment>
-                                    <div className="d-flex gap-1">
+                                    <div className="d-flex gap-1 mt-2">
                                         {!dataNotComplete ?
                                          <span onClick={() => this.setState({ ...this.state, modalConfirm: true })} className="material-icons text-danger cursor-pointer"> delete </span>   
                                         : null

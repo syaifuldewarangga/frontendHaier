@@ -14,7 +14,15 @@
   "landingPage": {
     "scan_your_product_here": "Scan Your Product Here",
     "your_product": "Your Product",
-    "new_blog": "New Article"
+    "new_blog": "New Article",
+    "guide": {
+      "eyebrow": "Register Guide",
+      "title": "HOW TO REGISTER YOUR PRODUCT",
+      "sub_title": "Here's step-by-step how to register your product in E-Warranty Aquaelektronik Indonesia",
+      "1": "You can input 'Barcode' or 'Serial Number' with Scanner, or you can easly typing on existing form",
+      "2": "After that you can continue to the next process called 'Compelete Product Data'",
+      "3": "You can fill the existing form input, and if you complete it, please press submit button"
+    }
   },
   "general": {
     "see_more": "See More",
@@ -82,7 +90,7 @@
     "barcode_number": "Barcode Number / Serial Number",
     "product_name": "Product Name",
     "or": "or", 
-    "alert": "If your product is not found, please contact us at",
+    "alert": "If you found error while register product, please contact us at",
     "manual_input": "Manual Input",
     "retry": "Retry"
   },
