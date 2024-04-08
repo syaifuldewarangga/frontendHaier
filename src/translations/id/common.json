@@ -15,7 +15,15 @@
   "landingPage": {
     "scan_your_product_here": "Pindai Produk Anda Di Sini",
     "your_product": "Produk Anda",
-    "new_blog": "Artikel Baru"
+    "new_blog": "Artikel Baru",
+    "guide": {
+      "eyebrow": "Petunjuk Registrasi",
+      "title": "CARA REGISTRASI PRODUCT ANDA",
+      "sub_title": "Berikut ini adalah tata cara registrasi produk kedalam sistem E-Warranty Aquaelektronik Indonesia ",
+      "1": "Anda dapat melakukan input barcode dengan cara di scan, atau diketik secara manual",
+      "2": "Setelah itu anda dapat melanjutkan ke proses berikutnya yaitu 'Melengkapi Data Produk'",
+      "3": "Setelah anda melengkapi semua data produk yang diperlukan, silahkan klik tombol submit"
+    }
   },
   "general": {
     "see_more": "Lihat Lebih Banyak",
@@ -83,7 +91,7 @@
     "barcode_number": "Nomor Barcode / Nomor Seri",
     "product_name": "Nama Product",
     "or": "atau", 
-    "alert": "Jika product anda tidak di temukan silahkan menghubungi kami di",
+    "alert": "Jika anda mengalami error saat proses registrasi, silahkan menghubungi kami di",
     "manual_input": "Input Manual",
     "retry": "Ulang"
   },

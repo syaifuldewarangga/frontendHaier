@@ -339,27 +339,30 @@ const CameraScan = (props) => {
                       const value = e.target.value
                       setBarcode(value.toUpperCase())
                     }}
-                    placeholder="name@example.com"
+                    placeholder="XXXXXXXXXXXXXXXXXXX"
                     disabled={inputBarcodeNumber ? '' : 'disabled'}
                     value={barcode}
                   />
                 </div>
 
-                <div className="mb-4">
-                  <label htmlFor="product_name" className="form-label">
-                  {t('product_register.product_name')}
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="product_name"
-                    placeholder="name@example.com"
-                    value={
-                      data.length === 0 ? '' : data.ProductName
-                    }
-                    disabled
-                  />
-                </div>
+                {data.length !== 0 ?
+                  <div>
+                    <label htmlFor="product_name" className="form-label">
+                    {t('product_register.product_name')}
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="product_name"
+                      placeholder="AQA-XXXX"
+                      value={
+                        data.length === 0 ? '' : data.ProductName
+                      }
+                      disabled
+                    />
+                  </div>
+                : null
+                }
 
                 {/* <div className="mb-4">
                   <label htmlFor="brand" className="form-label">
@@ -392,8 +395,8 @@ const CameraScan = (props) => {
                           :
                           <Link to={'/product/register-product-manual/' + barcode}>
                             <div className="d-grid gap-2">
-                              <button className="btn btn-color-primary btn-detail">
-                                {inputBarcodeNumber == false ? 'Detail' : 'Input Data Product Manual'}
+                              <button className="btn py-0 btn-color-primary btn-detail">
+                                {inputBarcodeNumber == false ? 'Lanjutkan Input Data Product' : 'Lanjutkan Melengkapi Data Product Manual'}
                               </button>
                             </div>
                           </Link>
@@ -415,15 +418,15 @@ const CameraScan = (props) => {
                 ) : (
                   <Link to={'/product/register-product/' + data.Barcode}>
                     <div className="d-grid gap-2">
-                      <button className="btn btn-color-primary btn-detail">
-                        Detail Product
+                      <button className="btn btn-color-primary btn-detail py-1">
+                        Lanjutkan Melengkapi Data Product
                       </button>
                     </div>
                   </Link>
                 )}
 
                 <div className="my-4">
-                  <div className="border-center">
+                  <div className="text-center fw-bold">
                     <span>{t('product_register.or')}</span>
                   </div>
                 </div>

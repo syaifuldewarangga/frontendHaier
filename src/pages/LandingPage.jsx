@@ -5,6 +5,7 @@ import ButtonScannerSection from '../component/scan/buttonScannerSection/ButtonS
 import CameraScan from '../component/scan/cameraScan/CameraScan';
 // import ManualScan from '../component/scan/manualScan/ManualScan';
 import ImageSlider from '../component/slider/ImageSlider';
+import GuideSection from './GuideSection';
 
 class LandingPage extends Component {
   state = {
@@ -25,9 +26,7 @@ class LandingPage extends Component {
     return (
       <div>
         <ImageSlider />
-        <div onClick={this.handleButtonScanner}>
-          <ButtonScannerSection />
-        </div>
+        <GuideSection handleButtonScanner={this.handleButtonScanner} />
         <Product />
         <BlogSlider />
         {/* <ManualScan /> */}
