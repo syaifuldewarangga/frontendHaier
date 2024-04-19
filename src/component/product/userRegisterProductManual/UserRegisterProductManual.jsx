@@ -1,24 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import './UserRegisterProductManual.css';
-import { connect } from 'react-redux';
-import { useParams, useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
-import SelectSearch, { fuzzySearch } from 'react-select-search';
-import './SelectSearch.css';
+import { Modal } from 'bootstrap';
 import { format } from 'date-fns';
-import AlertModal from '../../alertModal/AlertModal';
-import { Button, Modal } from 'bootstrap';
-import { Modal as Modal2, Button as Button2, Form } from 'react-bootstrap'
-import { client_id, client_secret, grant_type } from '../../../variable';
+import moment from 'moment/moment';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Typeahead } from 'react-bootstrap-typeahead';
 import { useTranslation } from 'react-i18next';
 import Resizer from "react-image-file-resizer";
+import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import SelectSearch, { fuzzySearch } from 'react-select-search';
+import { client_id, client_secret, grant_type } from '../../../variable';
 import { DataURIToBlob } from '../../../variable/DataUriToBlob';
-import { ModelCheck } from '../../../variable/ModelCheck';
-import { ImageFunction } from '../../../variable/ImageFunction';
-import { useMemo } from 'react';
-import { Hint, Typeahead } from 'react-bootstrap-typeahead';
-import { useRef } from 'react';
-import moment from 'moment/moment';
+import AlertModal from '../../alertModal/AlertModal';
+import './SelectSearch.css';
+import './UserRegisterProductManual.css';
 var X2JS = require('x2js');
 
 function UserRegisterProductManual(props) {
@@ -786,14 +781,20 @@ function UserRegisterProductManual(props) {
                           product_model: v
                         })
                       }}
-                      inputProps={{ className: isValid }}
                       id="basic-typeahead-single"
                       labelKey="name"
+                      emptyLabel={t('product_register.product_model.not_found')}
                       onChange={setSelected}
                       options={options.filter(v => v)}
                       placeholder="Choose a product model..."
                       selected={selected}
                     />
+                    <div className='bg-primary text-light px-2 pb-1' style={{ borderRadius: '0px 0px 5px 5px' }}>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 'bold', fontStyle: 'italic' }}>Note : </span>
+                      <p style={{ fontSize: '0.8rem', fontStyle: 'italic', marginTop: '10px' }}>
+                        {t('product_register.product_model.description')}
+                      </p>
+                    </div>
                     <div className="text-danger">{errorProductModel}</div>
                   </div>
                 </div>

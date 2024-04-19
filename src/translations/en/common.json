@@ -93,7 +93,11 @@
     "or": "or", 
     "alert": "If you found error while register product, please contact us at",
     "manual_input": "Manual Input",
-    "retry": "Retry"
+    "retry": "Retry",
+    "product_model": {
+      "description": "In the event that the desired product model is not listed, please manually enter the product model in the field provided above.",
+      "not_found": "The product model is currently being entered manually."
+    }
   },
   "form_product_register": {
     "wa_flag": "Can we contact you using WhatsApp in the future."
