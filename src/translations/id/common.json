@@ -92,7 +92,11 @@
     "or": "atau", 
     "alert": "Jika anda mengalami error saat proses registrasi, silahkan menghubungi kami di",
     "manual_input": "Input Manual",
-    "retry": "Ulang"
+    "retry": "Ulang",
+    "product_model": {
+      "description": "Jika pilihan produk model tidak ditemukan, silahkan ketik produk model yang Anda miliki pada kolom diatas ini.",
+      "not_found": "Anda sedang input product model secara manual"
+    }
   },
   "form_product_register": {
     "wa_flag": "Dapatkah kami menghubungi Anda menggunakan WhatsApp kedepannya."
